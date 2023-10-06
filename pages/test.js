@@ -1,11 +1,11 @@
-import React from "react";
 import AppLayout from "../components/AppLayout";
-function Home(props) {
+
+function Test(props) {
   return (
     <AppLayout>
-      <div>hello next</div>
+      <div>test</div>
     </AppLayout>
   );
 }
 
-export default Home;
+export default Test;

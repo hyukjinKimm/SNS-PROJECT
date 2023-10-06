@@ -1,5 +1,6 @@
 import Head from "next/head";
-function NodeBird({ Component }) {
+import PropTypes from "prop-types";
+function App({ Component }) {
   return (
     <>
       <Head>
@@ -16,4 +17,8 @@ function NodeBird({ Component }) {
   );
 }
 
-export default NodeBird;
+App.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+};
+
+export default App;

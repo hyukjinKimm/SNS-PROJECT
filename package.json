@@ -9,6 +9,10 @@
   "author": "HyukJinKimm",
   "license": "ISC",
   "dependencies": {
-    "next": "^13.5.4"
+    "@ant-design/icons": "^5.2.6",
+    "antd": "^5.9.4",
+    "next": "^13.5.4",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0"
   }
 }
