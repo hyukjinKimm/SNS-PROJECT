@@ -1,0 +1,14 @@
+{
+  "name": "sns-project-front",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next -p 3060"
+  },
+  "author": "HyukJinKimm",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^13.5.4"
+  }
+}
