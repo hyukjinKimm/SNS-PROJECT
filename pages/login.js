@@ -1,19 +1,19 @@
 import React, { useCallback } from "react";
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
-import SignUpForm from "../components/SignUpForm";
+import LoginForm from "../components/LoginForm";
 
-const SignUp = () => {
+const LogIn = () => {
   return (
     <>
       <Head>
-        <title>회원가입 | SNS-PROJECT</title>
+        <title>로그인 | SNS-PROJECT</title>
       </Head>
       <AppLayout>
-        <SignUpForm />
+        <LoginForm />
       </AppLayout>
     </>
   );
 };
 
-export default SignUp;
+export default LogIn;

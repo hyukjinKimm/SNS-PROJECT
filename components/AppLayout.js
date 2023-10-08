@@ -5,13 +5,17 @@ import { Menu, Input, Row, Col, Button } from "antd";
 
 import UserProfile from "./UserProfile";
 import LoginForm from "./LoginForm";
+import { useDispatch, useSelector } from "react-redux";
 
 const AppLayout = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { me } = useSelector((state) => state.user);
+  console.log(me);
+  const dispatch = useDispatch();
+
   const onLogOut = useCallback(() => {
     console.log("LogOut 실행");
-    setIsLoggedIn(false);
-  }, [isLoggedIn]);
+    dispatch({ type: "LOG_OUT_REQUEST" });
+  }, []);
 
   const items = useMemo(() => {
     return [
@@ -28,21 +32,21 @@ const AppLayout = ({ children }) => {
         ),
       },
       {
-        label: <a href="/friends">친구</a>,
+        label: <Link href="/friends">친구</Link>,
       },
       {
-        label: <a href="/profile">프로필</a>,
+        label: <Link href="/profile">프로필</Link>,
       },
       {
-        label: <a href="/signup">회원가입</a>,
+        label: <Link href="/login">로그인</Link>,
       },
-      isLoggedIn
+      me
         ? {
             label: <Button onClick={onLogOut}>LogOut</Button>,
           }
         : null,
     ];
-  }, [isLoggedIn]);
+  }, [me]);
 
   return (
     <div>
@@ -50,11 +54,7 @@ const AppLayout = ({ children }) => {
       <Row gutter={8}>
         {/* xs: 모바일 sm: 태블릿 md: 데스크탑 */}
         <Col xs={24} md={6}>
-          {isLoggedIn ? (
-            <UserProfile />
-          ) : (
-            <LoginForm setIsLoggedIn={setIsLoggedIn} />
-          )}
+          {me ? <UserProfile /> : null}
         </Col>
         <Col xs={24} md={12}>
           {children}

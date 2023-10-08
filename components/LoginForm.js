@@ -1,5 +1,9 @@
 import React, { useState, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+import { useDispatch } from "react-redux";
+
 import { Button, Checkbox, Form, Input } from "antd";
 import styled from "styled-components";
 
@@ -14,25 +18,23 @@ const FormWrapper = styled(Form)`
   padding: 10px;
 `;
 // 리렌더링 시 return 부분에서 바뀐 부분만 다시그린다.
-const LoginForm = ({ setIsLoggedIn }) => {
-  const [id, setId] = useState("");
-  const onChangeId = useCallback((e) => {
-    setId(e.target.value);
-  }, []);
-  const [password, setPassword] = useState("");
-  const onChangePassword = useCallback((e) => {
-    setPassword(e.target.value);
-  }, []);
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  const onFinish = useCallback(
-    (e) => {
-      // e.preventDefault 적용 되어있음
-      console.log("LogIn 실행");
-      console.log(e, id, password);
-      setIsLoggedIn(true);
-    },
-    [id, password]
-  );
+  const onFinish = useCallback((e) => {
+    // e.preventDefault 적용 되어있음
+    console.log("LogIn 실행");
+    console.log(e, e.email, e.password);
+    dispatch({
+      type: "LOG_IN_REQUEST",
+      data: {
+        email: e.email,
+        password: e.password,
+      },
+    });
+    router.push("/");
+  }, []);
   return (
     <>
       <FormWrapper
@@ -50,21 +52,25 @@ const LoginForm = ({ setIsLoggedIn }) => {
         autoComplete="off"
       >
         <Form.Item
-          label="아이디"
-          name="user-id"
+          name="email"
+          label="E-mail"
           rules={[
             {
+              type: "email",
+              message: "유요한 이메일이 아닙니다.",
+            },
+            {
               required: true,
-              message: "아이디를 입력해주세요",
+              message: "이메일을 입력해 주세요.",
             },
           ]}
         >
-          <InputWrapper value={id} onChange={onChangeId} />
+          <Input />
         </Form.Item>
 
         <Form.Item
           label="비밀번호"
-          name="user-password"
+          name="password"
           rules={[
             {
               required: true,
@@ -72,7 +78,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
             },
           ]}
         >
-          <Input.Password value={password} onChange={onChangePassword} />
+          <Input.Password />
         </Form.Item>
 
         <Form.Item
@@ -83,7 +89,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
             span: 16,
           }}
         >
-          <Checkbox style={{}}>Remember me</Checkbox>
+          <Checkbox>Remember me</Checkbox>
         </Form.Item>
 
         <Form.Item
@@ -96,7 +102,9 @@ const LoginForm = ({ setIsLoggedIn }) => {
             로그인
           </Button>
           <Link href="/signup">
-            <Button>회원가입 </Button>
+            <Button>
+              <Link href="/signup">회원가입</Link>
+            </Button>
           </Link>
         </Form.Item>
       </FormWrapper>

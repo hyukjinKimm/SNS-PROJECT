@@ -9,16 +9,11 @@ import { Avatar, Card, Button } from "antd";
 const { Meta } = Card;
 
 import styled from "styled-components";
-const CardWrapper = styled(Card)`
-  width: 300px;
-`;
-const UserProfile = ({ setIsLoggedIn }) => {
+
+const UserProfile = () => {
   return (
     <>
-      <CardWrapper
-        style={{
-          width: 300,
-        }}
+      <Card
         cover={
           <img
             alt="example"
@@ -46,7 +41,7 @@ const UserProfile = ({ setIsLoggedIn }) => {
           title="HyukJin Kim"
           description="This is the description"
         />
-      </CardWrapper>
+      </Card>
     </>
   );
 };
