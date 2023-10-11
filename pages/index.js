@@ -12,69 +12,36 @@ function Home(props) {
   const dispatch = useDispatch();
   return (
     <AppLayout>
-      <Layout
-        className="site-layout"
+      <Content
         style={{
-          marginLeft: 200,
+          margin: "24px 16px 0",
+          overflow: "initial",
         }}
       >
-        <Header
+        <div
           style={{
-            padding: 0,
+            padding: 24,
+            textAlign: "center",
             background: colorBgContainer,
           }}
         >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => {
-              dispatch({ type: "COLLAPSED_EVENT" });
-            }}
-            style={{
-              fontSize: "16px",
-              width: 64,
-              height: 64,
-            }}
-          />
-        </Header>
-        <Content
-          style={{
-            margin: "24px 16px 0",
-            overflow: "initial",
-          }}
-        >
-          <div
-            style={{
-              padding: 24,
-              textAlign: "center",
-              background: colorBgContainer,
-            }}
-          >
-            <p>long content</p>
-            {
-              // indicates very long content
-              Array.from(
-                {
-                  length: 100,
-                },
-                (_, index) => (
-                  <React.Fragment key={index}>
-                    {index % 20 === 0 && index ? "more" : "..."}
-                    <br />
-                  </React.Fragment>
-                )
+          <p>long content</p>
+          {
+            // indicates very long content
+            Array.from(
+              {
+                length: 100,
+              },
+              (_, index) => (
+                <React.Fragment key={index}>
+                  {index % 20 === 0 && index ? "more" : "..."}
+                  <br />
+                </React.Fragment>
               )
-            }
-          </div>
-        </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
-          Ant Design ©2023 Created by Ant UED
-        </Footer>
-      </Layout>
+            )
+          }
+        </div>
+      </Content>
     </AppLayout>
   );
 }

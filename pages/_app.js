@@ -1,6 +1,7 @@
 import Head from "next/head";
 import PropTypes from "prop-types";
 import wrapper from "../store/configureStore";
+import "./styles.css";
 function App({ Component }) {
   return (
     <>

@@ -39,10 +39,7 @@ const LoginForm = () => {
     <>
       <FormWrapper
         labelCol={{
-          span: 100,
-        }}
-        wrapperCol={{
-          span: 16,
+          span: 4,
         }}
         initialValues={{
           remember: true,
@@ -64,6 +61,14 @@ const LoginForm = () => {
               message: "이메일을 입력해 주세요.",
             },
           ]}
+          labelCol={{
+            offset: 0,
+            span: 3,
+          }}
+          wrapperCol={{
+            offset: 0,
+            span: 10,
+          }}
         >
           <Input />
         </Form.Item>
@@ -77,6 +82,10 @@ const LoginForm = () => {
               message: "비밀번호를 입력해 주세요",
             },
           ]}
+          wrapperCol={{
+            offset: 0,
+            span: 10,
+          }}
         >
           <Input.Password />
         </Form.Item>
@@ -85,8 +94,8 @@ const LoginForm = () => {
           name="remember"
           valuePropName="checked"
           wrapperCol={{
-            offset: 6,
-            span: 16,
+            offset: 1,
+            span: 10,
           }}
         >
           <Checkbox>Remember me</Checkbox>
@@ -94,7 +103,7 @@ const LoginForm = () => {
 
         <Form.Item
           wrapperCol={{
-            offset: 5,
+            offset: 1,
             span: 16,
           }}
         >

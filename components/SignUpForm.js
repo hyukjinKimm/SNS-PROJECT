@@ -14,7 +14,8 @@ const formItemLayout = {
       span: 8,
     },
     md: {
-      span: 4,
+      offset: 0,
+      span: 30,
     },
   },
   wrapperCol: {
@@ -25,7 +26,8 @@ const formItemLayout = {
       span: 16,
     },
     md: {
-      span: 18,
+      offset: 0,
+      span: 10,
     },
   },
 };
@@ -41,7 +43,7 @@ const tailFormItemLayout = {
     },
     md: {
       span: 18,
-      offset: 2,
+      offset: 6,
     },
   },
 };
@@ -71,7 +73,9 @@ const SignUp = () => {
       }}
       style={{
         maxWidth: 600,
-        marginTop: 50,
+        marginTop: 40,
+        marginLeft: 10,
+        marginRight: 10,
       }}
       scrollToFirstError
     >

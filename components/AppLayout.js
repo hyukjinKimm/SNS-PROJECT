@@ -8,9 +8,13 @@ import {
   ExclamationOutlined,
   FormOutlined,
   HomeOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
-import { useSelector } from "react-redux";
+import Link from "next/link";
+
+import { Layout, Menu, theme, Button } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 
 const AppLayout2 = ({ children }) => {
@@ -20,18 +24,22 @@ const AppLayout2 = ({ children }) => {
   }, []);
   const items = useMemo(() => {
     return [
-      { key: "home", icon: React.createElement(HomeOutlined), label: "홈" },
+      {
+        key: "home",
+        icon: React.createElement(HomeOutlined),
+        label: <Link href="/">홈</Link>,
+      },
       {
         key: "search",
         icon: React.createElement(SearchOutlined),
-        label: "검색",
+        label: <Link href="/">검색</Link>,
       },
       isLoggedIn
         ? null
         : {
             key: "login",
             icon: React.createElement(LoginOutlined),
-            label: "로그인",
+            label: <Link href="/login">로그인</Link>,
           },
       isLoggedIn
         ? {
@@ -83,6 +91,8 @@ const AppLayout2 = ({ children }) => {
           },
     ];
   }, []);
+  const dispatch = useDispatch();
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -91,6 +101,13 @@ const AppLayout2 = ({ children }) => {
   return (
     <Layout hasSider>
       <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={() => {
+          dispatch({
+            type: "COLLAPSED_EVENT",
+          });
+        }}
         style={{
           overflow: "auto",
           height: "100vh",
@@ -99,19 +116,44 @@ const AppLayout2 = ({ children }) => {
           top: 0,
           bottom: 0,
         }}
-        collapsible
-        collapsed={collapsed}
       >
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["4"]}
+          defaultSelectedKeys={["1"]}
           items={items}
-          onClick={onClick}
         />
       </Sider>
-      {children}
+      <Layout
+        className="site-layout"
+        style={{
+          marginLeft: 0,
+        }}
+      >
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+          }}
+        ></Header>
+        <Content
+          style={{
+            marginLeft: 200,
+            overflow: "initial",
+          }}
+        >
+          {children}
+        </Content>
+        <Footer
+          style={{
+            textAlign: "center",
+          }}
+        >
+          SNS-PROJECT @2023 Made by HYUKJIN KIM <br />
+          Ant Design ©2023 Created by Ant UED
+        </Footer>
+      </Layout>
     </Layout>
   );
 };
