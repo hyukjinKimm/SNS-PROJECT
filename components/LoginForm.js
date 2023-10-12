@@ -27,7 +27,11 @@ const LoginForm = () => {
     console.log("LogIn 실행");
     console.log(e, e.email, e.password);
     dispatch({
-      type: "LOG_IN_REQUEST",
+      type: "CHANGE_MENU",
+      data: "home",
+    });
+    dispatch({
+      type: "LOG_IN",
       data: {
         email: e.email,
         password: e.password,

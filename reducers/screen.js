@@ -1,5 +1,6 @@
 export const initialState = {
   collapsed: false,
+  selectedMenu: "HOME",
 };
 
 const reducer = (state = initialState, action) => {
@@ -8,6 +9,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         collapsed: !state.collapsed,
+      };
+    case "CHANGE_MENU":
+      return {
+        ...state,
+        selectedMenu: action.data,
       };
 
     default:

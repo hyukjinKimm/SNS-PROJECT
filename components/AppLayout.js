@@ -8,8 +8,7 @@ import {
   ExclamationOutlined,
   FormOutlined,
   HomeOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -18,86 +17,102 @@ import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 
 const AppLayout2 = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const onClick = useCallback((e) => {
-    console.log(e);
+  const dispatch = useDispatch();
+
+  const { collapsed } = useSelector((state) => state.screen);
+  const { isLoggedIn } = useSelector((state) => state.user);
+  const { selectedMenu } = useSelector((state) => state.screen);
+  const onChangeMenu = useCallback((e) => {
+    dispatch({ type: "CHANGE_MENU", data: e.key });
   }, []);
+  const LogOutRequest = useCallback(() => {
+    dispatch({
+      type: "LOG_OUT",
+    });
+  }, []);
+
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+
   const items = useMemo(() => {
     return [
       {
-        key: "home",
+        key: "HOME",
         icon: React.createElement(HomeOutlined),
         label: <Link href="/">홈</Link>,
       },
       {
-        key: "search",
+        key: "SEARCH",
         icon: React.createElement(SearchOutlined),
         label: <Link href="/">검색</Link>,
       },
       isLoggedIn
         ? null
         : {
-            key: "login",
+            key: "LOGIN",
             icon: React.createElement(LoginOutlined),
             label: <Link href="/login">로그인</Link>,
           },
       isLoggedIn
         ? {
-            key: "message",
+            key: "MESSAGE",
             icon: React.createElement(MessageOutlined),
             label: "메시지",
           }
         : {
-            key: "message",
+            key: "MESSAGE",
             icon: React.createElement(MessageOutlined),
             label: "메시지",
             disabled: true,
           },
       isLoggedIn
         ? {
-            key: "notice",
+            key: "NOTICE",
             icon: React.createElement(ExclamationOutlined),
             label: "알림",
           }
         : {
-            key: "notice",
+            key: "NOTICE",
             icon: React.createElement(ExclamationOutlined),
             label: "알림",
             disabled: true,
           },
       isLoggedIn
         ? {
-            key: "post",
+            key: "POST",
             icon: React.createElement(FormOutlined),
             label: "만들기",
           }
         : {
-            key: "post",
+            key: "POST",
             icon: React.createElement(FormOutlined),
             label: "만들기",
             disabled: true,
           },
       isLoggedIn
         ? {
-            key: "",
+            key: "PROFILE",
             icon: React.createElement(UserOutlined),
             label: "프로필",
           }
         : {
-            key: "",
+            key: "PROFILE",
             icon: React.createElement(UserOutlined),
             label: "프로필",
             disabled: true,
           },
+      isLoggedIn
+        ? {
+            key: "LOGOUT",
+            icon: React.createElement(LogoutOutlined),
+            label: "로그아웃",
+            onClick: LogOutRequest,
+          }
+        : null,
     ];
-  }, []);
-  const dispatch = useDispatch();
+  }, [isLoggedIn]);
 
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
-  const { collapsed } = useSelector((state) => state.screen);
   return (
     <Layout hasSider>
       <Sider
@@ -121,8 +136,9 @@ const AppLayout2 = ({ children }) => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["1"]}
+          selectedKeys={selectedMenu}
           items={items}
+          onClick={onChangeMenu}
         />
       </Sider>
       <Layout
