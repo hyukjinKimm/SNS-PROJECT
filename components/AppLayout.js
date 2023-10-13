@@ -9,6 +9,8 @@ import {
   FormOutlined,
   HomeOutlined,
   LogoutOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -16,6 +18,7 @@ import { Layout, Menu, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 
+import { logOutAction } from "../reducers/user";
 const AppLayout2 = ({ children }) => {
   const dispatch = useDispatch();
 
@@ -23,12 +26,13 @@ const AppLayout2 = ({ children }) => {
   const { isLoggedIn } = useSelector((state) => state.user);
   const { selectedMenu } = useSelector((state) => state.screen);
   const onChangeMenu = useCallback((e) => {
+    if (e.key === "LOGOUT") {
+      return dispatch({ type: "CHANGE_MENU", data: "HOME" });
+    }
     dispatch({ type: "CHANGE_MENU", data: e.key });
   }, []);
   const LogOutRequest = useCallback(() => {
-    dispatch({
-      type: "LOG_OUT",
-    });
+    dispatch(logOutAction());
   }, []);
 
   const {
@@ -82,7 +86,7 @@ const AppLayout2 = ({ children }) => {
         ? {
             key: "POST",
             icon: React.createElement(FormOutlined),
-            label: "만들기",
+            label: <Link href="/post">만들기</Link>,
           }
         : {
             key: "POST",
@@ -94,7 +98,7 @@ const AppLayout2 = ({ children }) => {
         ? {
             key: "PROFILE",
             icon: React.createElement(UserOutlined),
-            label: "프로필",
+            label: <Link href="/profile">프로필</Link>,
           }
         : {
             key: "PROFILE",
@@ -106,7 +110,7 @@ const AppLayout2 = ({ children }) => {
         ? {
             key: "LOGOUT",
             icon: React.createElement(LogoutOutlined),
-            label: "로그아웃",
+            label: <Link href="/">로그아웃</Link>,
             onClick: LogOutRequest,
           }
         : null,
@@ -152,10 +156,27 @@ const AppLayout2 = ({ children }) => {
             padding: 0,
             background: colorBgContainer,
           }}
-        ></Header>
+        >
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => {
+              dispatch({
+                type: "COLLAPSED_EVENT",
+              });
+            }}
+            style={{
+              marginLeft: collapsed ? 70 : 200,
+              fontSize: "16px",
+              width: 64,
+              height: 64,
+            }}
+          />
+        </Header>
         <Content
           style={{
-            marginLeft: 200,
+            minHeight: "100vh",
+            marginLeft: collapsed ? 100 : 200,
             overflow: "initial",
           }}
         >

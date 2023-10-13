@@ -32,13 +32,7 @@ const SingUp = () => {
         <title>로그인 | SNS-PROJECT</title>
       </Head>
       <AppLayout>
-        <Content
-          style={{
-            overflow: "initial",
-          }}
-        >
-          <SignUpForm />
-        </Content>
+        <SignUpForm />
       </AppLayout>
     </>
   );

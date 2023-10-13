@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { useDispatch } from "react-redux";
-
+import { logInAction } from "../reducers/user";
 import { Button, Checkbox, Form, Input } from "antd";
 import styled from "styled-components";
 
@@ -26,16 +26,10 @@ const LoginForm = () => {
     // e.preventDefault 적용 되어있음
     console.log("LogIn 실행");
     console.log(e, e.email, e.password);
+    dispatch(logInAction({ email: e.email, password: e.password }));
     dispatch({
       type: "CHANGE_MENU",
-      data: "home",
-    });
-    dispatch({
-      type: "LOG_IN",
-      data: {
-        email: e.email,
-        password: e.password,
-      },
+      data: "HOME",
     });
     router.push("/");
   }, []);

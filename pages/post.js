@@ -1,20 +1,20 @@
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
-import LoginForm from "../components/LoginForm";
+import PostForm from "../components/PostForm";
 
 import React from "react";
 
-const LogIn = () => {
+const Post = () => {
   return (
     <>
       <Head>
-        <title>로그인 | SNS-PROJECT</title>
+        <title>만들기 | SNS-PROJECT</title>
       </Head>
       <AppLayout>
-        <LoginForm />
+        <PostForm />
       </AppLayout>
     </>
   );
 };
 
-export default LogIn;
+export default Post;

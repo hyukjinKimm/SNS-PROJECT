@@ -2,6 +2,8 @@ import React from "react";
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 
+import UserProfile from "../components/UserProfile";
+
 const Profile = () => {
   return (
     <>
@@ -9,7 +11,8 @@ const Profile = () => {
         <title>내 프로필 | SNS-PROJECT</title>
       </Head>
       <AppLayout>
-        <div>내 프로필</div>
+        <UserProfile />
+        <div> hi</div>
       </AppLayout>
     </>
   );

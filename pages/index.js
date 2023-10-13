@@ -2,14 +2,16 @@ import React from "react";
 import { Layout, theme, Button } from "antd";
 import { MenuUnfoldOutlined } from "@ant-design/icons";
 import AppLayout from "../components/AppLayout";
+import PostCard from "../components/PostCard";
 import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 function Home(props) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const collapsed = useSelector((state) => state.screen);
+  const { mainPosts } = useSelector((state) => state.post);
   const dispatch = useDispatch();
+
   return (
     <AppLayout>
       <Content
@@ -25,21 +27,9 @@ function Home(props) {
             background: colorBgContainer,
           }}
         >
-          <p>long content</p>
-          {
-            // indicates very long content
-            Array.from(
-              {
-                length: 100,
-              },
-              (_, index) => (
-                <React.Fragment key={index}>
-                  {index % 20 === 0 && index ? "more" : "..."}
-                  <br />
-                </React.Fragment>
-              )
-            )
-          }
+          {mainPosts.map((post, index) => (
+            <PostCard key={post.id} post={post} />
+          ))}
         </div>
       </Content>
     </AppLayout>

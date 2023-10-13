@@ -3,45 +3,41 @@ import {
   EditOutlined,
   EllipsisOutlined,
   SettingOutlined,
-  SettingFilled,
 } from "@ant-design/icons";
-import { Avatar, Card, Button } from "antd";
+import { Avatar, Card, Layout } from "antd";
 const { Meta } = Card;
 
-import styled from "styled-components";
+const { Header, Content, Footer, Sider } = Layout;
 
 const UserProfile = () => {
   return (
     <>
-      <Card
-        cover={
-          <img
-            alt="example"
-            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+      <div>
+        <Card
+          style={{
+            width: 300,
+          }}
+          cover={
+            <img
+              alt="example"
+              src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+            />
+          }
+          actions={[
+            <SettingOutlined key="setting" />,
+            <EditOutlined key="edit" />,
+            <EllipsisOutlined key="ellipsis" />,
+          ]}
+        >
+          <Meta
+            avatar={
+              <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
+            }
+            title="Card title"
+            description="This is the description"
           />
-        }
-        actions={[
-          <div key="posts">
-            게시글
-            <br />0
-          </div>,
-          <div key="followings">
-            팔로잉
-            <br />0
-          </div>,
-          <div key="follwers">
-            팔로워
-            <br />0
-          </div>,
-        ]}
-      >
-        {/* <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />*/}
-        <Meta
-          avatar={<Avatar>HJ</Avatar>}
-          title="HyukJin Kim"
-          description="This is the description"
-        />
-      </Card>
+        </Card>
+      </div>
     </>
   );
 };
