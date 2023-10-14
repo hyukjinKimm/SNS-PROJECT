@@ -20,7 +20,9 @@ import { InboxOutlined, UploadOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
 import { useDispatch } from "react-redux";
+import { addPost } from "../reducers/post";
 const { Option } = Select;
+
 const normFile = (e) => {
   console.log("Upload event:", e);
   if (Array.isArray(e)) {
@@ -72,8 +74,13 @@ const tailFormItemLayout = {
   },
 };
 const Post = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const onFinish = useCallback((e) => {
     console.log(e);
+    dispatch(addPost(e));
+    dispatch({ type: "CHANGE_MENU", data: "HOME" });
+    router.push("/");
   }, []);
   const [form] = Form.useForm();
 
@@ -114,7 +121,7 @@ const Post = () => {
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
-        <Upload action="/upload.do" listType="picture-card">
+        <Upload listType="picture-card">
           <div>
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Upload</div>
