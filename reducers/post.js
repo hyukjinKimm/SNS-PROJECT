@@ -22,18 +22,21 @@ export const initialState = {
       Comments: [
         {
           User: {
+            id: 1,
             nickname: "krystal",
           },
           content: "열심히 살자..밥값을 해야지",
         },
         {
           User: {
+            id: 2,
             nickname: "Justin",
           },
           content: "꾸준히 하면...",
         },
         {
           User: {
+            id: 3,
             nickname: "게으름의 신",
           },
           content: "좀 쉬어..",
@@ -80,7 +83,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         mainPosts: [dummyPost, ...state.mainPosts],
       };
+    case "ADD_COMMENT":
+      state.mainPosts[0].Comments = [
+        action.data,
+        ...state.mainPosts[0].Comments,
+      ];
 
+      return {
+        ...state,
+        mainPosts: [...state.mainPosts],
+      };
     default:
       return state;
   }

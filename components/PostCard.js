@@ -6,9 +6,13 @@ import {
   HeartOutlined,
   HeartTwoTone,
 } from "@ant-design/icons";
-import React, { useCallback, useState } from "react";
-import { Avatar, List, Space } from "antd";
+const count = 3;
+import React, { useCallback, useState, useEffect } from "react";
+import { Avatar, List, Space, Button, Skeleton } from "antd";
 import ImageSlider from "./ImageSlider";
+import CommentForm from "./CommentForm";
+import { useSelector } from "react-redux";
+const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 
 const RetweetIcon = ({ icon, text }) => (
   <Space>
@@ -43,7 +47,10 @@ const CommentIcon = ({ icon, text, commentOpened, onToggleComment }) => (
     {text}
   </Space>
 );
+
 const PostCard = ({ post }) => {
+  const id = useSelector((state) => state.user.me?.id);
+
   const [liked, setLiked] = useState(false);
   const [commentOpened, setCommentOpened] = useState(false);
 
@@ -53,6 +60,8 @@ const PostCard = ({ post }) => {
   const onToggleComment = useCallback(() => {
     setCommentOpened(!commentOpened);
   }, [commentOpened]);
+
+  console.log(id, post.Comments);
   return (
     <>
       <List.Item
@@ -86,7 +95,40 @@ const PostCard = ({ post }) => {
         <ImageSlider images={post.Images} />
         <div>{post.content}</div>
       </List.Item>
-      {commentOpened ? <div>댓글부분</div> : null}
+
+      {commentOpened ? (
+        <List.Item>
+          {post.Comments.length} 개의 댓글
+          <List
+            className="demo-loadmore-list"
+            itemLayout="vertical"
+            dataSource={post.Comments}
+            renderItem={(item) => (
+              <List.Item
+                actions={[
+                  <div>좋아요 {22}개</div>,
+                  <div>답글달기</div>,
+                  item.User.id === id && (
+                    <a key="list-loadmore-edit"> 수정하기</a>
+                  ),
+                  item.User.id === id && (
+                    <a key="list-loadmore-delete"> 삭제하기</a>
+                  ),
+                ].filter((element) => {
+                  if (element) return true;
+                })}
+                extra={[<HeartOutlined />]}
+              >
+                <List.Item.Meta
+                  avatar={<Avatar> {item.User.nickname[0]}</Avatar>}
+                  description={item.content}
+                />
+              </List.Item>
+            )}
+          />
+          <CommentForm />
+        </List.Item>
+      ) : null}
     </>
   );
 };
