@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { Button, Checkbox, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 const { Option } = Select;
 
 const formItemLayout = {
@@ -49,6 +49,7 @@ const tailFormItemLayout = {
 };
 
 const SignUp = () => {
+  const { isSignUpIng } = useSelector((state) => state.user);
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -56,10 +57,9 @@ const SignUp = () => {
     console.log("Received values of form: ", e);
     const { email, password, nickname, gender } = e;
     dispatch({
-      type: "SIGNUP_REQUEST",
+      type: "SIGN_UP_REQUEST",
       data: { email, password, nickname, gender },
     });
-    router.push("/");
   }, []);
   return (
     <Form
@@ -179,7 +179,7 @@ const SignUp = () => {
         </Checkbox>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={isSignUpIng}>
           가입하기
         </Button>
       </Form.Item>

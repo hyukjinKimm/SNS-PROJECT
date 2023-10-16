@@ -5,11 +5,13 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { Avatar, Card, Layout } from "antd";
+import { useSelector } from "react-redux";
 const { Meta } = Card;
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const UserProfile = () => {
+  const { me } = useSelector((state) => state.user);
   return (
     <>
       <div>
@@ -30,10 +32,8 @@ const UserProfile = () => {
           ]}
         >
           <Meta
-            avatar={
-              <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
-            }
-            title="Card title"
+            avatar={<Avatar>{me?.nickname[0]}</Avatar>}
+            title={me?.nickname}
             description="This is the description"
           />
         </Card>

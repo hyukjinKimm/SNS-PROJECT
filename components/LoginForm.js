@@ -1,12 +1,14 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useDispatch } from "react-redux";
-import { logInAction } from "../reducers/user";
+import { CHANGE_MENU } from "../reducers/screen";
+import { useDispatch, useSelector } from "react-redux";
+import { logInRequestAction } from "../reducers/user";
 import { Button, Checkbox, Form, Input } from "antd";
 import styled from "styled-components";
 
+import { CHANGE_LOGIN_TO_SIGN_UP } from "../reducers/screen";
 const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
 };
@@ -19,20 +21,19 @@ const FormWrapper = styled(Form)`
 `;
 // 리렌더링 시 return 부분에서 바뀐 부분만 다시그린다.
 const LoginForm = () => {
+  const { isLoggingIn } = useSelector((state) => state.user);
+  const { logInOrSignUp } = useSelector((state) => state.screen);
+
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const onFinish = useCallback((e) => {
+  const onFinish = useCallback(async (e) => {
     // e.preventDefault 적용 되어있음
     console.log("LogIn 실행");
     console.log(e, e.email, e.password);
-    dispatch(logInAction({ email: e.email, password: e.password }));
-    dispatch({
-      type: "CHANGE_MENU",
-      data: "HOME",
-    });
-    router.push("/");
+    dispatch(logInRequestAction({ email: e.email, password: e.password }));
   }, []);
+
   return (
     <>
       <FormWrapper
@@ -105,14 +106,17 @@ const LoginForm = () => {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit" loading={false}>
+          <Button type="primary" htmlType="submit" loading={isLoggingIn}>
             로그인
           </Button>
-          <Link href="/signup">
-            <Button>
-              <Link href="/signup">회원가입</Link>
-            </Button>
-          </Link>
+
+          <Button
+            onClick={() => {
+              dispatch({ type: CHANGE_LOGIN_TO_SIGN_UP });
+            }}
+          >
+            회원가입
+          </Button>
         </Form.Item>
       </FormWrapper>
     </>

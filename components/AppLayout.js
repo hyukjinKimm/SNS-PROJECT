@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import {
   UserOutlined,
@@ -11,6 +11,7 @@ import {
   LogoutOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -18,23 +19,38 @@ import { Layout, Menu, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 
-import { logOutAction } from "../reducers/user";
-const AppLayout2 = ({ children }) => {
+import { logOutRequestAction } from "../reducers/user";
+import { useRouter } from "next/router";
+import { CHANGE_MENU, CLICK_LOGIN_MENU } from "../reducers/screen";
+const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
-
+  const router = useRouter();
   const { collapsed } = useSelector((state) => state.screen);
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { isLoggedIn, isLoggingOut } = useSelector((state) => state.user);
   const { selectedMenu } = useSelector((state) => state.screen);
   const onChangeMenu = useCallback((e) => {
-    if (e.key === "LOGOUT") {
-      return dispatch({ type: "CHANGE_MENU", data: "HOME" });
-    }
     dispatch({ type: "CHANGE_MENU", data: e.key });
   }, []);
   const LogOutRequest = useCallback(() => {
-    dispatch(logOutAction());
+    dispatch(logOutRequestAction());
   }, []);
 
+  useEffect(() => {
+    switch (selectedMenu) {
+      case "HOME":
+        router.push("/");
+        break;
+      case "SEARCH":
+        router.push("/search");
+        break;
+      case "LOGIN":
+        router.push("/login");
+        break;
+      case "PROFILE":
+        router.push("/profile");
+        break;
+    }
+  }, [selectedMenu]);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -44,12 +60,12 @@ const AppLayout2 = ({ children }) => {
       {
         key: "HOME",
         icon: React.createElement(HomeOutlined),
-        label: <Link href="/">홈</Link>,
+        label: "홈",
       },
       {
         key: "SEARCH",
         icon: React.createElement(SearchOutlined),
-        label: <Link href="/">검색</Link>,
+        label: "검색",
       },
       isLoggedIn
         ? null
@@ -58,6 +74,7 @@ const AppLayout2 = ({ children }) => {
             icon: React.createElement(LoginOutlined),
             label: <Link href="/login">로그인</Link>,
           },
+
       isLoggedIn
         ? {
             key: "MESSAGE",
@@ -98,7 +115,7 @@ const AppLayout2 = ({ children }) => {
         ? {
             key: "PROFILE",
             icon: React.createElement(UserOutlined),
-            label: <Link href="/profile">프로필</Link>,
+            label: "프로필",
           }
         : {
             key: "PROFILE",
@@ -109,13 +126,15 @@ const AppLayout2 = ({ children }) => {
       isLoggedIn
         ? {
             key: "LOGOUT",
-            icon: React.createElement(LogoutOutlined),
-            label: <Link href="/">로그아웃</Link>,
+            icon: React.createElement(
+              isLoggingOut ? LoadingOutlined : LogoutOutlined
+            ),
+            label: "로그아웃",
             onClick: LogOutRequest,
           }
         : null,
     ];
-  }, [isLoggedIn]);
+  }, [isLoggedIn, isLoggingOut]);
 
   return (
     <Layout hasSider>
@@ -194,7 +213,7 @@ const AppLayout2 = ({ children }) => {
     </Layout>
   );
 };
-AppLayout2.propTypes = {
+AppLayout.propTypes = {
   children: PropTypes.node.isRequired,
 };
-export default AppLayout2;
+export default AppLayout;
