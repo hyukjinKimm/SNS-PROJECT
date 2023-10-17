@@ -22,6 +22,11 @@ import {
   SIGN_UP_SUCCESS,
   SIGN_UP_FAILURE,
 } from "../reducers/user";
+import {
+  ADD_POST_REQUEST,
+  ADD_POST_SUCCESS,
+  ADD_POST_FAILURE,
+} from "../reducers/post";
 import { CHANGE_MENU } from "../reducers/screen";
 
 function* LoginToHome(action) {
@@ -47,11 +52,18 @@ function* SignUpToLogIn(action) {
 function* watchSignUpToLogIn() {
   yield takeLatest(SIGN_UP_SUCCESS, SignUpToLogIn);
 }
+function* addPostToHome(action) {
+  yield put({ type: CHANGE_MENU, data: "HOME" });
+}
+function* watchAddPostToHome() {
+  yield takeLatest(ADD_POST_SUCCESS, addPostToHome);
+}
 
 export default function* userSage() {
   yield all([
     fork(watchLoginToHome),
     fork(watchSignUpToLogIn),
     fork(watchLogOutToHome),
+    fork(watchAddPostToHome),
   ]);
 }

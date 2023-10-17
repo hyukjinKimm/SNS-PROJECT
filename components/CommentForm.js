@@ -16,6 +16,12 @@ import {
   Upload,
   Input,
 } from "antd";
+import {
+  addCommentRequest,
+  ADD_COMMENT_REQUEST,
+  ADD_COMMENT_SUCCESS,
+  ADD_COMMENT_FAILURE,
+} from "../reducers/post";
 import { InboxOutlined, UploadOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
@@ -23,14 +29,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "../reducers/post";
 const { Option } = Select;
 
-const Post = () => {
+const CommentForm = ({ postId }) => {
+  const { addCommentLoading } = useSelector((state) => state.post);
   const dispatch = useDispatch();
   const onFinish = (values) => {
     console.log("Received values from form: ", values.comment);
-    dispatch({
-      type: "ADD_COMMENT",
-      data: { User: { id: 1, nickname: "zzzzz" }, content: values.comment },
-    });
+    const data = {
+      ...values,
+      postId: postId,
+    };
+    dispatch(addCommentRequest(data));
   };
 
   return (
@@ -41,7 +49,7 @@ const Post = () => {
       style={{ margin: "20px" }}
     >
       <Form.Item
-        name="comment"
+        name="content"
         label="댓글"
         style={{ width: "60vw" }}
         wrapperCol={{
@@ -57,11 +65,16 @@ const Post = () => {
         />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button
+          key={postId}
+          type="primary"
+          htmlType="submit"
+          loading={addCommentLoading}
+        >
           작성
         </Button>
       </Form.Item>
     </Form>
   );
 };
-export default Post;
+export default CommentForm;

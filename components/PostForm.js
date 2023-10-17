@@ -19,8 +19,8 @@ import {
 import { InboxOutlined, UploadOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
-import { useDispatch } from "react-redux";
-import { addPost } from "../reducers/post";
+import { useDispatch, useSelector } from "react-redux";
+import { addPostRequestAction } from "../reducers/post";
 const { Option } = Select;
 
 const normFile = (e) => {
@@ -74,13 +74,12 @@ const tailFormItemLayout = {
   },
 };
 const Post = () => {
+  const { addPostLoading } = useSelector((state) => state.post);
   const router = useRouter();
   const dispatch = useDispatch();
   const onFinish = useCallback((e) => {
     console.log(e);
-    dispatch(addPost(e));
-    dispatch({ type: "CHANGE_MENU", data: "HOME" });
-    router.push("/");
+    dispatch(addPostRequestAction(e));
   }, []);
   const [form] = Form.useForm();
 
@@ -130,7 +129,7 @@ const Post = () => {
       </Form.Item>
 
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={addPostLoading}>
           만들기
         </Button>
       </Form.Item>

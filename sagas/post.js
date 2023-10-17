@@ -26,7 +26,7 @@ function* addPost(action) {
   try {
     //const result = yield call(addPostAPI, action.data);
     yield delay(1000);
-    yield put({ type: ADD_POST_SUCCESS });
+    yield put({ type: ADD_POST_SUCCESS, data: action.data });
   } catch (err) {
     yield put({ type: ADD_POST_FAILURE, data: err.response.data });
   }
@@ -43,7 +43,8 @@ function* addComment(action) {
   try {
     //const result = yield call(addCommentAPI, action.data);
     yield delay(1000);
-    yield put({ type: ADD_COMMENT_SUCCESS });
+    console.log("hiq", action);
+    yield put({ type: ADD_COMMENT_SUCCESS, data: action.data });
   } catch (err) {
     yield put({ type: ADD_COMMENT_FAILURE, data: err.response.data });
   }

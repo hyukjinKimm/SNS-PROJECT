@@ -45,6 +45,12 @@ export const initialState = {
     },
   ],
   imagePaths: [],
+  addPostLoading: false,
+  addPostDone: false,
+  addPostError: false,
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: false,
 };
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
@@ -56,42 +62,75 @@ export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
 export const ADD_POST = "ADD_POST";
-export const addPost = (data) => ({
-  type: ADD_POST,
+export const addPostRequestAction = (data) => ({
+  type: ADD_POST_REQUEST,
   data,
 });
-export const addComment = (data) => ({
+export const addCommentRequest = (data) => ({
   type: ADD_COMMENT_REQUEST,
-  data,
+  data: {
+    User: { id: 4, nickname: "댓글테스트" },
+    ...data,
+  },
 });
 
-const dummyPost = {
-  id: 2,
-  content: "더미데이터 입니다.",
-  User: {
-    id: 1,
-    nickname: "김철수",
-  },
-  Images: [],
-  Comments: [],
+const dummyPost = (data) => {
+  return {
+    id: 10,
+    content: data.content,
+    User: {
+      id: 3,
+      nickname: "테스트닉네임",
+    },
+    Image: [],
+    Comments: [],
+  };
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_POST:
+    case ADD_POST_REQUEST:
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        addPostLoading: true,
       };
-    case "ADD_COMMENT":
-      state.mainPosts[0].Comments = [
-        action.data,
-        ...state.mainPosts[0].Comments,
-      ];
+    case ADD_POST_SUCCESS:
+      return {
+        ...state,
+        addPostDone: true,
+        addPostLoading: false,
+        mainPosts: [dummyPost(action.data), ...state.mainPosts],
+      };
+    case ADD_POST_FAILURE:
+      return {
+        ...state,
+        addPostError: true,
+        addPostLoading: false,
+      };
+    case ADD_COMMENT_REQUEST:
+      return {
+        ...state,
+        addCommentLoading: true,
+        addCommentDone: false,
+      };
+    case ADD_COMMENT_SUCCESS:
+      const post = state.mainPosts.find(
+        (post) => post.id == action.data.postId
+      );
+
+      post.Comments = [action.data, ...post.Comments];
 
       return {
         ...state,
+        addCommentDone: true,
+        addCommentLoading: false,
         mainPosts: [...state.mainPosts],
+      };
+    case ADD_COMMENT_FAILURE:
+      return {
+        ...state,
+        addCommentLoading: false,
+        addCommentError: true,
       };
     default:
       return state;
