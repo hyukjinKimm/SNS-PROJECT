@@ -5,13 +5,15 @@ import {
   RetweetOutlined,
   HeartOutlined,
   HeartTwoTone,
+  EllipsisOutlined,
 } from "@ant-design/icons";
 const count = 3;
 import React, { useCallback, useState, useEffect } from "react";
-import { Avatar, List, Space, Button, Skeleton } from "antd";
+import { Avatar, List, Space, Button, Skeleton, Popover } from "antd";
 import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
-import { useSelector } from "react-redux";
+import { deletePostRequestAction } from "../reducers/post";
+import { useDispatch, useSelector } from "react-redux";
 const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 
 const RetweetIcon = ({ icon, text }) => (
@@ -49,8 +51,31 @@ const CommentIcon = ({ icon, text, commentOpened, onToggleComment }) => (
 );
 
 const PostCard = ({ post }) => {
-  const id = useSelector((state) => state.user.me?.id);
+  const { me } = useSelector((state) => state.user);
+  const [deletePostLoading, setDeletePostLoading] = useState(false);
+  const { deletePostDone, deletePostError } = useSelector(
+    (state) => state.post
+  );
+  useEffect(() => {
+    if (deletePostDone) {
+      setDeletePostLoading(false);
+    }
+    return;
+  }, [deletePostDone]);
+  const onDelete = useCallback((e) => {
+    setDeletePostLoading(true);
 
+    dispatch(deletePostRequestAction(post.id));
+  }, []);
+  const id = useSelector((state) => state.user.me?.id);
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const hide = () => {
+    setOpen(false);
+  };
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
+  };
   const [liked, setLiked] = useState(false);
   const [commentOpened, setCommentOpened] = useState(false);
 
@@ -62,6 +87,7 @@ const PostCard = ({ post }) => {
   }, [commentOpened]);
 
   console.log(id, post.Comments);
+
   return (
     <>
       <List.Item
@@ -86,6 +112,30 @@ const PostCard = ({ post }) => {
             key="list-vertical-comment"
           />,
         ]}
+        extra={
+          post.User.id === me?.id ? (
+            <Popover
+              placement="left"
+              content={
+                <Space>
+                  <Button type="primary" onClick={hide}>
+                    수정
+                  </Button>
+                  <Button danger onClick={onDelete} loading={deletePostLoading}>
+                    삭제
+                  </Button>
+                  <Button onClick={hide}>신고</Button>
+                  <Button onClick={hide}>닫기</Button>
+                </Space>
+              }
+              trigger="click"
+              open={open}
+              onOpenChange={handleOpenChange}
+            >
+              <EllipsisOutlined style={{ fontSize: "40px" }} />
+            </Popover>
+          ) : null
+        }
       >
         <List.Item.Meta
           avatar={<Avatar>{post.User.nickname[0]} </Avatar>}

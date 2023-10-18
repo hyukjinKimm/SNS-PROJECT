@@ -1,9 +1,10 @@
+import shortId from "shortid";
 export const initialState = {
   mainPosts: [
     {
       id: 1,
       User: {
-        id: 1,
+        id: 3,
         nickname: "hyukjin kim",
       },
       content:
@@ -22,21 +23,21 @@ export const initialState = {
       Comments: [
         {
           User: {
-            id: 1,
+            id: shortId.generate(),
             nickname: "krystal",
           },
           content: "열심히 살자..밥값을 해야지",
         },
         {
           User: {
-            id: 2,
+            id: shortId.generate(),
             nickname: "Justin",
           },
           content: "꾸준히 하면...",
         },
         {
           User: {
-            id: 3,
+            id: shortId.generate(),
             nickname: "게으름의 신",
           },
           content: "좀 쉬어..",
@@ -48,6 +49,9 @@ export const initialState = {
   addPostLoading: false,
   addPostDone: false,
   addPostError: false,
+  deletePostLoading: false,
+  deletePostDone: false,
+  deletePostError: false,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: false,
@@ -61,9 +65,16 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
+export const DELETE_POST_REQUEST = "DELETE_POST_REQUEST";
+export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
+export const DELETE_POST_FAILURE = "DELETE_POST_FAILURE";
 export const ADD_POST = "ADD_POST";
 export const addPostRequestAction = (data) => ({
   type: ADD_POST_REQUEST,
+  data,
+});
+export const deletePostRequestAction = (data) => ({
+  type: DELETE_POST_REQUEST,
   data,
 });
 export const addCommentRequest = (data) => ({
@@ -76,12 +87,8 @@ export const addCommentRequest = (data) => ({
 
 const dummyPost = (data) => {
   return {
-    id: 10,
-    content: data.content,
-    User: {
-      id: 3,
-      nickname: "테스트닉네임",
-    },
+    id: shortId.generate(),
+    ...data,
     Image: [],
     Comments: [],
   };
@@ -93,6 +100,8 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         addPostLoading: true,
+        addPostDone: false,
+        addPostError: null,
       };
     case ADD_POST_SUCCESS:
       return {
@@ -106,12 +115,38 @@ const reducer = (state = initialState, action) => {
         ...state,
         addPostError: true,
         addPostLoading: false,
+        addPostError: action.error,
+      };
+    case DELETE_POST_REQUEST:
+      return {
+        ...state,
+        deletePostLoading: true,
+        deletePostDone: false,
+        deletePostError: null,
+      };
+    case DELETE_POST_SUCCESS:
+      const newPosts = state.mainPosts.filter((post) => {
+        if (post.id != action.data) return true;
+      });
+      return {
+        ...state,
+        deletePostDone: true,
+        deletePostLoading: false,
+        mainPosts: [...newPosts],
+      };
+    case DELETE_POST_FAILURE:
+      return {
+        ...state,
+        deletePostError: true,
+        deletePostLoading: false,
+        deletePostError: action.error,
       };
     case ADD_COMMENT_REQUEST:
       return {
         ...state,
         addCommentLoading: true,
         addCommentDone: false,
+        addCommentError: null,
       };
     case ADD_COMMENT_SUCCESS:
       const post = state.mainPosts.find(
@@ -130,7 +165,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         addCommentLoading: false,
-        addCommentError: true,
+        addCommentError: action.error,
       };
     default:
       return state;

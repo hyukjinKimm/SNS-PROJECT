@@ -18,6 +18,8 @@ import {
   ADD_COMMENT_REQUEST,
   ADD_COMMENT_SUCCESS,
   ADD_COMMENT_FAILURE,
+  DELETE_POST_SUCCESS,
+  DELETE_POST_REQUEST,
 } from "../reducers/post";
 function addPostAPI(data) {
   return axios.post("/api/post", data);
@@ -34,6 +36,23 @@ function* addPost(action) {
 
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
+}
+
+function deletePostAPI(data) {
+  return axios.post("/api/post", data);
+}
+function* deletePost(action) {
+  try {
+    //const result = yield call(addPostAPI, action.data);
+    yield delay(1000);
+    yield put({ type: DELETE_POST_SUCCESS, data: action.data });
+  } catch (err) {
+    yield put({ type: DELETE_POST_FAILURE, data: err.response.data });
+  }
+}
+
+function* watchDeletePost() {
+  yield takeLatest(DELETE_POST_REQUEST, deletePost);
 }
 
 function addCommentAPI(data) {
@@ -55,5 +74,5 @@ function* watchAddComment() {
 }
 
 export default function* postSaga() {
-  yield all([fork(watchAddPost), fork(watchAddComment)]);
+  yield all([fork(watchAddPost), fork(watchAddComment), fork(watchDeletePost)]);
 }

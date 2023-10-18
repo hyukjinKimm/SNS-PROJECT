@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import {
   Button,
   Checkbox,
@@ -27,22 +27,43 @@ import { useRouter } from "next/router";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addPost } from "../reducers/post";
+import useInput from "../hooks/useInput";
 const { Option } = Select;
 
 const CommentForm = ({ postId }) => {
-  const { addCommentLoading } = useSelector((state) => state.post);
+  const formRef = useRef(null);
+  const [addCommentLoading, setAddCommentLoading] = useState(false);
+  const { addCommentDone } = useSelector((state) => state.post);
+
   const dispatch = useDispatch();
+  const setComment = useCallback(() => {
+    formRef.current?.setFieldsValue({
+      content: "",
+    });
+  }, []);
+
+  useEffect(() => {
+    if (addCommentDone) {
+      setAddCommentLoading(false);
+      setComment();
+    }
+    return;
+  }, [addCommentDone]);
+
   const onFinish = (values) => {
     console.log("Received values from form: ", values.comment);
     const data = {
       ...values,
       postId: postId,
     };
+
+    setAddCommentLoading(true);
     dispatch(addCommentRequest(data));
   };
 
   return (
     <Form
+      ref={formRef}
       name="customized_form_controls"
       layout="inline"
       onFinish={onFinish}
@@ -62,6 +83,7 @@ const CommentForm = ({ postId }) => {
           maxLength={200}
           placeholder="댓글작성"
           rows={2}
+          allowClear={true}
         />
       </Form.Item>
       <Form.Item>

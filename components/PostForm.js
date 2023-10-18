@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import {
   Button,
   Checkbox,
@@ -21,6 +21,7 @@ import { useRouter } from "next/router";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addPostRequestAction } from "../reducers/post";
+import useInput from "../hooks/useInput";
 const { Option } = Select;
 
 const normFile = (e) => {
@@ -74,17 +75,37 @@ const tailFormItemLayout = {
   },
 };
 const Post = () => {
-  const { addPostLoading } = useSelector((state) => state.post);
+  const { me } = useSelector((state) => state.user);
+  const { addPostLoading, addPostDone } = useSelector((state) => state.post);
+  const setText = useCallback(() => {
+    formRef.current?.setFieldsValue({
+      content: "",
+    });
+  }, []);
+  useEffect(() => {
+    if (addPostDone) {
+      setText("");
+    }
+  }, [addPostDone]);
+  const formRef = useRef(null);
   const router = useRouter();
   const dispatch = useDispatch();
   const onFinish = useCallback((e) => {
     console.log(e);
-    dispatch(addPostRequestAction(e));
+    const data = {
+      ...e,
+      User: {
+        id: me?.id,
+        nickname: me?.nickname,
+      },
+    };
+    dispatch(addPostRequestAction(data));
   }, []);
   const [form] = Form.useForm();
 
   return (
     <Form
+      ref={formRef}
       {...formItemLayout}
       form={form}
       name="post"
