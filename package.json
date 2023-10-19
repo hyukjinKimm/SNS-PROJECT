@@ -28,5 +28,8 @@
     "shortid": "^2.2.16",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.0.8"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.2.0"
   }
 }
