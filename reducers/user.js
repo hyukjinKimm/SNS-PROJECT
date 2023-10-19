@@ -1,7 +1,17 @@
+import { produce } from "immer";
 export const initialState = {
-  isLoggingIn: false, // 로그인 시도중
-  isSignUpIng: false, // 회원가입 시도중
-  isLoggingOut: false, // 로그아웃 시도중
+  isLogInLoading: false, // 로그인 시도중
+  isLogInError: null,
+  isLogInDone: false,
+
+  isSignUpLoading: false, // 회원가입 시도중
+  isSignUpError: null,
+  isSignUpDone: false,
+
+  isLogOutLoading: false, // 로그아웃 시도중
+  isLogOutError: null,
+  isLogOutDone: false,
+
   isLoggedIn: false,
   me: null,
 };
@@ -28,62 +38,66 @@ export const logOutRequestAction = () => {
   };
 };
 const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case LOG_IN_REQUEST:
-      return {
-        ...state,
-        isLoggingIn: true,
-      };
-    case LOG_IN_SUCCESS:
-      return {
-        ...state,
-        isLoggingIn: false,
-        isLoggedIn: true,
-        me: { ...action.data, nickname: "gugugu", id: 1 },
-      };
-    case LOG_IN_FAILURE:
-      return {
-        ...state,
-        isLoggedIn: false,
-        isLoggedIn: false,
-        me: null,
-      };
-    case LOG_OUT_REQUEST:
-      return {
-        ...state,
-        isLoggingOut: true,
-      };
-    case LOG_OUT_SUCCESS:
-      return {
-        ...state,
-        isLoggingOut: false,
-        isLoggedIn: false,
-        me: null,
-      };
-    case LOG_OUT_FAILURE:
-      return {
-        ...state,
-        isLoggedIn: false,
-      };
-    case SIGN_UP_REQUEST:
-      return {
-        ...state,
-        isSignUpIng: true,
-      };
-    case SIGN_UP_SUCCESS:
-      return {
-        ...state,
-        isSignUpIng: false,
-      };
-    case SIGN_UP_FAILURE:
-      return {
-        ...state,
-        isSignUpIng: false,
-      };
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case LOG_IN_REQUEST:
+        draft.isLogInLoading = true;
+        draft.isLogInDone = false;
+        draft.isLogInError = null;
+        break;
+      case LOG_IN_SUCCESS:
+        draft.isLogInLoading = false;
+        draft.isLogInDone = true;
+        draft.isLogInError = null;
+        draft.isLoggedIn = true;
+        draft.me = { ...action.data, nickname: "gugugu", id: 1 };
+        break;
+      case LOG_IN_FAILURE:
+        draft.isLoggedIn = false;
 
-    default:
-      return state;
-  }
+        draft.isLogInLoading = false;
+        draft.isLogInError = action.data;
+        draft.isLogInDone = true;
+        break;
+      case LOG_OUT_REQUEST:
+        draft.isLogOutLoading = true;
+        draft.isLogOutDone = false;
+        draft.isLogOutError = null;
+        break;
+
+      case LOG_OUT_SUCCESS:
+        draft.isLogOutLoading = false;
+        draft.isLogOutDone = true;
+        draft.isLogOutError = null;
+        draft.me = null;
+        draft.isLoggedIn = false;
+        break;
+
+      case LOG_OUT_FAILURE:
+        draft.isLogOutLoading = false;
+        draft.isLogOutDone = true;
+        draft.isLogOutError = action.data;
+        break;
+      case SIGN_UP_REQUEST:
+        draft.isSignUpLoading = true;
+        draft.isSignUpDone = false;
+        draft.isSignUpError = null;
+        break;
+      case SIGN_UP_SUCCESS:
+        draft.isSignUpLoading = false;
+        draft.isSignUpDone = true;
+        draft.isSignUpError = null;
+        break;
+      case SIGN_UP_FAILURE:
+        draft.isSignUpLoading = false;
+        draft.isSignUpDone = true;
+        draft.isSignUpError = action.data;
+        break;
+
+      default:
+        break;
+    }
+  });
 };
 
 export default reducer;

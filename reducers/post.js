@@ -1,4 +1,5 @@
 import shortId from "shortid";
+import { produce } from "immer";
 export const initialState = {
   mainPosts: [
     {
@@ -95,81 +96,65 @@ const dummyPost = (data) => {
 };
 
 const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case ADD_POST_REQUEST:
-      return {
-        ...state,
-        addPostLoading: true,
-        addPostDone: false,
-        addPostError: null,
-      };
-    case ADD_POST_SUCCESS:
-      return {
-        ...state,
-        addPostDone: true,
-        addPostLoading: false,
-        mainPosts: [dummyPost(action.data), ...state.mainPosts],
-      };
-    case ADD_POST_FAILURE:
-      return {
-        ...state,
-        addPostError: true,
-        addPostLoading: false,
-        addPostError: action.error,
-      };
-    case DELETE_POST_REQUEST:
-      return {
-        ...state,
-        deletePostLoading: true,
-        deletePostDone: false,
-        deletePostError: null,
-      };
-    case DELETE_POST_SUCCESS:
-      const newPosts = state.mainPosts.filter((post) => {
-        if (post.id != action.data) return true;
-      });
-      return {
-        ...state,
-        deletePostDone: true,
-        deletePostLoading: false,
-        mainPosts: [...newPosts],
-      };
-    case DELETE_POST_FAILURE:
-      return {
-        ...state,
-        deletePostError: true,
-        deletePostLoading: false,
-        deletePostError: action.error,
-      };
-    case ADD_COMMENT_REQUEST:
-      return {
-        ...state,
-        addCommentLoading: true,
-        addCommentDone: false,
-        addCommentError: null,
-      };
-    case ADD_COMMENT_SUCCESS:
-      const post = state.mainPosts.find(
-        (post) => post.id == action.data.postId
-      );
+  return produce(state, (draft) => {
+    switch (action.type) {
+      case ADD_POST_REQUEST:
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
+        break;
+      case ADD_POST_SUCCESS:
+        draft.addPostLoading = false;
+        draft.addPostDone = true;
+        draft.addPostError = null;
+        draft.mainPosts.unshift(dummyPost(action.data));
+        break;
+      case ADD_POST_FAILURE:
+        draft.addPostLoading = false;
+        draft.addPostError = action.error;
+        break;
+      case DELETE_POST_REQUEST:
+        draft.deletePostLoading = true;
+        draft.deletePostDone = false;
+        draft.deletePostError = null;
+        break;
 
-      post.Comments = [action.data, ...post.Comments];
+      case DELETE_POST_SUCCESS:
+        draft.deletePostLoading = true;
+        draft.deletePostDone = true;
+        draft.deletePostError = null;
+        draft.mainPosts = draft.mainPosts.filter((post) => {
+          if (post.id != action.data) return true;
+        });
+        break;
+      case DELETE_POST_FAILURE:
+        draft.deletePostError = true;
+        draft.deletePostLoading = false;
+        draft.deletePostError = action.error;
+        break;
+      case ADD_COMMENT_REQUEST:
+        draft.addCommentLoading = true;
+        draft.addCommentDone = false;
+        draft.addCommentError = null;
+        break;
+      case ADD_COMMENT_SUCCESS:
+        draft.addCommentDone = true;
+        draft.addCommentLoading = false;
 
-      return {
-        ...state,
-        addCommentDone: true,
-        addCommentLoading: false,
-        mainPosts: [...state.mainPosts],
-      };
-    case ADD_COMMENT_FAILURE:
-      return {
-        ...state,
-        addCommentLoading: false,
-        addCommentError: action.error,
-      };
-    default:
-      return state;
-  }
+        const post = draft.mainPosts.find(
+          (post) => post.id == action.data.postId
+        );
+        post.Comments.unshift(action.data);
+        break;
+
+      case ADD_COMMENT_FAILURE:
+        draft.addCommentLoading = false;
+        draft.addCommentError = action.error;
+        break;
+      default:
+        break;
+    }
+  });
 };
 
 export default reducer;

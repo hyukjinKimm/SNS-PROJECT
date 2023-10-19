@@ -21,7 +21,7 @@ const FormWrapper = styled(Form)`
 `;
 // 리렌더링 시 return 부분에서 바뀐 부분만 다시그린다.
 const LoginForm = () => {
-  const { isLoggingIn } = useSelector((state) => state.user);
+  const { isLogInLoading } = useSelector((state) => state.user);
   const { logInOrSignUp } = useSelector((state) => state.screen);
 
   const dispatch = useDispatch();
@@ -106,7 +106,7 @@ const LoginForm = () => {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit" loading={isLoggingIn}>
+          <Button type="primary" htmlType="submit" loading={isLogInLoading}>
             로그인
           </Button>
 

@@ -26,7 +26,7 @@ const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { collapsed } = useSelector((state) => state.screen);
-  const { isLoggedIn, isLoggingOut } = useSelector((state) => state.user);
+  const { isLoggedIn, isLogOutLoading } = useSelector((state) => state.user);
   const { selectedMenu } = useSelector((state) => state.screen);
   const onChangeMenu = useCallback((e) => {
     dispatch({ type: "CHANGE_MENU", data: e.key });
@@ -127,14 +127,14 @@ const AppLayout = ({ children }) => {
         ? {
             key: "LOGOUT",
             icon: React.createElement(
-              isLoggingOut ? LoadingOutlined : LogoutOutlined
+              isLogOutLoading ? LoadingOutlined : LogoutOutlined
             ),
             label: "로그아웃",
             onClick: LogOutRequest,
           }
         : null,
     ];
-  }, [isLoggedIn, isLoggingOut]);
+  }, [isLoggedIn, isLogOutLoading]);
 
   return (
     <Layout hasSider>

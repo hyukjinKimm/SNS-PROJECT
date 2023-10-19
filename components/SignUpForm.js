@@ -49,7 +49,7 @@ const tailFormItemLayout = {
 };
 
 const SignUp = () => {
-  const { isSignUpIng } = useSelector((state) => state.user);
+  const { isSignUpLoading } = useSelector((state) => state.user);
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -179,7 +179,7 @@ const SignUp = () => {
         </Checkbox>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit" loading={isSignUpIng}>
+        <Button type="primary" htmlType="submit" loading={isSignUpLoading}>
           가입하기
         </Button>
       </Form.Item>
