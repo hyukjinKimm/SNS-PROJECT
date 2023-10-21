@@ -20,6 +20,10 @@ export const initialState = {
   addCommentError: null,
 };
 
+export const INITIAL_POST_LOADING_REQUEST = "INITIAL_POST_LOADING_REQUEST";
+export const INITIAL_POST_LOADING_SUCCESS = "INITIAL_POST_LOADING_SUCCESS";
+export const INITIAL_POST_LOADING_FAILURE = "INITIAL_POST_LOADING_FAILURE";
+
 export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
 export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
 export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
@@ -94,6 +98,28 @@ export const loadMorePosts = (number) => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case INITIAL_POST_LOADING_REQUEST:
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
+        break;
+      case INITIAL_POST_LOADING_SUCCESS:
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
+        break;
+      case INITIAL_POST_LOADING_FAILURE:
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
+        break;
+
+      case ADD_POST_REQUEST:
+        draft.addPostLoading = true;
+        draft.addPostDone = false;
+        draft.addPostError = null;
+
+        break;
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
         draft.addPostDone = false;
@@ -133,13 +159,25 @@ const reducer = (state = initialState, action) => {
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
         draft.loadPostError = null;
+        draft.mainPosts = draft.mainPosts.concat(
+          Array(10)
+            .fill()
+            .map(() => {
+              return {
+                loading: true,
+                name: {},
+                picture: {},
+              };
+            })
+        );
+
         break;
       case LOAD_POST_SUCCESS:
         draft.loadPostLoading = false;
         draft.loadPostDone = true;
         draft.loadPostError = null;
 
-        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.mainPosts = action.data.concat(draft.mainPosts.slice(0, -10));
         draft.hasMorePost = draft.mainPosts.length < 50;
         break;
       case LOAD_POST_FAILURE:

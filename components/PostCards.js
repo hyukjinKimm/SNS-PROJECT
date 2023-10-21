@@ -5,7 +5,7 @@ import {
   RetweetOutlined,
   LikeTwoTone,
 } from "@ant-design/icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, List, Space } from "antd";
 import ImageSlider from "./ImageSlider";
 import PostCard from "./PostCard";
@@ -47,6 +47,7 @@ const App = ({ posts }) => {
       <List
         itemLayout="vertical"
         size="large"
+        loading={loadPostLoading}
         dataSource={posts}
         footer={
           <div>
