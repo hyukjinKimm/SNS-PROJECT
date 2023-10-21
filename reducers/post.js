@@ -3,64 +3,71 @@ import { produce } from "immer";
 import { faker } from "@faker-js/faker";
 faker.seed(123);
 export const initialState = {
-  mainPosts: [
-    {
-      id: 1,
-      User: {
-        id: 3,
-        nickname: "hyukjin kim",
-      },
-      content:
-        "첫번째 게시글 #헤시태그 #익스프레스a.dskasjkdjadsjajdadsjkldajlasdjkljadskljadsjkladsjkasljdkljdaskldajkldajlkdjalkdjakljdklajklasjd",
-      Images: [
-        {
-          src: "https://media.istockphoto.com/id/1408387701/photo/social-media-marketing-digitally-generated-image-engagement.jpg?s=2048x2048&w=is&k=20&c=Gfl47p22O1FSu9KzcJXNLSkZ91W-ML8NTkOG3UkCw2g=",
-        },
-        {
-          src: "https://media.istockphoto.com/id/1446806057/photo/young-happy-woman-student-using-laptop-watching-webinar-writing-at-home.jpg?s=2048x2048&w=is&k=20&c=cJi6VhUnXMYkka0ktIcrH3uh1Ls90M5FnfYYtCcqSi0=",
-        },
-        {
-          src: "https://media.istockphoto.com/id/1443305526/photo/young-smiling-man-in-headphones-typing-on-laptop-keyboard.jpg?s=2048x2048&w=is&k=20&c=YbyIE-QkVeacJODEhS5_LQzJahwiTmZTnism-xUwCLA=",
-        },
-      ],
-      Comments: [
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: "krystal",
-          },
-          content: "열심히 살자..밥값을 해야지",
-        },
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: "Justin",
-          },
-          content: "꾸준히 하면...",
-        },
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: "게으름의 신",
-          },
-          content: "좀 쉬어..",
-        },
-      ],
-    },
-  ],
+  mainPosts: [],
   imagePaths: [],
   addPostLoading: false,
   addPostDone: false,
-  addPostError: false,
+  addPostError: null,
   deletePostLoading: false,
   deletePostDone: false,
-  deletePostError: false,
+  deletePostError: null,
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
+  hasMorePost: true,
   addCommentLoading: false,
   addCommentDone: false,
-  addCommentError: false,
+  addCommentError: null,
 };
-initialState.mainPosts = initialState.mainPosts.concat(
-  Array(20)
+
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
+
+export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
+export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
+export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
+
+export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
+export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
+export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+
+export const DELETE_POST_REQUEST = "DELETE_POST_REQUEST";
+export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
+export const DELETE_POST_FAILURE = "DELETE_POST_FAILURE";
+export const ADD_POST = "ADD_POST";
+
+export const addPostRequestAction = (data) => ({
+  type: ADD_POST_REQUEST,
+  data,
+});
+export const deletePostRequestAction = (data) => ({
+  type: DELETE_POST_REQUEST,
+  data,
+});
+export const loadPostRequestAction = (data) => ({
+  type: LOAD_POST_REQUEST,
+  data,
+});
+export const addCommentRequest = (data) => ({
+  type: ADD_COMMENT_REQUEST,
+  data: {
+    User: { id: 4, nickname: "댓글테스트" },
+    ...data,
+  },
+});
+
+const dummyPost = (data) => {
+  return {
+    id: shortId.generate(),
+    ...data,
+    Image: [],
+    Comments: [],
+  };
+};
+
+export const loadMorePosts = (number) => {
+  return Array(number)
     .fill()
     .map((v, i) => {
       return {
@@ -81,44 +88,7 @@ initialState.mainPosts = initialState.mainPosts.concat(
           },
         ],
       };
-    })
-);
-
-export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
-export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
-export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
-
-export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
-export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
-export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
-
-export const DELETE_POST_REQUEST = "DELETE_POST_REQUEST";
-export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
-export const DELETE_POST_FAILURE = "DELETE_POST_FAILURE";
-export const ADD_POST = "ADD_POST";
-export const addPostRequestAction = (data) => ({
-  type: ADD_POST_REQUEST,
-  data,
-});
-export const deletePostRequestAction = (data) => ({
-  type: DELETE_POST_REQUEST,
-  data,
-});
-export const addCommentRequest = (data) => ({
-  type: ADD_COMMENT_REQUEST,
-  data: {
-    User: { id: 4, nickname: "댓글테스트" },
-    ...data,
-  },
-});
-
-const dummyPost = (data) => {
-  return {
-    id: shortId.generate(),
-    ...data,
-    Image: [],
-    Comments: [],
-  };
+    });
 };
 
 const reducer = (state = initialState, action) => {
@@ -157,6 +127,24 @@ const reducer = (state = initialState, action) => {
         draft.deletePostError = true;
         draft.deletePostLoading = false;
         draft.deletePostError = action.error;
+        break;
+
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.loadPostError = null;
+
+        draft.mainPosts = action.data.concat(draft.mainPosts);
+        draft.hasMorePost = draft.mainPosts.length < 50;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
         break;
       case ADD_COMMENT_REQUEST:
         draft.addCommentLoading = true;
