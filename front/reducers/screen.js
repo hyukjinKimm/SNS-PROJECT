@@ -5,7 +5,6 @@ export const initialState = {
 };
 
 import { produce } from "immer";
-import { SIGN_UP_SUCCESS } from "./user";
 export const COLLAPSED_EVENT = "COLLAPSED_EVENT";
 export const CHANGE_MENU = "CHANGE_MENU";
 export const CHANGE_LOGIN_TO_SIGN_UP = "CHANGE_LOGIN_TO_SIGN_UP";

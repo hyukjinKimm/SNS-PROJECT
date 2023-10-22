@@ -23,6 +23,9 @@ import {
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
   LOAD_POST_FAILURE,
+  CLEAR_POST_REQUEST,
+  CLEAR_POST_SUCCESS,
+  CLEAR_POST_FAILURE,
 } from "../reducers/post";
 function addPostAPI(data) {
   return axios.post("/api/post", data);
@@ -41,6 +44,19 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+function* clearPost(action) {
+  try {
+    //const result = yield call(addPostAPI, action.data);
+
+    yield put({ type: CLEAR_POST_SUCCESS });
+  } catch (err) {
+    yield put({ type: CLEAR_POST_FAILURE, data: err.response.data });
+  }
+}
+
+function* watchClearPost() {
+  yield takeLatest(CLEAR_POST_REQUEST, clearPost);
+}
 function deletePostAPI(data) {
   return axios.post("/api/post", data);
 }
@@ -100,5 +116,6 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchDeletePost),
     fork(watchLoadPost),
+    fork(watchClearPost),
   ]);
 }

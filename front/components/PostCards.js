@@ -2,13 +2,18 @@ import React, { useEffect } from "react";
 import { List, Space } from "antd";
 
 import PostCard from "./PostCard";
-import { loadMorePosts, loadPostRequestAction } from "../reducers/post";
+import {
+  loadMorePosts,
+  loadPostRequestAction,
+  clearPostRequestAction,
+} from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 
 const App = ({ posts }) => {
   const { hasMorePost, loadPostLoading } = useSelector((state) => state.post);
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(clearPostRequestAction());
     dispatch(loadPostRequestAction(loadMorePosts(10)));
   }, []);
   useEffect(() => {

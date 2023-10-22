@@ -4,7 +4,7 @@ import { faker } from "@faker-js/faker";
 faker.seed(123);
 export const initialState = {
   mainPosts: [],
-  imagePaths: [],
+
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -14,19 +14,22 @@ export const initialState = {
   loadPostLoading: false,
   loadPostDone: false,
   loadPostError: null,
+  clearPostLoading: false,
+  clearPostDone: false,
+  clearPostError: null,
   hasMorePost: true,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
 };
 
-export const INITIAL_POST_LOADING_REQUEST = "INITIAL_POST_LOADING_REQUEST";
-export const INITIAL_POST_LOADING_SUCCESS = "INITIAL_POST_LOADING_SUCCESS";
-export const INITIAL_POST_LOADING_FAILURE = "INITIAL_POST_LOADING_FAILURE";
-
 export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
 export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
 export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
+
+export const CLEAR_POST_REQUEST = "CLEAR_POST_REQUEST";
+export const CLEAR_POST_SUCCESS = "CLEAR_POST_SUCCESS";
+export const CLEAR_POST_FAILURE = "CLEAR_POST_FAILURE";
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
@@ -51,6 +54,10 @@ export const deletePostRequestAction = (data) => ({
 });
 export const loadPostRequestAction = (data) => ({
   type: LOAD_POST_REQUEST,
+  data,
+});
+export const clearPostRequestAction = (data) => ({
+  type: CLEAR_POST_REQUEST,
   data,
 });
 export const addCommentRequest = (data) => ({
@@ -98,28 +105,6 @@ export const loadMorePosts = (number) => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
-      case INITIAL_POST_LOADING_REQUEST:
-        draft.addPostLoading = true;
-        draft.addPostDone = false;
-        draft.addPostError = null;
-        break;
-      case INITIAL_POST_LOADING_SUCCESS:
-        draft.addPostLoading = true;
-        draft.addPostDone = false;
-        draft.addPostError = null;
-        break;
-      case INITIAL_POST_LOADING_FAILURE:
-        draft.addPostLoading = true;
-        draft.addPostDone = false;
-        draft.addPostError = null;
-        break;
-
-      case ADD_POST_REQUEST:
-        draft.addPostLoading = true;
-        draft.addPostDone = false;
-        draft.addPostError = null;
-
-        break;
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
         draft.addPostDone = false;
@@ -183,6 +168,21 @@ const reducer = (state = initialState, action) => {
       case LOAD_POST_FAILURE:
         draft.loadPostLoading = false;
         draft.loadPostError = action.error;
+        break;
+      case CLEAR_POST_REQUEST:
+        draft.clearPostLoading = true;
+        draft.clearPostDone = false;
+        draft.clearPostError = null;
+        break;
+      case CLEAR_POST_SUCCESS:
+        draft.clearPostLoading = false;
+        draft.clearPostDone = true;
+        draft.clearPostError = null;
+        draft.mainPosts = [];
+        break;
+      case CLEAR_POST_FAILURE:
+        draft.clearPostLoading = false;
+        draft.clearPostError = action.error;
         break;
       case ADD_COMMENT_REQUEST:
         draft.addCommentLoading = true;
