@@ -1,83 +1,188 @@
-import React, { useEffect, useState } from "react";
-import { Avatar, Button, List, Skeleton } from "antd";
-const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-const App = () => {
-  const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [list, setList] = useState([]);
-  useEffect(() => {
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((res) => {
-        setInitLoading(false);
-        setData(res.results);
-        setList(res.results);
-      });
-  }, []);
-  const onLoadMore = () => {
-    setLoading(true);
-    setList(
-      data.concat(
-        [...new Array(count)].map(() => ({
-          loading: true,
-          name: {},
-          picture: {},
-        }))
-      )
+import React, { useCallback, useState } from "react";
+import Head from "next/head";
+import {
+  EditOutlined,
+  EllipsisOutlined,
+  SettingOutlined,
+  TableOutlined,
+} from "@ant-design/icons";
+import { Image, Row, Col, Space } from "antd";
+import { Avatar, Card } from "antd";
+const { Meta } = Card;
+import { Layout, theme, Button } from "antd";
+import { MenuUnfoldOutlined } from "@ant-design/icons";
+import AppLayout from "../components/AppLayout";
+import PostCards from "../components/PostCards";
+import { useDispatch, useSelector } from "react-redux";
+const { Header, Content, Footer, Sider } = Layout;
+import PostCard from "../components/PostCard";
+
+const gutters = {};
+const vgutters = {};
+const colCounts = {};
+[8, 16, 24, 32, 40, 48].forEach((value, i) => {
+  gutters[i] = value;
+});
+[8, 16, 24, 32, 40, 48].forEach((value, i) => {
+  vgutters[i] = value;
+});
+[2, 3, 4, 6, 8, 12].forEach((value, i) => {
+  colCounts[i] = value;
+});
+
+function Home(props) {
+  const [gutterKey, setGutterKey] = useState(1);
+  const [vgutterKey, setVgutterKey] = useState(1);
+  const [colCountKey, setColCountKey] = useState(2);
+  const cols = [];
+
+  const colCount = colCounts[colCountKey];
+  let colCode = "";
+  for (let i = 0; i < colCount; i++) {
+    cols.push(
+      <Col key={i.toString()} span={24 / colCount}>
+        <div>Column</div>
+      </Col>
     );
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((res) => {
-        const newData = data.concat(res.results);
-        setData(newData);
-        setList(newData);
-        setLoading(false);
-        // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
-        // In real scene, you can using public method of react-virtualized:
-        // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
-        window.dispatchEvent(new Event("resize"));
-      });
-  };
-  const loadMore =
-    !initLoading && !loading ? (
-      <div
+    colCode += `  <Col span={${24 / colCount}} />\n`;
+  }
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  const { mainPosts } = useSelector((state) => state.post);
+  const division = useCallback((arr, n) => {
+    const copy = [...arr];
+    const length = arr.length;
+    const divide =
+      Math.floor(length / n) + (Math.floor(length % n) > 0 ? 1 : 0);
+    const newArray = [];
+    console.log(arr);
+    for (let i = 0; i <= divide; i++) {
+      // 배열 0부터 n개씩 잘라 새 배열에 넣기
+      newArray.push(copy.splice(0, n));
+    }
+
+    return newArray;
+  }, []);
+
+  const result = division(mainPosts, 3);
+  console.log(result);
+  const dispatch = useDispatch();
+  const slices = useCallback((posts) => {});
+  return (
+    <AppLayout>
+      <Head>
+        <title>홈페이지 | SNS-PROJECT</title>
+      </Head>
+      <Content
         style={{
-          textAlign: "center",
-          marginTop: 12,
-          height: 32,
-          lineHeight: "32px",
+          margin: "24px 16px 0",
+          overflow: "initial",
         }}
       >
-        <Button onClick={onLoadMore}>loading more</Button>
-      </div>
-    ) : null;
-  return (
-    <List
-      className="demo-loadmore-list"
-      loading={initLoading}
-      itemLayout="horizontal"
-      loadMore={loadMore}
-      dataSource={list}
-      renderItem={(item) => (
-        <List.Item
-          actions={[
-            <a key="list-loadmore-edit">edit</a>,
-            <a key="list-loadmore-more">more</a>,
-          ]}
+        <div
+          style={{
+            padding: 24,
+            paddingLeft: "10vw",
+            background: colorBgContainer,
+          }}
         >
-          <Skeleton avatar title={false} loading={item.loading} active>
-            <List.Item.Meta
-              avatar={<Avatar src={item.picture.large} />}
-              title={<a href="https://ant.design">{item.name?.last}</a>}
-              description="Ant Design, a design language for background applications, is refined by Ant UED Team"
-            />
-            <div>content</div>
-          </Skeleton>
-        </List.Item>
-      )}
-    />
+          <Row gutter={2}>
+            <Col span={5}>
+              <div
+                style={{
+                  width: "11vw",
+                  height: "11vw",
+                  borderRadius: "70%",
+                  overflow: "hidden",
+                }}
+              >
+                <Image
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                  width={"11vw"}
+                  height={"11vw"}
+                  src="error"
+                  fallback="data:image/png;base64,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"
+                />
+              </div>
+            </Col>
+
+            <Col>
+              <div style={{ width: "40vw" }}>
+                <Card
+                  size={64}
+                  actions={[
+                    <div key="edit">
+                      프로필 수정
+                      <br />
+                      <SettingOutlined key="edit_icon" />
+                    </div>,
+                    <div key="posts">
+                      게시물
+                      <br />
+                      {0}
+                    </div>,
+                    <div key="followers">
+                      팔로워
+                      <br />
+                      {12}
+                    </div>,
+                    <div key="followings">
+                      팔로잉
+                      <br />
+                      {30}
+                    </div>,
+                  ]}
+                >
+                  <Meta
+                    title="youcancallmeKimm"
+                    style={{ height: "11vh", paddingTop: 10 }}
+                  />
+                </Card>
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <div
+          style={{
+            padding: 24,
+            background: colorBgContainer,
+          }}
+        >
+          <div style={{ textAlign: "center" }}>
+            <TableOutlined style={{ fontSize: "30px", marginBottom: "20" }} />
+            <br />
+            <div style={{ fontSize: "20px" }}>게시물</div>
+          </div>
+          <div>
+            {result.map((items) => {
+              console.log("here", items);
+              return (
+                <Row gutter={[10, 10]}>
+                  {items.length > 0
+                    ? items.map((post) => {
+                        return (
+                          <Col xs={24} md={8}>
+                            <img
+                              style={{ width: "95%", height: "95%" }}
+                              src={post.Images[0].src}
+                            ></img>
+                          </Col>
+                        );
+                      })
+                    : null}
+                </Row>
+              );
+            })}
+          </div>
+        </div>
+      </Content>
+    </AppLayout>
   );
-};
-export default App;
+}
+
+export default Home;

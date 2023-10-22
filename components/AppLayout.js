@@ -12,6 +12,7 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   LoadingOutlined,
+  FileAddOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -38,7 +39,6 @@ const AppLayout = ({ children }) => {
   useEffect(() => {
     switch (selectedMenu) {
       case "HOME":
-        router.push("/");
         break;
       case "SEARCH":
         router.push("/search");
@@ -102,12 +102,12 @@ const AppLayout = ({ children }) => {
       isLoggedIn
         ? {
             key: "POST",
-            icon: React.createElement(FormOutlined),
+            icon: React.createElement(FileAddOutlined),
             label: <Link href="/post">만들기</Link>,
           }
         : {
             key: "POST",
-            icon: React.createElement(FormOutlined),
+            icon: React.createElement(FileAddOutlined),
             label: "만들기",
             disabled: true,
           },
@@ -133,6 +133,11 @@ const AppLayout = ({ children }) => {
             onClick: LogOutRequest,
           }
         : null,
+      {
+        key: "TEST",
+        icon: React.createElement(LoginOutlined),
+        label: <Link href="/test">테스트</Link>,
+      },
     ];
   }, [isLoggedIn, isLogOutLoading]);
 
