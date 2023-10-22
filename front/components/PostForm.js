@@ -1,28 +1,10 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import {
-  Button,
-  Checkbox,
-  Col,
-  ColorPicker,
-  Form,
-  InputNumber,
-  Radio,
-  Rate,
-  Row,
-  Select,
-  Slider,
-  Space,
-  Switch,
-  Upload,
-  Input,
-} from "antd";
-import { InboxOutlined, UploadOutlined, PlusOutlined } from "@ant-design/icons";
+import React, { useCallback, useEffect, useRef } from "react";
+import { Button, Form, Select, Upload, Input } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addPostRequestAction } from "../reducers/post";
-import useInput from "../hooks/useInput";
-const { Option } = Select;
 
 const normFile = (e) => {
   console.log("Upload event:", e);

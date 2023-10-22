@@ -1,34 +1,8 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import {
-  Button,
-  Checkbox,
-  Col,
-  ColorPicker,
-  Form,
-  InputNumber,
-  Radio,
-  Rate,
-  Row,
-  Select,
-  Slider,
-  Space,
-  Switch,
-  Upload,
-  Input,
-} from "antd";
-import {
-  addCommentRequest,
-  ADD_COMMENT_REQUEST,
-  ADD_COMMENT_SUCCESS,
-  ADD_COMMENT_FAILURE,
-} from "../reducers/post";
-import { InboxOutlined, UploadOutlined, PlusOutlined } from "@ant-design/icons";
-import { useRouter } from "next/router";
+import { Button, Form, Input } from "antd";
+import { addCommentRequest } from "../reducers/post";
 
 import { useDispatch, useSelector } from "react-redux";
-import { addPost } from "../reducers/post";
-import useInput from "../hooks/useInput";
-const { Option } = Select;
 
 const CommentForm = ({ postId }) => {
   const formRef = useRef(null);

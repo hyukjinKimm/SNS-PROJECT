@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
+import React, { useCallback } from "react";
+
 import { useRouter } from "next/router";
 
-import { CHANGE_MENU } from "../reducers/screen";
 import { useDispatch, useSelector } from "react-redux";
 import { logInRequestAction } from "../reducers/user";
 import { Button, Checkbox, Form, Input } from "antd";
@@ -22,10 +21,8 @@ const FormWrapper = styled(Form)`
 // 리렌더링 시 return 부분에서 바뀐 부분만 다시그린다.
 const LoginForm = () => {
   const { isLogInLoading } = useSelector((state) => state.user);
-  const { logInOrSignUp } = useSelector((state) => state.screen);
 
   const dispatch = useDispatch();
-  const router = useRouter();
 
   const onFinish = useCallback(async (e) => {
     // e.preventDefault 적용 되어있음

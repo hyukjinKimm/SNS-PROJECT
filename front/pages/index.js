@@ -1,17 +1,17 @@
 import React from "react";
 import Head from "next/head";
-import { Layout, theme, Button } from "antd";
-import { MenuUnfoldOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+
+import { Layout, theme } from "antd";
+const { Header, Content, Footer, Sider } = Layout;
 import AppLayout from "../components/AppLayout";
 import PostCards from "../components/PostCards";
-import { useDispatch, useSelector } from "react-redux";
-const { Header, Content, Footer, Sider } = Layout;
+
 function Home(props) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const { mainPosts } = useSelector((state) => state.post);
-  const dispatch = useDispatch();
 
   return (
     <AppLayout>

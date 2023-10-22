@@ -22,7 +22,7 @@ const { Header, Content, Footer, Sider } = Layout;
 
 import { logOutRequestAction } from "../reducers/user";
 import { useRouter } from "next/router";
-import { CHANGE_MENU, CLICK_LOGIN_MENU } from "../reducers/screen";
+
 const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -39,6 +39,7 @@ const AppLayout = ({ children }) => {
   useEffect(() => {
     switch (selectedMenu) {
       case "HOME":
+        router.push("/");
         break;
       case "SEARCH":
         router.push("/search");

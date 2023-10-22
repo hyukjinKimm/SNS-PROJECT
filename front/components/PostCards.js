@@ -1,23 +1,10 @@
-import {
-  LikeOutlined,
-  MessageOutlined,
-  StarOutlined,
-  RetweetOutlined,
-  LikeTwoTone,
-} from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import { Avatar, List, Space } from "antd";
-import ImageSlider from "./ImageSlider";
+import React, { useEffect } from "react";
+import { List, Space } from "antd";
+
 import PostCard from "./PostCard";
 import { loadMorePosts, loadPostRequestAction } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 
-const IconText = ({ icon, text }) => (
-  <Space>
-    {React.createElement(icon)}
-    {text}
-  </Space>
-);
 const App = ({ posts }) => {
   const { hasMorePost, loadPostLoading } = useSelector((state) => state.post);
   const dispatch = useDispatch();

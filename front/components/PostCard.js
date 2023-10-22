@@ -1,7 +1,5 @@
 import {
-  LikeOutlined,
   MessageOutlined,
-  StarOutlined,
   RetweetOutlined,
   HeartOutlined,
   HeartTwoTone,
@@ -14,7 +12,6 @@ import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
 import { deletePostRequestAction } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 
 const RetweetIcon = ({ icon, text }) => (
   <Space>
