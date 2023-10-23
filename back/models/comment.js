@@ -22,7 +22,10 @@ class Comment extends Sequelize.Model {
     );
   }
 
-  static associate(db) {}
+  static associate(db) {
+    db.Comment.belongsTo(db.User); // UserId 컬럼 생성
+    db.Comment.belongsTo(db.Post);
+  }
 }
 
 module.exports = Comment;

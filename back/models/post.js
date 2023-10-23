@@ -22,7 +22,13 @@ class Post extends Sequelize.Model {
     );
   }
 
-  static associate(db) {}
+  static associate(db) {
+    db.Post.belongsTo(db.User);
+    db.Post.hasMany(db.Comment);
+    db.Post.hasMany(db.Image);
+    db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });
+    db.Post.belongsTo(db.Post, { as: "Retweet" });
+  }
 }
 
 module.exports = Post;

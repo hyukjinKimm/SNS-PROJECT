@@ -22,7 +22,9 @@ class Image extends Sequelize.Model {
     );
   }
 
-  static associate(db) {}
+  static associate(db) {
+    db.Image.belongsTo(db.Post);
+  }
 }
 
 module.exports = Image;
