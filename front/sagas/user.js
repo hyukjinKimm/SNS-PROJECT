@@ -9,6 +9,7 @@ import {
   //takeLeading,
   //throttle,
   delay,
+  call,
 } from "redux-saga/effects";
 import axios from "axios";
 import {
@@ -52,16 +53,19 @@ function* logOut() {
     yield put({ type: LOG_OUT_FAILURE, error: err.response.data });
   }
 }
-function signUpAPI() {
-  return axios.post("/api/signUp");
+function signUpAPI(data) {
+  return axios.post("http://localhost:3065/user", data);
 }
-function* signUp() {
+function* signUp(action) {
   try {
-    //const result = yield call(signUpAPI);
-    yield delay(1000);
+    console.log("here", action.data);
+    const result = yield call(signUpAPI, action.data);
+    console.log(result);
+
     // throw new Error(' ')
     yield put({ type: SIGN_UP_SUCCESS });
   } catch (err) {
+    console.log(err);
     yield put({ type: SIGN_UP_FAILURE, error: err.response.data });
   }
 }

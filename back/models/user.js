@@ -13,6 +13,10 @@ class User extends Sequelize.Model {
           type: Sequelize.STRING(15),
           allowNull: false,
         },
+        gender: {
+          type: Sequelize.STRING(10),
+          allowNull: false,
+        },
         description: {
           type: Sequelize.STRING(50),
           allowNull: true,

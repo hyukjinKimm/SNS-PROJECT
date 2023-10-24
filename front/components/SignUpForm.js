@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, Checkbox, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
 
@@ -49,7 +49,7 @@ const tailFormItemLayout = {
 };
 
 const SignUp = () => {
-  const { isSignUpLoading } = useSelector((state) => state.user);
+  const { isSignUpLoading, isSignUpError } = useSelector((state) => state.user);
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -61,11 +61,16 @@ const SignUp = () => {
       data: { email, password, nickname, gender },
     });
   }, []);
+  useEffect(() => {
+    if (isSignUpError) {
+      alert(isSignUpError);
+    }
+  }, [isSignUpError]);
   return (
     <Form
       {...formItemLayout}
       form={form}
-      name="register"
+      name="signup"
       onFinish={onFinish}
       initialValues={{
         residence: ["zhejiang", "hangzhou", "xihu"],
@@ -109,7 +114,7 @@ const SignUp = () => {
         <Input.Password />
       </Form.Item>
       <Form.Item
-        name="confirm"
+        name="passwordcheck"
         label="비밀번호 확인"
         dependencies={["password"]}
         hasFeedback
@@ -162,7 +167,7 @@ const SignUp = () => {
         </Select>
       </Form.Item>
       <Form.Item
-        name="약관동의"
+        name="confirm"
         valuePropName="checked"
         rules={[
           {
