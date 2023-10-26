@@ -26,35 +26,33 @@ import {
 import { CHANGE_MENU, CLICK_LOGIN_MENU } from "../reducers/screen";
 
 function logInAPI(data) {
-  return axios.post("/api/login", data);
+  return axios.post("/auth/login", data);
 }
 // const l = logIn({typse: LOG_IN_REQUEST, data: { id: "asdaddad"}});
 // l.next()
 // l.next()   ---> break point 처럼 순차적으로 테스트가 가능.
 function* logIn(action) {
   try {
-    //const result = yield call(logInAPI, action.data);
-    yield delay(1000);
-    yield put({ type: LOG_IN_SUCCESS, data: action.data }); // put 은 dispatch 와 동일.
+    const result = yield call(logInAPI, action.data);
+    yield put({ type: LOG_IN_SUCCESS, data: result.data }); // put 은 dispatch 와 동일.
   } catch (err) {
     yield put({ type: LOG_IN_FAILURE, error: err.response.data }); //  실패 결과는 err.response.data 에 들어있음
   }
 }
 
 function logOutAPI() {
-  return axios.post("/api/logout");
+  return axios.get("/auth/logout");
 }
 function* logOut() {
   try {
-    //const result = yield call(logOutAPI);
-    yield delay(1000);
+    const result = yield call(logOutAPI);
     yield put({ type: LOG_OUT_SUCCESS });
   } catch (err) {
     yield put({ type: LOG_OUT_FAILURE, error: err.response.data });
   }
 }
 function signUpAPI(data) {
-  return axios.post("http://localhost:3065/user", data);
+  return axios.post("/user", data);
 }
 function* signUp(action) {
   try {

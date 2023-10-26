@@ -1,4 +1,5 @@
 import { all, fork } from "redux-saga/effects";
+import axios from "axios";
 // fork: 비동기 함수 호출 ( 논 블록킹)
 // call: 동기 함수 호출 ( 블록킹)
 // yield 는 await 과 비슷한 역할
@@ -10,6 +11,7 @@ import postSaga from "./post";
 import userSage from "./user";
 import screenSage from "./screen";
 
+axios.defaults.baseURL = "http://localhost:3065";
 export default function* rootSaga() {
   yield all([fork(postSaga), fork(userSage), fork(screenSage)]); // all 은 배열 안의 함수들을 동시에 실행함.
 }

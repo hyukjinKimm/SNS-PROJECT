@@ -27,7 +27,9 @@ const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { collapsed } = useSelector((state) => state.screen);
-  const { isLoggedIn, isLogOutLoading } = useSelector((state) => state.user);
+  const { isLoggedIn, isLogOutLoading, isLogOutError } = useSelector(
+    (state) => state.user
+  );
   const { selectedMenu } = useSelector((state) => state.screen);
   const onChangeMenu = useCallback((e) => {
     dispatch({ type: "CHANGE_MENU", data: e.key });
@@ -35,6 +37,11 @@ const AppLayout = ({ children }) => {
   const LogOutRequest = useCallback(() => {
     dispatch(logOutRequestAction());
   }, []);
+  useEffect(() => {
+    if (isLogOutError) {
+      alert(isLogOutError);
+    }
+  }, [isLogOutError]);
 
   useEffect(() => {
     switch (selectedMenu) {

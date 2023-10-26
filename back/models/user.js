@@ -20,6 +20,7 @@ class User extends Sequelize.Model {
         description: {
           type: Sequelize.STRING(50),
           allowNull: true,
+          defaultValue: "default description",
         },
         password: {
           type: Sequelize.STRING(100),

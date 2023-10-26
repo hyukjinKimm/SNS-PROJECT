@@ -76,7 +76,7 @@ function loadPostAPI(data) {
 function* loadPost(action) {
   try {
     //const result = yield call(addPostAPI, action.data);
-    console.log("test", action.data);
+
     yield delay(1000);
     yield put({ type: LOAD_POST_SUCCESS, data: action.data });
   } catch (err) {

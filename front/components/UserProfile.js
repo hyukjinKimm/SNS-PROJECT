@@ -13,14 +13,14 @@ const UserProfile = () => {
     token: { colorBgContainer },
   } = theme.useToken();
   const { mainPosts } = useSelector((state) => state.post);
-
+  const { me } = useSelector((state) => state.user);
   const division = useCallback((arr, n) => {
     const copy = [...arr];
     const length = arr.length;
     const divide =
       Math.floor(length / n) + (Math.floor(length % n) > 0 ? 1 : 0);
     const newArray = [];
-    console.log(arr);
+
     for (let i = 0; i <= divide; i++) {
       // 배열 0부터 n개씩 잘라 새 배열에 넣기
       newArray.push(copy.splice(0, n));
@@ -82,23 +82,23 @@ const UserProfile = () => {
                     <div key="posts">
                       게시물
                       <br />
-                      {0}
+                      {me?.Posts.length}
                     </div>,
                     <div key="followers">
                       팔로워
                       <br />
-                      {12}
+                      {me?.Followers.length}
                     </div>,
                     <div key="followings">
                       팔로잉
                       <br />
-                      {30}
+                      {me?.Followings.length}
                     </div>,
                   ]}
                 >
                   <Meta
-                    title="youcancallmeKimm"
-                    description="김혁진"
+                    title={me?.nickname}
+                    description={me?.description}
                     style={{ height: "11vh", paddingTop: 10 }}
                   />
                 </Card>
@@ -119,7 +119,6 @@ const UserProfile = () => {
           </div>
           <div>
             {result.map((items) => {
-              console.log("here", items);
               return (
                 <Row gutter={[10, 10]}>
                   {items.length > 0

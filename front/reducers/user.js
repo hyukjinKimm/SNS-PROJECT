@@ -50,7 +50,7 @@ const reducer = (state = initialState, action) => {
         draft.isLogInDone = true;
         draft.isLogInError = null;
         draft.isLoggedIn = true;
-        draft.me = { ...action.data, nickname: "gugugu", id: 1 };
+        draft.me = action.data;
         break;
       case LOG_IN_FAILURE:
         draft.isLoggedIn = false;

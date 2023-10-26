@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 
 import { useRouter } from "next/router";
 
@@ -20,7 +20,12 @@ const FormWrapper = styled(Form)`
 `;
 // 리렌더링 시 return 부분에서 바뀐 부분만 다시그린다.
 const LoginForm = () => {
-  const { isLogInLoading } = useSelector((state) => state.user);
+  const { isLogInLoading, isLogInError } = useSelector((state) => state.user);
+  useEffect(() => {
+    if (isLogInError) {
+      alert(isLogInError);
+    }
+  }, [isLogInError]);
 
   const dispatch = useDispatch();
 
