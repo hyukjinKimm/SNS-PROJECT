@@ -158,8 +158,7 @@ const reducer = (state = initialState, action) => {
         draft.loadPostLoading = false;
         draft.loadPostDone = true;
         draft.loadPostError = null;
-
-        draft.mainPosts = action.data.concat(draft.mainPosts.slice(0, -10));
+        draft.mainPosts = draft.mainPosts.slice(0, -10).concat(action.data);
 
         draft.hasMorePost = action.data.length == 10;
         break;
@@ -168,20 +167,10 @@ const reducer = (state = initialState, action) => {
         draft.loadPostError = action.error;
         break;
       case CLEAR_POST_REQUEST:
-        draft.clearPostLoading = true;
-        draft.clearPostDone = false;
-        draft.clearPostError = null;
-        break;
-      case CLEAR_POST_SUCCESS:
-        draft.clearPostLoading = false;
-        draft.clearPostDone = true;
-        draft.clearPostError = null;
         draft.mainPosts = [];
+
         break;
-      case CLEAR_POST_FAILURE:
-        draft.clearPostLoading = false;
-        draft.clearPostError = action.error;
-        break;
+
       case ADD_COMMENT_REQUEST:
         draft.addCommentLoading = true;
         draft.addCommentDone = false;

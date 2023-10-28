@@ -31,7 +31,7 @@ const PostCards = ({ posts }) => {
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMorePost && !loadPostLoading) {
-          const lastId = posts[0]?.id;
+          const lastId = posts[posts.length - 1]?.id;
           dispatch(loadPostRequestAction(lastId));
         }
       }
