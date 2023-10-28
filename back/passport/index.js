@@ -13,7 +13,7 @@ module.exports = () => {
     // req.user 에 정보를 넣어줌
     try {
       console.log("deserialize");
-      const user = User.findOne({
+      const user = await User.findOne({
         where: { id },
       });
       done(null, user);

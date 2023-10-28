@@ -1,7 +1,7 @@
 const express = require("express");
 const bcypt = require("bcrypt");
 const User = require("../models/user");
-const { isNotLoggedIn } = require("../middlewares");
+const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 const router = express.Router();
 
 router.post("/", isNotLoggedIn, async (req, res, next) => {

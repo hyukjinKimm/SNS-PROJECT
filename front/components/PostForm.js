@@ -73,7 +73,6 @@ const Post = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const onFinish = useCallback((e) => {
-    console.log(e);
     const data = {
       ...e,
       User: {
@@ -81,6 +80,7 @@ const Post = () => {
         nickname: me?.nickname,
       },
     };
+    console.log(data);
     dispatch(addPostRequestAction(data));
   }, []);
   const [form] = Form.useForm();
