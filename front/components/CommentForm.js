@@ -7,7 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 const CommentForm = ({ postId }) => {
   const formRef = useRef(null);
   const [addCommentLoading, setAddCommentLoading] = useState(false);
-  const { addCommentDone } = useSelector((state) => state.post);
+  const { addCommentDone, addCommentError } = useSelector(
+    (state) => state.post
+  );
 
   const dispatch = useDispatch();
   const setComment = useCallback(() => {
@@ -23,6 +25,11 @@ const CommentForm = ({ postId }) => {
     }
     return;
   }, [addCommentDone]);
+  useEffect(() => {
+    if (addCommentError) {
+      alert(addCommentError);
+    }
+  }, [addCommentError]);
 
   const onFinish = (values) => {
     console.log("Received values from form: ", values.comment);

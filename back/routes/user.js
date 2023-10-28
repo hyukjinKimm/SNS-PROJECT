@@ -1,9 +1,41 @@
 const express = require("express");
 const bcypt = require("bcrypt");
 const User = require("../models/user");
+const Post = require("../models/post");
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 const router = express.Router();
-
+router.get("/", async (req, res, next) => {
+  try {
+    if (req.user) {
+      const user = await User.findOne({
+        where: { id: req.user.id },
+        include: [
+          {
+            model: Post,
+          },
+          {
+            model: User,
+            as: "Followings",
+          },
+          {
+            model: User,
+            as: "Followers",
+          },
+        ],
+        attributes: { exclude: ["password"] },
+      });
+      if (!user) {
+        return res.status(403).send("존재하지 않는 유저 입니다.");
+      }
+      res.status(200).json(user);
+    } else {
+      res.status(200).json(null);
+    }
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+});
 router.post("/", isNotLoggedIn, async (req, res, next) => {
   try {
     const { email, password, nickname, gender } = req.body;

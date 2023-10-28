@@ -58,7 +58,9 @@ const tailFormItemLayout = {
 };
 const Post = () => {
   const { me } = useSelector((state) => state.user);
-  const { addPostLoading, addPostDone } = useSelector((state) => state.post);
+  const { addPostLoading, addPostDone, addPostError } = useSelector(
+    (state) => state.post
+  );
   const setText = useCallback(() => {
     formRef.current?.setFieldsValue({
       content: "",
@@ -83,6 +85,11 @@ const Post = () => {
     console.log(data);
     dispatch(addPostRequestAction(data));
   }, []);
+  useEffect(() => {
+    if (addPostError) {
+      alert(addPostError);
+    }
+  }, [addPostError]);
   const [form] = Form.useForm();
 
   return (

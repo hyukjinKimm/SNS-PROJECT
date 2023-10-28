@@ -62,10 +62,7 @@ export const clearPostRequestAction = (data) => ({
 });
 export const addCommentRequest = (data) => ({
   type: ADD_COMMENT_REQUEST,
-  data: {
-    User: { id: 4, nickname: "댓글테스트" },
-    ...data,
-  },
+  data,
 });
 
 const dummyPost = (data) => {

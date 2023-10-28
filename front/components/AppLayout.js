@@ -20,7 +20,7 @@ import { Layout, Menu, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 
-import { logOutRequestAction } from "../reducers/user";
+import { logOutRequestAction, userRequestAction } from "../reducers/user";
 import { useRouter } from "next/router";
 
 const AppLayout = ({ children }) => {
@@ -42,7 +42,9 @@ const AppLayout = ({ children }) => {
       alert(isLogOutError);
     }
   }, [isLogOutError]);
-
+  useEffect(() => {
+    dispatch(userRequestAction());
+  }, []);
   useEffect(() => {
     switch (selectedMenu) {
       case "HOME":

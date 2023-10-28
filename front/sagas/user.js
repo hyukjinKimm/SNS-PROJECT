@@ -13,6 +13,9 @@ import {
 } from "redux-saga/effects";
 import axios from "axios";
 import {
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
+  GET_USER_FAILURE,
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
   LOG_IN_FAILURE,
@@ -24,6 +27,19 @@ import {
   SIGN_UP_FAILURE,
 } from "../reducers/user";
 import { CHANGE_MENU, CLICK_LOGIN_MENU } from "../reducers/screen";
+
+function getUserAPI() {
+  return axios.get("/user");
+}
+
+function* getUser() {
+  try {
+    const result = yield call(getUserAPI);
+    yield put({ type: GET_USER_SUCCESS, data: result.data });
+  } catch (err) {
+    yield put({ type: GET_USER_FAILURE, error: err.response.data });
+  }
+}
 
 function logInAPI(data) {
   return axios.post("/auth/login", data);
@@ -67,7 +83,9 @@ function* signUp(action) {
     yield put({ type: SIGN_UP_FAILURE, error: err.response.data });
   }
 }
-
+function* watchGetUser() {
+  yield takeLatest(GET_USER_REQUEST, getUser);
+}
 function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp);
 }
@@ -83,5 +101,10 @@ function* watchLogOut() {
 }
 
 export default function* userSage() {
-  yield all([fork(watchLogin), fork(watchLogOut), fork(watchSignUp)]);
+  yield all([
+    fork(watchLogin),
+    fork(watchLogOut),
+    fork(watchSignUp),
+    fork(watchGetUser),
+  ]);
 }
