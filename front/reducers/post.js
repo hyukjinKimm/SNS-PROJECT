@@ -52,9 +52,9 @@ export const deletePostRequestAction = (data) => ({
   type: DELETE_POST_REQUEST,
   data,
 });
-export const loadPostRequestAction = (data) => ({
+export const loadPostRequestAction = (lastId) => ({
   type: LOAD_POST_REQUEST,
-  data,
+  lastId: lastId,
 });
 export const clearPostRequestAction = (data) => ({
   type: CLEAR_POST_REQUEST,
@@ -160,7 +160,8 @@ const reducer = (state = initialState, action) => {
         draft.loadPostError = null;
 
         draft.mainPosts = action.data.concat(draft.mainPosts.slice(0, -10));
-        draft.hasMorePost = draft.mainPosts.length < 50;
+
+        draft.hasMorePost = action.data.length == 10;
         break;
       case LOAD_POST_FAILURE:
         draft.loadPostLoading = false;
@@ -191,7 +192,7 @@ const reducer = (state = initialState, action) => {
         draft.addCommentLoading = false;
 
         const post = draft.mainPosts.find(
-          (post) => post.id == action.data.postId
+          (post) => post.id == action.data.PostId
         );
         post.Comments.unshift(action.data);
         break;

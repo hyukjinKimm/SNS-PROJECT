@@ -9,13 +9,20 @@ import {
 } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 
-const App = ({ posts }) => {
-  const { hasMorePost, loadPostLoading } = useSelector((state) => state.post);
+const PostCards = ({ posts }) => {
+  const { hasMorePost, loadPostLoading, loadPostError } = useSelector(
+    (state) => state.post
+  );
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(clearPostRequestAction());
-    dispatch(loadPostRequestAction(loadMorePosts(10)));
+    dispatch(loadPostRequestAction());
   }, []);
+  useEffect(() => {
+    if (loadPostError) {
+      alert(loadPostError);
+    }
+  }, [loadPostError]);
   useEffect(() => {
     function onScroll() {
       if (
@@ -24,7 +31,8 @@ const App = ({ posts }) => {
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMorePost && !loadPostLoading) {
-          dispatch(loadPostRequestAction(loadMorePosts(10)));
+          const lastId = posts[0]?.id;
+          dispatch(loadPostRequestAction(lastId));
         }
       }
     }
@@ -46,9 +54,9 @@ const App = ({ posts }) => {
             <b>ant design</b> footer part
           </div>
         }
-        renderItem={(post) => <PostCard post={post} />}
+        renderItem={(post) => <PostCard post={post} key={post.id} />}
       />
     </>
   );
 };
-export default App;
+export default PostCards;

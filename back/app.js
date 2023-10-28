@@ -3,6 +3,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const indexRouter = require("./routes");
 const postRouter = require("./routes/post");
+const postsRouter = require("./routes/posts");
 const userRouter = require("./routes/user");
 const authRouter = require("./routes/auth");
 const morgan = require("morgan");
@@ -28,7 +29,7 @@ passportConfig();
 app.use(
   cors({
     origin: "http://localhost:3060",
-    credentials: true
+    credentials: true,
   })
 );
 app.use(express.json()); // 데이터를 req.body 안에 넣어줌
@@ -46,6 +47,7 @@ app.use(passport.session());
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
+app.use("/posts", postsRouter);
 app.use("/post", postRouter);
 
 //app.use((err, req, res ,next) => {

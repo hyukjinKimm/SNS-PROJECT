@@ -21,6 +21,7 @@ import {
   ADD_COMMENT_FAILURE,
   DELETE_POST_SUCCESS,
   DELETE_POST_REQUEST,
+  DELETE_POST_FAILURE,
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
   LOAD_POST_FAILURE,
@@ -71,15 +72,13 @@ function* deletePost(action) {
   }
 }
 
-function loadPostAPI(data) {
-  return axios.post("/api/post", data);
+function loadPostAPI(lastId) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 function* loadPost(action) {
   try {
-    //const result = yield call(addPostAPI, action.data);
-
-    yield delay(1000);
-    yield put({ type: LOAD_POST_SUCCESS, data: action.data });
+    const result = yield call(loadPostAPI, action.lastId);
+    yield put({ type: LOAD_POST_SUCCESS, data: result.data });
   } catch (err) {
     yield put({ type: LOAD_POST_FAILURE, data: err.response.data });
   }

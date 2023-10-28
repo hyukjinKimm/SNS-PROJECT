@@ -16,10 +16,12 @@ router.get("/", async (req, res, next) => {
           {
             model: User,
             as: "Followings",
+            attributes: ["id"],
           },
           {
             model: User,
             as: "Followers",
+            attributes: ["id"],
           },
         ],
         attributes: { exclude: ["password"] },
