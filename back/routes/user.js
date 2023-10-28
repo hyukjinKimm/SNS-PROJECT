@@ -1,9 +1,10 @@
 const express = require("express");
 const bcypt = require("bcrypt");
 const User = require("../models/user");
+const { isNotLoggedIn } = require("../middlewares");
 const router = express.Router();
 
-router.post("/", async (req, res, next) => {
+router.post("/", isNotLoggedIn, async (req, res, next) => {
   try {
     const { email, password, nickname, gender } = req.body;
     const exUser = await User.findOne({

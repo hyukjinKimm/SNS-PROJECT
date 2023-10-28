@@ -12,6 +12,7 @@ import userSage from "./user";
 import screenSage from "./screen";
 
 axios.defaults.baseURL = "http://localhost:3065";
+axios.defaults.withCredentials = true;
 export default function* rootSaga() {
   yield all([fork(postSaga), fork(userSage), fork(screenSage)]); // all 은 배열 안의 함수들을 동시에 실행함.
 }

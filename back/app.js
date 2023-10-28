@@ -27,7 +27,8 @@ sequelize
 passportConfig();
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:3060",
+    credentials: true
   })
 );
 app.use(express.json()); // 데이터를 req.body 안에 넣어줌
@@ -47,6 +48,9 @@ app.use("/user", userRouter);
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
 
+//app.use((err, req, res ,next) => {
+
+//})
 app.listen(3065, () => {
   console.log("서버 실행중");
 });
