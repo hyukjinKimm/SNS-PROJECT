@@ -4,54 +4,24 @@ import {
   HeartOutlined,
   HeartTwoTone,
   EllipsisOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 const count = 3;
 import React, { useCallback, useState, useEffect } from "react";
 import { Avatar, List, Space, Button, Skeleton, Popover } from "antd";
 import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
-import { deletePostRequestAction } from "../reducers/post";
+import {
+  deletePostRequestAction,
+  likePostRequestAction,
+} from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
-
-const RetweetIcon = ({ icon, text }) => (
-  <Space>
-    {React.createElement(icon)}
-    {text}
-  </Space>
-);
-const LikeIcon = ({ text, liked, onToggleLike }) => (
-  <Space>
-    {liked
-      ? React.createElement(HeartTwoTone, {
-          twoToneColor: "#eb2f96",
-          onClick: () => {
-            onToggleLike();
-          },
-        })
-      : React.createElement(HeartOutlined, {
-          onClick: () => {
-            onToggleLike();
-          },
-        })}
-    {text}
-  </Space>
-);
-const CommentIcon = ({ icon, text, commentOpened, onToggleComment }) => (
-  <Space>
-    {React.createElement(icon, {
-      onClick: () => {
-        onToggleComment();
-      },
-    })}
-    {text}
-  </Space>
-);
 
 const PostCard = ({ post }) => {
   console.log(post);
   const { me } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
-  const { deletePostDone, deletePostError } = useSelector(
+  const { deletePostDone, deletePostError, likePostDone } = useSelector(
     (state) => state.post
   );
   useEffect(() => {
@@ -71,15 +41,66 @@ const PostCard = ({ post }) => {
   const hide = () => {
     setOpen(false);
   };
-  const handleOpenChange = (newOpen) => {
+  const handleOpenChange = useCallback((newOpen) => {
     setOpen(newOpen);
-  };
+  }, []);
   const [liked, setLiked] = useState(false);
+  const [likePostLoading, setLikePostLoading] = useState(false);
   const [commentOpened, setCommentOpened] = useState(false);
 
   const onToggleLike = useCallback(() => {
     setLiked(!liked);
+    setLikePostLoading(true);
+    dispatch(likePostRequestAction({ postId: post.id }));
   }, [liked]);
+
+  useEffect(() => {
+    if (likePostDone) {
+      setLikePostLoading(false);
+    }
+  }, [likePostDone]);
+  const RetweetIcon = useCallback(({ icon, text }) => (
+    <Space>
+      {React.createElement(icon)}
+      {text}
+    </Space>
+  ));
+  const LikeIcon = useCallback(
+    ({ text, liked, onToggleLike }) =>
+      likePostLoading ? (
+        <LoadingOutlined />
+      ) : (
+        <Space>
+          {liked
+            ? React.createElement(HeartTwoTone, {
+                twoToneColor: "#eb2f96",
+                onClick: () => {
+                  onToggleLike();
+                },
+              })
+            : React.createElement(HeartOutlined, {
+                onClick: () => {
+                  onToggleLike();
+                },
+              })}
+          {text}
+        </Space>
+      ),
+    [liked, likePostLoading]
+  );
+  const CommentIcon = useCallback(
+    ({ icon, text, commentOpened, onToggleComment }) => (
+      <Space>
+        {React.createElement(icon, {
+          onClick: () => {
+            onToggleComment();
+          },
+        })}
+        {text}
+      </Space>
+    ),
+    [commentOpened]
+  );
   const onToggleComment = useCallback(() => {
     setCommentOpened(!commentOpened);
   }, [commentOpened]);

@@ -30,6 +30,38 @@ router.post("/", isLoggedIn, async (req, res, next) => {
     next(e); // status(500)
   }
 });
+
+router.post("/:postId/like", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
+      const post = await Post.findOne({ where: { id: req.params.postId } });
+      if (post) {
+        // like 한 post 가 없음
+        console.log(req.params.postId);
+        await user.addLikings(parseInt(req.params.postId, 10));
+        const postWithLikers = await Post.findOne({
+          where: { id: req.params.postId },
+          include: {
+            model: User,
+            attributes: ["id"],
+            as: "Likers",
+          },
+        });
+
+        res.status(200).json(postWithLikers);
+      } else {
+        res.status(404).send("존재하지 않는 포스트 입니다.");
+      }
+    } else {
+      res.status(404).send("존재하지 않는 유저 입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({

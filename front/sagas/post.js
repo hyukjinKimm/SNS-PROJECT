@@ -16,6 +16,9 @@ import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
   ADD_POST_FAILURE,
+  LIKE_POST_REQUEST,
+  LIKE_POST_SUCCESS,
+  LIKE_POST_FAILURE,
   ADD_COMMENT_REQUEST,
   ADD_COMMENT_SUCCESS,
   ADD_COMMENT_FAILURE,
@@ -44,6 +47,23 @@ function* addPost(action) {
 
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
+}
+
+function likePostAPI(data) {
+  return axios.post(`/post/${data.postId}/like`);
+}
+function* likePost(action) {
+  try {
+    const result = yield call(likePostAPI, action.data);
+
+    yield put({ type: LIKE_POST_SUCCESS, data: result.data }); // 좋아요 갯수를 넘겨줌.
+  } catch (err) {
+    yield put({ type: LIKE_POST_FAILURE, data: err.response.data });
+  }
+}
+
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost);
 }
 
 function* clearPost(action) {
@@ -112,6 +132,7 @@ function* watchAddComment() {
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
+    fork(watchLikePost),
     fork(watchAddComment),
     fork(watchDeletePost),
     fork(watchLoadPost),

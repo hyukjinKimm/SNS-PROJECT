@@ -8,6 +8,9 @@ export const initialState = {
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
+  likePostLoading: false,
+  likePostDone: false,
+  likePostError: null,
   deletePostLoading: false,
   deletePostDone: false,
   deletePostError: null,
@@ -35,6 +38,10 @@ export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 
+export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
+export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
+export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
+
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
@@ -46,6 +53,10 @@ export const ADD_POST = "ADD_POST";
 
 export const addPostRequestAction = (data) => ({
   type: ADD_POST_REQUEST,
+  data,
+});
+export const likePostRequestAction = (data) => ({
+  type: LIKE_POST_REQUEST,
   data,
 });
 export const deletePostRequestAction = (data) => ({
@@ -117,6 +128,28 @@ const reducer = (state = initialState, action) => {
         draft.addPostLoading = false;
         draft.addPostError = action.error;
         break;
+      case LIKE_POST_REQUEST:
+        draft.likePostLoading = true;
+        draft.likePostDone = false;
+        draft.likePostError = null;
+        break;
+      case LIKE_POST_SUCCESS:
+        draft.likePostLoading = false;
+        draft.likePostDone = true;
+        draft.likePostError = null;
+        draft.mainPosts.find((post) => post.id == action.data.id).Likers =
+          action.data.Likers.map((p) => {
+            return {
+              id: p.id,
+            };
+          });
+
+        break;
+      case LIKE_POST_FAILURE:
+        draft.likePostLoading = false;
+        draft.likePostError = action.error;
+        break;
+
       case DELETE_POST_REQUEST:
         draft.deletePostLoading = true;
         draft.deletePostDone = false;
