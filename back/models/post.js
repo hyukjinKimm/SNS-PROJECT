@@ -27,7 +27,16 @@ class Post extends Sequelize.Model {
     db.Post.hasMany(db.Comment);
     db.Post.hasMany(db.Image);
     db.Post.belongsToMany(db.User, { through: "Like", as: "Likers" });
-    db.Post.belongsTo(db.Post, { as: "Retweet" });
+    db.Post.belongsToMany(db.Post, {
+      through: "Retweet",
+      as: "Retweeted",
+      foreignKey: "RetweetId",
+    });
+    db.Post.belongsToMany(db.Post, {
+      through: "Retweet",
+      as: "Retweetings",
+      foreignKey: "RetweetedId",
+    });
   }
 }
 

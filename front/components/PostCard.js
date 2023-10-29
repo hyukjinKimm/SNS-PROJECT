@@ -48,6 +48,7 @@ const CommentIcon = ({ icon, text, commentOpened, onToggleComment }) => (
 );
 
 const PostCard = ({ post }) => {
+  console.log(post);
   const { me } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
   const { deletePostDone, deletePostError } = useSelector(
@@ -100,18 +101,18 @@ const PostCard = ({ post }) => {
             actions={[
               <RetweetIcon
                 icon={RetweetOutlined}
-                text="156"
+                text={post.Retweetings.length}
                 key="list-vertical-retweet-o"
               />,
               <LikeIcon
-                text="156"
+                text={post.Likers.length}
                 liked={liked}
                 onToggleLike={onToggleLike}
                 key="list-vertical-like-o"
               />,
               <CommentIcon
                 icon={MessageOutlined}
-                text="2"
+                text={post.Comments.length}
                 commentOpened={commentOpened}
                 onToggleComment={onToggleComment}
                 key="list-vertical-comment"

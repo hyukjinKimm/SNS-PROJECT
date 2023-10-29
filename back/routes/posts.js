@@ -13,6 +13,7 @@ router.get("/", async (req, res, next) => {
     if (parseInt(req.query.lastId, 10)) {
       where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
     }
+
     const posts = await Post.findAll({
       where,
       limit: 10,
@@ -33,14 +34,23 @@ router.get("/", async (req, res, next) => {
         {
           model: Image,
         },
-      ],
+        {
+          model: User,
 
+          as: "Likers",
+          attributes: ["id"],
+        },
+        {
+          model: Post,
+          as: "Retweetings",
+          attributes: ["id"],
+        },
+      ],
       order: [
         ["createdAt", "DESC"],
         [Comment, "createdAt", "DESC"],
       ],
     });
-    console.log(posts);
 
     res.status(200).json(posts);
   } catch (e) {
