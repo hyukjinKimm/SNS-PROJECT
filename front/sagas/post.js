@@ -44,7 +44,7 @@ function* addPost(action) {
 
     yield put({ type: ADD_POST_SUCCESS, data: result.data });
   } catch (err) {
-    yield put({ type: ADD_POST_FAILURE, data: err.response.data });
+    yield put({ type: ADD_POST_FAILURE, error: err.response.data });
   }
 }
 
@@ -61,7 +61,7 @@ function* likePost(action) {
 
     yield put({ type: LIKE_POST_SUCCESS, data: result.data }); // 좋아요 갯수를 넘겨줌.
   } catch (err) {
-    yield put({ type: LIKE_POST_FAILURE, data: err.response.data });
+    yield put({ type: LIKE_POST_FAILURE, error: err.response.data });
   }
 }
 
@@ -77,7 +77,7 @@ function* unLikePost(action) {
 
     yield put({ type: UNLIKE_POST_SUCCESS, data: result.data });
   } catch (err) {
-    yield put({ type: UNLIKE_POST_FAILURE, data: err.response.data });
+    yield put({ type: UNLIKE_POST_FAILURE, error: err.response.data });
   }
 }
 
@@ -91,7 +91,7 @@ function* clearPost(action) {
 
     yield put({ type: CLEAR_POST_SUCCESS });
   } catch (err) {
-    yield put({ type: CLEAR_POST_FAILURE, data: err.response.data });
+    yield put({ type: CLEAR_POST_FAILURE, error: err.response.data });
   }
 }
 
@@ -107,7 +107,7 @@ function* deletePost(action) {
     yield delay(1000);
     yield put({ type: DELETE_POST_SUCCESS, data: action.data });
   } catch (err) {
-    yield put({ type: DELETE_POST_FAILURE, data: err.response.data });
+    yield put({ type: DELETE_POST_FAILURE, error: err.response.data });
   }
 }
 
@@ -119,7 +119,7 @@ function* loadPost(action) {
     const result = yield call(loadPostAPI, action.lastId);
     yield put({ type: LOAD_POST_SUCCESS, data: result.data });
   } catch (err) {
-    yield put({ type: LOAD_POST_FAILURE, data: err.response.data });
+    yield put({ type: LOAD_POST_FAILURE, error: err.response.data });
   }
 }
 
@@ -140,7 +140,7 @@ function* addComment(action) {
     yield delay(1000);
     yield put({ type: ADD_COMMENT_SUCCESS, data: result.data });
   } catch (err) {
-    yield put({ type: ADD_COMMENT_FAILURE, data: err.response.data });
+    yield put({ type: ADD_COMMENT_FAILURE, error: err.response.data });
   }
 }
 

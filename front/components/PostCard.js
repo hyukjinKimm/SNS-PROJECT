@@ -19,8 +19,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 const PostCard = ({ post }) => {
-  console.log(post);
-  const { me } = useSelector((state) => state.user);
+  const { me, isLoggedIn } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
   const {
     deletePostDone,
@@ -54,6 +53,8 @@ const PostCard = ({ post }) => {
   const [commentOpened, setCommentOpened] = useState(false);
 
   const onToggleLike = useCallback(() => {
+    if (!me) {
+    }
     setLiked(!liked);
     setLikePostLoading(true);
     if (!liked) {
@@ -68,11 +69,6 @@ const PostCard = ({ post }) => {
       setLikePostLoading(false);
     }
   }, [likePostDone]);
-  useEffect(() => {
-    if (likePostError || unLikePostError) {
-      setLiked(!liked);
-    }
-  }, [likePostError, unLikePostError, liked]);
 
   useEffect(() => {
     if (
@@ -103,19 +99,23 @@ const PostCard = ({ post }) => {
           {liked
             ? React.createElement(HeartTwoTone, {
                 twoToneColor: "#eb2f96",
-                onClick: () => {
-                  onToggleLike();
-                },
+                onClick: isLoggedIn
+                  ? () => {
+                      onToggleLike();
+                    }
+                  : null,
               })
             : React.createElement(HeartOutlined, {
-                onClick: () => {
-                  onToggleLike();
-                },
+                onClick: isLoggedIn
+                  ? () => {
+                      onToggleLike();
+                    }
+                  : null,
               })}
           {text}
         </Space>
       ),
-    [liked, likePostLoading]
+    [liked, likePostLoading, isLoggedIn]
   );
   const CommentIcon = useCallback(
     ({ icon, text, commentOpened, onToggleComment }) => (
