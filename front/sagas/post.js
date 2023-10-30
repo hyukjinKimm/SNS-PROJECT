@@ -19,6 +19,9 @@ import {
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
   LIKE_POST_FAILURE,
+  UNLIKE_POST_REQUEST,
+  UNLIKE_POST_SUCCESS,
+  UNLIKE_POST_FAILURE,
   ADD_COMMENT_REQUEST,
   ADD_COMMENT_SUCCESS,
   ADD_COMMENT_FAILURE,
@@ -64,6 +67,22 @@ function* likePost(action) {
 
 function* watchLikePost() {
   yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+function unLikePostAPI(data) {
+  return axios.post(`/post/${data.postId}/unlike`);
+}
+function* unLikePost(action) {
+  try {
+    const result = yield call(unLikePostAPI, action.data);
+
+    yield put({ type: UNLIKE_POST_SUCCESS, data: result.data });
+  } catch (err) {
+    yield put({ type: UNLIKE_POST_FAILURE, data: err.response.data });
+  }
+}
+
+function* watchUnLikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unLikePost);
 }
 
 function* clearPost(action) {
@@ -133,6 +152,7 @@ export default function* postSaga() {
   yield all([
     fork(watchAddPost),
     fork(watchLikePost),
+    fork(watchUnLikePost),
     fork(watchAddComment),
     fork(watchDeletePost),
     fork(watchLoadPost),

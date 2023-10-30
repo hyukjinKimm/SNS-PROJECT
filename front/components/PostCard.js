@@ -14,6 +14,7 @@ import CommentForm from "./CommentForm";
 import {
   deletePostRequestAction,
   likePostRequestAction,
+  unLikePostRequestAction,
 } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,9 +22,13 @@ const PostCard = ({ post }) => {
   console.log(post);
   const { me } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
-  const { deletePostDone, deletePostError, likePostDone } = useSelector(
-    (state) => state.post
-  );
+  const {
+    deletePostDone,
+    deletePostError,
+    likePostDone,
+    likePostError,
+    unLikePostError,
+  } = useSelector((state) => state.post);
   useEffect(() => {
     if (deletePostDone) {
       setDeletePostLoading(false);
@@ -51,7 +56,11 @@ const PostCard = ({ post }) => {
   const onToggleLike = useCallback(() => {
     setLiked(!liked);
     setLikePostLoading(true);
-    dispatch(likePostRequestAction({ postId: post.id }));
+    if (!liked) {
+      dispatch(likePostRequestAction({ postId: post.id }));
+    } else {
+      dispatch(unLikePostRequestAction({ postId: post.id }));
+    }
   }, [liked]);
 
   useEffect(() => {
@@ -59,6 +68,26 @@ const PostCard = ({ post }) => {
       setLikePostLoading(false);
     }
   }, [likePostDone]);
+  useEffect(() => {
+    if (likePostError || unLikePostError) {
+      setLiked(!liked);
+    }
+  }, [likePostError, unLikePostError, liked]);
+
+  useEffect(() => {
+    if (
+      post?.Likers?.find((e) => {
+        if (e.id == me?.id) {
+          return true;
+        }
+      })
+    ) {
+      setLiked(true);
+    } else {
+      setLiked(false);
+    }
+  }, [me]);
+
   const RetweetIcon = useCallback(({ icon, text }) => (
     <Space>
       {React.createElement(icon)}

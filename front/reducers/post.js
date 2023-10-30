@@ -42,6 +42,10 @@ export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
 export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
 export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
 
+export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
+export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
+export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
+
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
@@ -57,6 +61,10 @@ export const addPostRequestAction = (data) => ({
 });
 export const likePostRequestAction = (data) => ({
   type: LIKE_POST_REQUEST,
+  data,
+});
+export const unLikePostRequestAction = (data) => ({
+  type: UNLIKE_POST_REQUEST,
   data,
 });
 export const deletePostRequestAction = (data) => ({
@@ -146,6 +154,27 @@ const reducer = (state = initialState, action) => {
 
         break;
       case LIKE_POST_FAILURE:
+        draft.likePostLoading = false;
+        draft.likePostError = action.error;
+        break;
+      case UNLIKE_POST_REQUEST:
+        draft.likePostLoading = true;
+        draft.likePostDone = false;
+        draft.likePostError = null;
+        break;
+      case UNLIKE_POST_SUCCESS:
+        draft.likePostLoading = false;
+        draft.likePostDone = true;
+        draft.likePostError = null;
+        draft.mainPosts.find((post) => post.id == action.data.id).Likers =
+          action.data.Likers.map((p) => {
+            return {
+              id: p.id,
+            };
+          });
+
+        break;
+      case UNLIKE_POST_FAILURE:
         draft.likePostLoading = false;
         draft.likePostError = action.error;
         break;
