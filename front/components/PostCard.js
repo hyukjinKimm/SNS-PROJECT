@@ -36,7 +36,6 @@ const PostCard = ({ post }) => {
   }, [deletePostDone]);
   const onDelete = useCallback((e) => {
     setDeletePostLoading(true);
-
     dispatch(deletePostRequestAction(post.id));
   }, []);
   const id = useSelector((state) => state.user.me?.id);

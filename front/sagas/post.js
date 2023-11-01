@@ -85,27 +85,13 @@ function* watchUnLikePost() {
   yield takeLatest(UNLIKE_POST_REQUEST, unLikePost);
 }
 
-function* clearPost(action) {
-  try {
-    //const result = yield call(addPostAPI, action.data);
-
-    yield put({ type: CLEAR_POST_SUCCESS });
-  } catch (err) {
-    yield put({ type: CLEAR_POST_FAILURE, error: err.response.data });
-  }
-}
-
-function* watchClearPost() {
-  yield takeLatest(CLEAR_POST_REQUEST, clearPost);
-}
-function deletePostAPI(data) {
-  return axios.post("/api/post", data);
+function deletePostAPI(postId) {
+  return axios.delete(`post/${postId}`);
 }
 function* deletePost(action) {
   try {
-    //const result = yield call(addPostAPI, action.data);
-    yield delay(1000);
-    yield put({ type: DELETE_POST_SUCCESS, data: action.data });
+    const result = yield call(deletePostAPI, action.data);
+    yield put({ type: DELETE_POST_SUCCESS, data: result.data });
   } catch (err) {
     yield put({ type: DELETE_POST_FAILURE, error: err.response.data });
   }
@@ -156,6 +142,5 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchDeletePost),
     fork(watchLoadPost),
-    fork(watchClearPost),
   ]);
 }

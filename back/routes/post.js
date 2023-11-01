@@ -124,5 +124,35 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
     next(e); // status(500)
   }
 });
+router.delete("/:postId", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
 
+    if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
+      const post = await Post.findOne({ where: { id: req.params.postId } });
+      if (post) {
+        // like 한 post 가 없음
+        if (req.user.id == post.UserId) {
+          await post.destroy({
+            where: { id: parseInt(req.params.postId, 10) },
+          });
+          res.status(201).json({
+            id: req.params.postId,
+            message: "delete success",
+          });
+        } else {
+          res.send("not your post");
+        }
+      } else {
+        res.status(404).send("no post");
+      }
+    } else {
+      res.status(404).send("존재하지 않는 유저입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 module.exports = router;

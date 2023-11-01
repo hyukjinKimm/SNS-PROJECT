@@ -30,6 +30,7 @@ const AppLayout = ({ children }) => {
   const { isLoggedIn, isLogOutLoading, isLogOutError } = useSelector(
     (state) => state.user
   );
+  const { deletePostError } = useSelector((state) => state.post);
   const { selectedMenu } = useSelector((state) => state.screen);
   const onChangeMenu = useCallback((e) => {
     dispatch({ type: "CHANGE_MENU", data: e.key });
@@ -45,6 +46,12 @@ const AppLayout = ({ children }) => {
   useEffect(() => {
     dispatch(userRequestAction());
   }, []);
+  useEffect(() => {
+    if (deletePostError) {
+      alert(deletePostError);
+    }
+  }, [deletePostError]);
+
   useEffect(() => {
     switch (selectedMenu) {
       case "HOME":
