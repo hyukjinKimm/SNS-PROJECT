@@ -53,7 +53,7 @@ const CommentForm = ({ postId }) => {
       <Form.Item
         name="content"
         label="댓글"
-        style={{ width: "60vw" }}
+        style={{ width: "60%" }}
         wrapperCol={{
           offset: 0,
           span: 40,

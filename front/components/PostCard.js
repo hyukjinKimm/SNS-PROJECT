@@ -15,6 +15,7 @@ import {
   deletePostRequestAction,
   likePostRequestAction,
   unLikePostRequestAction,
+  deleteCommentRequest,
 } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -36,6 +37,7 @@ const PostCard = ({ post }) => {
   }, [deletePostDone]);
   const onDelete = useCallback((e) => {
     setDeletePostLoading(true);
+
     dispatch(deletePostRequestAction(post.id));
   }, []);
   const id = useSelector((state) => state.user.me?.id);
@@ -132,7 +134,15 @@ const PostCard = ({ post }) => {
   const onToggleComment = useCallback(() => {
     setCommentOpened(!commentOpened);
   }, [commentOpened]);
+  const onDeleteComment = useCallback((e, comment) => {
+    const data = { postId: post.id, commentId: comment.id };
+    console.log(data);
+    dispatch(deleteCommentRequest(data));
+  }, []);
 
+  useEffect(() => {
+    setCommentOpened(false);
+  }, [me, isLoggedIn]);
   return (
     <>
       {post.loading ? (
@@ -213,16 +223,29 @@ const PostCard = ({ post }) => {
                   className="demo-loadmore-list"
                   itemLayout="vertical"
                   dataSource={post.Comments}
-                  renderItem={(item) => (
+                  renderItem={(comment) => (
                     <List.Item
                       actions={[
                         <div>좋아요 {22}개</div>,
                         <div>답글달기</div>,
-                        item.User.id === id && (
-                          <a key="list-loadmore-edit"> 수정하기</a>
+                        comment.User.id === id && (
+                          <div style={{ color: "blue", fontSize: "10px" }}>
+                            수정하기
+                          </div>
                         ),
-                        item.User.id === id && (
-                          <a key="list-loadmore-delete"> 삭제하기</a>
+                        comment.User.id === id && (
+                          <div
+                            onClick={(e) => {
+                              onDeleteComment(e, comment);
+                            }}
+                            style={{
+                              color: "red",
+                              fontSize: "10px",
+                              cursor: "pointer",
+                            }}
+                          >
+                            삭제하기
+                          </div>
                         ),
                       ].filter((element) => {
                         if (element) return true;
@@ -230,14 +253,14 @@ const PostCard = ({ post }) => {
                       extra={[<HeartOutlined />]}
                     >
                       <List.Item.Meta
-                        avatar={<Avatar> {item.User.nickname[0]}</Avatar>}
-                        description={item.content}
+                        avatar={<Avatar> {comment.User.nickname[0]}</Avatar>}
+                        description={comment.content}
                       />
                     </List.Item>
                   )}
                 />
               )}
-              <CommentForm postId={post.id} />
+              {me && isLoggedIn ? <CommentForm postId={post.id} /> : null}
             </List.Item>
           ) : null}
         </>

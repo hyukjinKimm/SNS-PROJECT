@@ -157,3 +157,74 @@ exports.deletePost = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.deletePost = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+
+    if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
+      const post = await Post.findOne({ where: { id: req.params.postId } });
+      if (post) {
+        // like 한 post 가 없음
+        if (req.user.id == post.UserId) {
+          await Post.destroy({
+            where: { id: parseInt(req.params.postId, 10) },
+          });
+          res.status(201).json({
+            id: req.params.postId,
+            message: "delete success",
+          });
+        } else {
+          res.send("not your post");
+        }
+      } else {
+        res.status(404).send("no post");
+      }
+    } else {
+      res.status(404).send("존재하지 않는 유저입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+exports.deleteComment = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+
+    if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
+      const post = await Post.findOne({ where: { id: req.params.postId } });
+      if (post) {
+        const comment = await Comment.findOne({
+          where: { id: req.params.commentId },
+        });
+        if (comment) {
+          if (req.user.id == comment.UserId) {
+            await Comment.destroy({
+              where: { id: parseInt(req.params.commentId, 10) },
+            });
+            res.status(201).json({
+              postId: req.params.postId,
+              commentId: req.params.commentId,
+              message: "comment delete success",
+            });
+          } else {
+            res.send("not your comment");
+          }
+        } else {
+          res.send("no comment");
+        }
+      } else {
+        res.status(404).send("no post");
+      }
+    } else {
+      res.status(404).send("존재하지 않는 유저입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};

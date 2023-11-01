@@ -30,7 +30,9 @@ const AppLayout = ({ children }) => {
   const { isLoggedIn, isLogOutLoading, isLogOutError } = useSelector(
     (state) => state.user
   );
-  const { deletePostError } = useSelector((state) => state.post);
+  const { deletePostError, deleteCommentError } = useSelector(
+    (state) => state.post
+  );
   const { selectedMenu } = useSelector((state) => state.screen);
   const onChangeMenu = useCallback((e) => {
     dispatch({ type: "CHANGE_MENU", data: e.key });
@@ -47,10 +49,10 @@ const AppLayout = ({ children }) => {
     dispatch(userRequestAction());
   }, []);
   useEffect(() => {
-    if (deletePostError) {
-      alert(deletePostError);
+    if (deletePostError || deleteCommentError) {
+      alert(deletePostError || deleteCommentError);
     }
-  }, [deletePostError]);
+  }, [deletePostError, deleteCommentError]);
 
   useEffect(() => {
     switch (selectedMenu) {
@@ -77,7 +79,7 @@ const AppLayout = ({ children }) => {
       {
         key: "HOME",
         icon: React.createElement(HomeOutlined),
-        label: "홈",
+        label: <a href="http://localhost:3060">홈</a>,
       },
       {
         key: "SEARCH",

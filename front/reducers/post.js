@@ -24,6 +24,9 @@ export const initialState = {
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
+  deleteCommentLoading: false,
+  deleteCommentDone: false,
+  deleteCommentError: null,
 };
 
 export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
@@ -49,6 +52,10 @@ export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+
+export const DELETE_COMMENT_REQUEST = "DELETE_COMMENT_REQUEST";
+export const DELETE_COMMENT_SUCCESS = "DELETE_COMMENT_SUCCESS";
+export const DELETE_COMMENT_FAILURE = "DELETE_COMMENT_FAILURE";
 
 export const DELETE_POST_REQUEST = "DELETE_POST_REQUEST";
 export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
@@ -81,6 +88,10 @@ export const clearPostRequestAction = (data) => ({
 });
 export const addCommentRequest = (data) => ({
   type: ADD_COMMENT_REQUEST,
+  data,
+});
+export const deleteCommentRequest = (data) => ({
+  type: DELETE_COMMENT_REQUEST,
   data,
 });
 
@@ -130,7 +141,7 @@ const reducer = (state = initialState, action) => {
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.addPostError = null;
-        //draft.mainPosts.unshift(action.data);
+
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
@@ -242,15 +253,38 @@ const reducer = (state = initialState, action) => {
         draft.addCommentDone = true;
         draft.addCommentLoading = false;
 
-        const post = draft.mainPosts.find(
-          (post) => post.id == action.data.PostId
-        );
-        post.Comments.unshift(action.data);
+        draft.mainPosts
+          .find((post) => post.id == action.data.PostId)
+          .Comments.unshift(action.data);
         break;
 
       case ADD_COMMENT_FAILURE:
         draft.addCommentLoading = false;
         draft.addCommentError = action.error;
+        break;
+
+      case DELETE_COMMENT_REQUEST:
+        draft.deleteCommentLoading = true;
+        draft.deleteCommentDone = false;
+        draft.deleteCommentError = null;
+        break;
+      case DELETE_COMMENT_SUCCESS:
+        draft.deleteCommentDone = true;
+        draft.deleteCommentLoading = false;
+
+        let comments = draft.mainPosts.find(
+          (post) => post.id == action.data.postId
+        ).Comments;
+        let index = comments.findIndex(
+          (comment) => comment.id == action.data.commentId
+        );
+        comments.splice(index, 1);
+
+        break;
+
+      case DELETE_COMMENT_FAILURE:
+        draft.deleteCommentLoading = false;
+        draft.deleteCommentError = action.error;
         break;
       default:
         break;
