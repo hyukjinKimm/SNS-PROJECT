@@ -28,6 +28,11 @@ exports.getPosts = async (req, res, next) => {
               model: User,
               attributes: { exclude: ["password"] },
             },
+            {
+              model: User,
+              as: "CommentLikers",
+              attributes: { exclude: ["password"] },
+            },
           ],
         },
         {
@@ -36,7 +41,7 @@ exports.getPosts = async (req, res, next) => {
         {
           model: User,
 
-          as: "Likers",
+          as: "PostLikers",
           attributes: ["id"],
         },
         {

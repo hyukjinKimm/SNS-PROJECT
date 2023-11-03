@@ -27,8 +27,8 @@ class Post extends Sequelize.Model {
     db.Post.hasMany(db.Comment);
     db.Post.hasMany(db.Image);
     db.Post.belongsToMany(db.User, {
-      through: "Like",
-      as: "Likers",
+      through: "UserLikePost",
+      as: "PostLikers",
       onDelete: "CASCADE",
     });
     db.Post.belongsToMany(db.Post, {

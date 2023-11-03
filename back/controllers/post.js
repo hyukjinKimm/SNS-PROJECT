@@ -19,6 +19,16 @@ exports.uploadPost = async (req, res, next) => {
           model: User,
           attributes: { exclude: ["password"] },
         },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              as: "CommentLikers",
+              attributes: { exclude: ["password"] },
+            },
+          ],
+        },
       ],
     });
     console.log(post);
@@ -39,13 +49,13 @@ exports.likePost = async (req, res, next) => {
       if (post) {
         // like 한 post 가 없음
 
-        await user.addLikings(parseInt(req.params.postId, 10));
+        await user.addPostLikings(parseInt(req.params.postId, 10));
         const postWithLikers = await Post.findOne({
           where: { id: req.params.postId },
           include: {
             model: User,
             attributes: ["id"],
-            as: "Likers",
+            as: "PostLikers",
           },
         });
 
@@ -71,7 +81,7 @@ exports.unlikePost = async (req, res, next) => {
       const post = await Post.findOne({ where: { id: req.params.postId } });
       if (post) {
         // like 한 post 가 없음
-        await sequelize.models.Like.destroy({
+        await sequelize.models.UserLikePost.destroy({
           where: { UserId: req.user.id, PostId: req.params.postId },
         });
         const postWithLikers = await Post.findOne({
@@ -79,7 +89,7 @@ exports.unlikePost = async (req, res, next) => {
           include: {
             model: User,
             attributes: ["id"],
-            as: "Likers",
+            as: "PostLikers",
           },
         });
         res.status(200).json(postWithLikers);
@@ -114,6 +124,11 @@ exports.commentPost = async (req, res, next) => {
       include: [
         {
           model: User,
+          attributes: { exclude: ["password"] },
+        },
+        {
+          model: User,
+          as: "CommentLikers",
           attributes: { exclude: ["password"] },
         },
       ],

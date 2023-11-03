@@ -84,39 +84,85 @@ exports.deleteComment = async (req, res, next) => {
 
 exports.likeComment = async (req, res, next) => {
   try {
+    console.log("here", req.body);
     const user = await User.findOne({ where: { id: req.user.id } });
-
     if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
       const post = await Post.findOne({ where: { id: req.body.postId } });
       if (post) {
+        // like 한 post 가 없음
         const comment = await Comment.findOne({
-          where: { id: req.nody.commentId },
+          where: { id: req.body.commentId },
         });
         if (comment) {
           await sequelize.models.UserLikeComment.create({
             UserId: req.user.id,
             CommentId: req.body.commentId,
           });
-
           const CommentLikers = await sequelize.models.UserLikeComment.findAll({
-            where: { commentId: req.body.commentId },
-            attribute: ["UserId"],
+            where: { CommentId: req.body.commentId },
+            attributes: ["UserId"],
           });
-          res.status(201).json({
-            postId: req.body.postId,
+          const result = {
             commentId: req.body.commentId,
-            userId: req.user.id,
+            postId: req.body.postId,
             CommentLikers,
             message: "like comment success",
-          });
+          };
+
+          res.status(200).json(result);
         } else {
-          res.send("no comment");
+          res.status(404).send("존재하지 않는 댓글 입니다.");
         }
       } else {
-        res.status(404).send("no post");
+        res.status(404).send("존재하지 않는 포스트 입니다.");
       }
     } else {
-      res.status(404).send("존재하지 않는 유저입니다.");
+      res.status(404).send("존재하지 않는 유저 입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+exports.unLikeComment = async (req, res, next) => {
+  try {
+    console.log("here", req.body);
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
+      const post = await Post.findOne({ where: { id: req.body.postId } });
+      if (post) {
+        // like 한 post 가 없음
+        const comment = await Comment.findOne({
+          where: { id: req.body.commentId },
+        });
+        if (comment) {
+          await sequelize.models.UserLikeComment.destroy({
+            where: { UserId: req.user.id, CommentId: req.body.commentId },
+          });
+
+          const CommentLikers = await sequelize.models.UserLikeComment.findAll({
+            where: { CommentId: req.body.commentId },
+            attributes: ["UserId"],
+          });
+          const result = {
+            commentId: req.body.commentId,
+            postId: req.body.postId,
+            CommentLikers,
+            message: "unlike comment success",
+          };
+
+          res.status(200).json(result);
+        } else {
+          res.status(404).send("존재하지 않는 댓글 입니다.");
+        }
+      } else {
+        res.status(404).send("존재하지 않는 포스트 입니다.");
+      }
+    } else {
+      res.status(404).send("존재하지 않는 유저 입니다.");
     }
   } catch (error) {
     console.error(error);

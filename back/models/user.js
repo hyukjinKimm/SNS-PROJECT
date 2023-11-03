@@ -53,8 +53,8 @@ class User extends Sequelize.Model {
     db.User.hasMany(db.Post);
     db.User.hasMany(db.Comment);
     db.User.belongsToMany(db.Post, {
-      through: "Like",
-      as: "Likings",
+      through: "UserLikePost",
+      as: "PostLikings",
       onDelete: "CASCADE",
     });
     db.User.belongsToMany(db.User, {
@@ -66,6 +66,11 @@ class User extends Sequelize.Model {
       through: "Follow",
       as: "Followings",
       foreignKey: "FollowerId",
+    });
+    db.User.belongsToMany(db.Comment, {
+      through: "UserLikeComment",
+      as: "CommentLikings",
+      onDelete: "CASCADE",
     });
   }
 }
