@@ -11,6 +11,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { Avatar, List, Space, Button, Skeleton, Popover } from "antd";
 import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
+import Comment from "./Comment";
 import {
   deletePostRequestAction,
   likePostRequestAction,
@@ -224,39 +225,7 @@ const PostCard = ({ post }) => {
                   itemLayout="vertical"
                   dataSource={post.Comments}
                   renderItem={(comment) => (
-                    <List.Item
-                      actions={[
-                        <div>좋아요 {22}개</div>,
-                        <div>답글달기</div>,
-                        comment.User.id === id && (
-                          <div style={{ color: "blue", fontSize: "10px" }}>
-                            수정하기
-                          </div>
-                        ),
-                        comment.User.id === id && (
-                          <div
-                            onClick={(e) => {
-                              onDeleteComment(e, comment);
-                            }}
-                            style={{
-                              color: "red",
-                              fontSize: "10px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            삭제하기
-                          </div>
-                        ),
-                      ].filter((element) => {
-                        if (element) return true;
-                      })}
-                      extra={[<HeartOutlined />]}
-                    >
-                      <List.Item.Meta
-                        avatar={<Avatar> {comment.User.nickname[0]}</Avatar>}
-                        description={comment.content}
-                      />
-                    </List.Item>
+                    <Comment comment={comment} postId={post.id} />
                   )}
                 />
               )}
