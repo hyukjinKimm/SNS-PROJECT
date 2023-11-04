@@ -76,21 +76,6 @@ const Post = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const onFinish = useCallback((e) => {
-    if (e.images) {
-      const imageData = new FormData();
-      e.images.forEach((image) => {
-        console.log(image);
-        imageData.append("image", image.originFileObj);
-      });
-      axios
-        .post("/", imageData, {
-          header: {
-            ContentType: "multipart/form-data",
-          },
-        })
-        .then((res) => console.log(res));
-    }
-
     const data = {
       content: e.content,
       User: {
@@ -98,8 +83,43 @@ const Post = () => {
         nickname: me?.nickname,
       },
     };
-    console.log(data);
-    dispatch(addPostRequestAction(data));
+
+    if (e.images) {
+      const imageData = new FormData();
+      e.images.forEach((image) => {
+        console.log(image);
+        imageData.append("images", image.originFileObj);
+      });
+      if (e.images.length == 1) {
+        axios
+          .post("/post/image", imageData, {
+            header: {
+              ContentType: "multipart/form-data",
+            },
+          })
+          .then((res) => {
+            dispatch(addPostRequestAction(data));
+          })
+          .catch((err) => {
+            console.log("이미지 전송 오류");
+          });
+      } else {
+        axios
+          .post("/post/images", imageData, {
+            header: {
+              ContentType: "multipart/form-data",
+            },
+          })
+          .then((res) => {
+            dispatch(addPostRequestAction(data));
+          })
+          .catch((err) => {
+            console.log("이미지 전송 오류");
+          });
+      }
+    } else {
+      alert("이미지 첨부는 필수 입니다.");
+    }
   }, []);
   useEffect(() => {
     if (addPostError) {

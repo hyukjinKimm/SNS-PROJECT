@@ -3,7 +3,28 @@ const { sequelize } = require("../models");
 const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const Image = require("../models/image");
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
+
+exports.uploadImage = async (req, res, next) => {
+  try {
+    console.log(req.file);
+    res.send("ok");
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
+
+exports.uploadImages = async (req, res, next) => {
+  try {
+    console.log(req.files);
+    res.send("ok");
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
 
 exports.uploadPost = async (req, res, next) => {
   try {
