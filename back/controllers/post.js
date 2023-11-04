@@ -7,6 +7,7 @@ const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
 exports.uploadPost = async (req, res, next) => {
   try {
+    console.log("hi", req.images);
     await Post.create({
       content: req.body.content,
       UserId: req.user.id,

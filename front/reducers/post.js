@@ -24,6 +24,9 @@ export const initialState = {
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
+  likeCommentLoading: false,
+  likeCommentDone: false,
+  likeCommentError: null,
   deleteCommentLoading: false,
   deleteCommentDone: false,
   deleteCommentError: null,
@@ -52,6 +55,14 @@ export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
+
+export const LIKE_COMMENT_REQUEST = "LIKE_COMMENT_REQUEST";
+export const LIKE_COMMENT_SUCCESS = "LIKE_COMMENT_SUCCESS";
+export const LIKE_COMMENT_FAILURE = "LIKE_COMMENT_FAILURE";
+
+export const UNLIKE_COMMENT_REQUEST = "UNLIKE_COMMENT_REQUEST";
+export const UNLIKE_COMMENT_SUCCESS = "UNLIKE_COMMENT_SUCCESS";
+export const UNLIKE_COMMENT_FAILURE = "UNLIKE_COMMENT_FAILURE";
 
 export const DELETE_COMMENT_REQUEST = "DELETE_COMMENT_REQUEST";
 export const DELETE_COMMENT_SUCCESS = "DELETE_COMMENT_SUCCESS";
@@ -88,6 +99,14 @@ export const clearPostRequestAction = (data) => ({
 });
 export const addCommentRequest = (data) => ({
   type: ADD_COMMENT_REQUEST,
+  data,
+});
+export const likeCommentRequest = (data) => ({
+  type: LIKE_COMMENT_REQUEST,
+  data,
+});
+export const unLikeCommentRequest = (data) => ({
+  type: UNLIKE_COMMENT_REQUEST,
   data,
 });
 export const deleteCommentRequest = (data) => ({
@@ -156,8 +175,8 @@ const reducer = (state = initialState, action) => {
         draft.likePostLoading = false;
         draft.likePostDone = true;
         draft.likePostError = null;
-        draft.mainPosts.find((post) => post.id == action.data.id).Likers =
-          action.data.Likers.map((p) => {
+        draft.mainPosts.find((post) => post.id == action.data.id).PostLikers =
+          action.data.PostLikers.map((p) => {
             return {
               id: p.id,
             };
@@ -177,8 +196,8 @@ const reducer = (state = initialState, action) => {
         draft.likePostLoading = false;
         draft.likePostDone = true;
         draft.likePostError = null;
-        draft.mainPosts.find((post) => post.id == action.data.id).Likers =
-          action.data.Likers.map((p) => {
+        draft.mainPosts.find((post) => post.id == action.data.id).PostLikers =
+          action.data.PostLikers.map((p) => {
             return {
               id: p.id,
             };
@@ -286,6 +305,55 @@ const reducer = (state = initialState, action) => {
         draft.deleteCommentLoading = false;
         draft.deleteCommentError = action.error;
         break;
+      case LIKE_COMMENT_REQUEST:
+        draft.likeCommentLoading = true;
+        draft.likeCommentDone = false;
+        draft.likeCommentError = null;
+        break;
+      case LIKE_COMMENT_SUCCESS:
+        draft.likeCommentDone = true;
+        draft.likeCommentLoading = false;
+        draft.likeCommentError = null;
+        draft.mainPosts
+          .find((post) => post.id == action.data.postId)
+          .Comments.find(
+            (comment) => comment.id == action.data.commentId
+          ).CommentLikers = action.data.CommentLikers.map((p) => {
+          return {
+            id: p.UserId,
+          };
+        });
+        break;
+
+      case LIKE_COMMENT_FAILURE:
+        draft.likeCommentLoading = false;
+        draft.likeCommentError = action.error;
+        break;
+      case UNLIKE_COMMENT_REQUEST:
+        draft.likeCommentLoading = true;
+        draft.likeCommentDone = false;
+        draft.likeCommentError = null;
+        break;
+      case UNLIKE_COMMENT_SUCCESS:
+        draft.likeCommentDone = true;
+        draft.likeCommentLoading = false;
+        draft.likeCommentError = null;
+        draft.mainPosts
+          .find((post) => post.id == action.data.postId)
+          .Comments.find(
+            (comment) => comment.id == action.data.commentId
+          ).CommentLikers = action.data.CommentLikers.map((p) => {
+          return {
+            id: p.UserId,
+          };
+        });
+        break;
+
+      case UNLIKE_COMMENT_FAILURE:
+        draft.likeCommentLoading = false;
+        draft.likeCommentError = action.error;
+        break;
+
       default:
         break;
     }

@@ -32,8 +32,8 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json()); // 데이터를 req.body 안에 넣어줌
-app.use(express.urlencoded({ extended: true })); // form 을 submit 했을때 데이터를 처리해줌
+app.use(express.json({ limit: "500mb" })); // 데이터를 req.body 안에 넣어줌
+app.use(express.urlencoded({ extended: true, limit: "500mb" })); // form 을 submit 했을때 데이터를 처리해줌
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({

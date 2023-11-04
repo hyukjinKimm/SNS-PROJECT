@@ -2,17 +2,18 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { Button, Form, Select, Upload, Input } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
-
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostRequestAction } from "../reducers/post";
 
 const normFile = (e) => {
-  console.log("Upload event:", e);
+  console.log("Upload event:", e.fileList);
   if (Array.isArray(e)) {
     return e;
   }
-  return e?.fileList;
+  return e && e.fileList;
 };
+
 const formItemLayout = {
   labelCol: {
     xs: {
@@ -75,8 +76,23 @@ const Post = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const onFinish = useCallback((e) => {
+    if (e.images) {
+      const imageData = new FormData();
+      e.images.forEach((image) => {
+        console.log(image);
+        imageData.append("image", image.originFileObj);
+      });
+      axios
+        .post("/", imageData, {
+          header: {
+            ContentType: "multipart/form-data",
+          },
+        })
+        .then((res) => console.log(res));
+    }
+
     const data = {
-      ...e,
+      content: e.content,
       User: {
         id: me?.id,
         nickname: me?.nickname,
@@ -125,12 +141,16 @@ const Post = () => {
       </Form.Item>
 
       <Form.Item
-        name="upload"
+        name="images"
         label="Upload"
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
-        <Upload listType="picture-card">
+        <Upload
+          listType="picture-card"
+          accept="image/png, image/jpeg"
+          maxCount={5}
+        >
           <div>
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Upload</div>

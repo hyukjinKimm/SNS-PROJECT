@@ -1,27 +1,92 @@
-import { HeartOutlined } from "@ant-design/icons";
-import React, { useCallback } from "react";
+import {
+  HeartOutlined,
+  LoadingOutlined,
+  HeartTwoTone,
+} from "@ant-design/icons";
+import React, { useCallback, useState, useEffect } from "react";
 
 import {
   deletePostRequestAction,
   likePostRequestAction,
   unLikePostRequestAction,
   deleteCommentRequest,
+  likeCommentRequest,
+  unLikeCommentRequest,
 } from "../reducers/post";
-import { Avatar, List } from "antd";
+import { Avatar, List, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 const Comment = ({ comment, postId }) => {
   const dispatch = useDispatch();
   const { me, isLoggedIn } = useSelector((state) => state.user);
+  const { likeCommentDone } = useSelector((state) => state.post);
+  const [likeCommentLoading, setLikeCommentLoading] = useState(false);
   const onDeleteComment = useCallback((e, comment) => {
-    alert("댓글을 삭제하시겠습니까?");
-    const data = { postId, commentId: comment.id };
-    dispatch(deleteCommentRequest(data));
+    if (confirm("댓글을 삭제하시겠습니까?")) {
+      const data = { postId, commentId: comment.id };
+      dispatch(deleteCommentRequest(data));
+    }
   }, []);
+
+  const [liked, setLiked] = useState(false);
+  const onToggleLike = useCallback(() => {
+    setLiked(!liked);
+    setLikeCommentLoading(true);
+    const data = { postId, commentId: comment.id };
+    if (!liked) {
+      dispatch(likeCommentRequest(data));
+    } else {
+      dispatch(unLikeCommentRequest(data));
+    }
+  }, [liked]);
+  useEffect(() => {
+    if (likeCommentDone) {
+      setLikeCommentLoading(false);
+    }
+  }, [likeCommentDone]);
+  useEffect(() => {
+    if (
+      comment?.CommentLikers?.find((e) => {
+        if (e.id == me?.id) {
+          return true;
+        }
+      })
+    ) {
+      setLiked(true);
+    } else {
+      setLiked(false);
+    }
+  }, [me]);
+  const LikeIcon = useCallback(
+    ({ liked, onClick }) =>
+      likeCommentLoading ? (
+        <LoadingOutlined />
+      ) : (
+        <Space>
+          {liked
+            ? React.createElement(HeartTwoTone, {
+                twoToneColor: "#eb2f96",
+                onClick: isLoggedIn
+                  ? () => {
+                      onClick();
+                    }
+                  : null,
+              })
+            : React.createElement(HeartOutlined, {
+                onClick: isLoggedIn
+                  ? () => {
+                      onClick();
+                    }
+                  : null,
+              })}
+        </Space>
+      ),
+    [liked, likeCommentLoading, isLoggedIn]
+  );
   return (
     <>
       <List.Item
         actions={[
-          <div>좋아요 {22}개</div>,
+          <div>좋아요 {comment?.CommentLikers?.length}개</div>,
           <div>답글달기</div>,
           comment.User.id === me?.id && (
             <div style={{ color: "blue", fontSize: "10px" }}>수정하기</div>
@@ -43,7 +108,7 @@ const Comment = ({ comment, postId }) => {
         ].filter((element) => {
           if (element) return true;
         })}
-        extra={[<HeartOutlined />]}
+        extra={[<LikeIcon liked={liked} onClick={onToggleLike} />]}
       >
         <List.Item.Meta
           avatar={<Avatar> {comment.User.nickname[0]}</Avatar>}

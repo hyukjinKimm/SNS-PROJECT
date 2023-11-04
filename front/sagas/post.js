@@ -28,6 +28,12 @@ import {
   DELETE_COMMENT_REQUEST,
   DELETE_COMMENT_SUCCESS,
   DELETE_COMMENT_FAILURE,
+  LIKE_COMMENT_REQUEST,
+  LIKE_COMMENT_SUCCESS,
+  LIKE_COMMENT_FAILURE,
+  UNLIKE_COMMENT_REQUEST,
+  UNLIKE_COMMENT_SUCCESS,
+  UNLIKE_COMMENT_FAILURE,
   DELETE_POST_SUCCESS,
   DELETE_POST_REQUEST,
   DELETE_POST_FAILURE,
@@ -154,6 +160,38 @@ function* watchDeleteComment() {
   yield takeLatest(DELETE_COMMENT_REQUEST, deleteComment);
 }
 
+function likeCommentAPI(data) {
+  return axios.patch(`/user/likecomment`, data);
+}
+function* likeComment(action) {
+  try {
+    const result = yield call(likeCommentAPI, action.data);
+
+    yield put({ type: LIKE_COMMENT_SUCCESS, data: result.data });
+  } catch (err) {
+    yield put({ type: LIKE_COMMENT_FAILURE, error: err.response.data });
+  }
+}
+
+function* watchLikeComment() {
+  yield takeLatest(LIKE_COMMENT_REQUEST, likeComment);
+}
+function unLikeCommentAPI(data) {
+  return axios.patch(`/user/unlikecomment`, data);
+}
+function* unLikeComment(action) {
+  try {
+    const result = yield call(unLikeCommentAPI, action.data);
+
+    yield put({ type: UNLIKE_COMMENT_SUCCESS, data: result.data });
+  } catch (err) {
+    yield put({ type: UNLIKE_COMMENT_FAILURE, error: err.response.data });
+  }
+}
+
+function* watchunLikeComment() {
+  yield takeLatest(UNLIKE_COMMENT_REQUEST, unLikeComment);
+}
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -161,6 +199,8 @@ export default function* postSaga() {
     fork(watchUnLikePost),
     fork(watchAddComment),
     fork(watchDeleteComment),
+    fork(watchLikeComment),
+    fork(watchunLikeComment),
     fork(watchDeletePost),
     fork(watchLoadPost),
   ]);

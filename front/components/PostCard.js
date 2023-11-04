@@ -74,7 +74,7 @@ const PostCard = ({ post }) => {
 
   useEffect(() => {
     if (
-      post?.Likers?.find((e) => {
+      post?.PostLikers?.find((e) => {
         if (e.id == me?.id) {
           return true;
         }
@@ -165,7 +165,7 @@ const PostCard = ({ post }) => {
                 key="list-vertical-retweet-o"
               />,
               <LikeIcon
-                text={post.Likers.length}
+                text={post.PostLikers.length}
                 liked={liked}
                 onToggleLike={onToggleLike}
                 key="list-vertical-like-o"
@@ -225,7 +225,11 @@ const PostCard = ({ post }) => {
                   itemLayout="vertical"
                   dataSource={post.Comments}
                   renderItem={(comment) => (
-                    <Comment comment={comment} postId={post.id} />
+                    <Comment
+                      key={comment.id}
+                      comment={comment}
+                      postId={post.id}
+                    />
                   )}
                 />
               )}
