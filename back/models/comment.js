@@ -23,8 +23,12 @@ class Comment extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Comment.belongsTo(db.User); // UserId 컬럼 생성
-    db.Comment.belongsTo(db.Post);
+    db.Comment.belongsTo(db.User, {
+      onDelete: "CASCADE",
+    }); // UserId 컬럼 생성
+    db.Comment.belongsTo(db.Post, {
+      onDelete: "CASCADE",
+    });
     db.Comment.belongsToMany(db.User, {
       through: "UserLikeComment",
       as: "CommentLikers",

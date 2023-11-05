@@ -1,11 +1,15 @@
-import React, { use, useCallback, useEffect, useRef } from "react";
+import React, { use, useCallback, useEffect, useRef, useState } from "react";
 import { Button, Form, Select, Upload, Input } from "antd";
 import ImgCrop from "antd-img-crop";
 import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addPostRequestAction, addImageRequestAction } from "../reducers/post";
+import {
+  addPostRequestAction,
+  addImageRequestAction,
+  removeImageRequestAction,
+} from "../reducers/post";
 
 const normFile = (e) => {
   console.log("Upload event:", e.fileList);
@@ -60,9 +64,14 @@ const tailFormItemLayout = {
 };
 const Post = () => {
   const { me } = useSelector((state) => state.user);
-  const { addPostLoading, addPostDone, addPostError, imagePaths } = useSelector(
-    (state) => state.post
-  );
+  const {
+    addPostLoading,
+    addPostDone,
+    addPostError,
+    imagePaths,
+    addImageDone,
+  } = useSelector((state) => state.post);
+  const [fileList, setfileList] = useState([]);
   const setText = useCallback(() => {
     formRef.current?.setFieldsValue({
       content: "",
@@ -93,11 +102,31 @@ const Post = () => {
       const data = new FormData();
       data.append("image", e.file.originFileObj);
       dispatch(addImageRequestAction(data));
-    } else if (e.file.status == "removed") {
-      // ImagePasth 삭제 부분
-      console.log("삭제 여기", e);
+      setfileList(e.fileList);
     }
   });
+  const onRemoveImage = useCallback((e) => {
+    const index = fileList.findIndex((file) => file.uid == e.uid);
+    const newFileList = fileList.filter((v, i) => i != index);
+    dispatch(removeImageRequestAction(index));
+    setfileList(newFileList);
+  });
+  useEffect(() => {
+    if (addImageDone) {
+      if (fileList.length > 0) {
+        const file = fileList[fileList.length - 1];
+        file.url =
+          "http://localhost:3065/img/" + imagePaths[imagePaths.length - 1];
+      }
+    }
+  }, [addImageDone, imagePaths]);
+  useEffect(() => {
+    if (addPostError) {
+      const newFileList = [...fileList];
+      newFileList.pop();
+      setfileList([...newFileList]);
+    }
+  }, [addPostError]);
 
   useEffect(() => {
     if (addPostError) {
@@ -150,6 +179,7 @@ const Post = () => {
             accept="image/png, image/jpeg"
             maxCount={5}
             onChange={onChangeImage}
+            onRemove={onRemoveImage}
           >
             <div>
               <PlusOutlined />

@@ -8,6 +8,9 @@ export const initialState = {
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
+  addImageLoading: false,
+  addImageDone: false,
+  addImageError: null,
   likePostLoading: false,
   likePostDone: false,
   likePostError: null,
@@ -48,6 +51,8 @@ export const ADD_IMAGE_REQUEST = "ADD_IMAGE_REQUEST";
 export const ADD_IMAGE_SUCCESS = "ADD_IMAGE_SUCCESS";
 export const ADD_IMAGE_FAILURE = "ADD_IMAGE_FAILURE";
 
+export const REMOVE_IMAGE_REQUEST = "REMOVE_IMAGE_REQUEST";
+
 export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
 export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
 export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
@@ -83,6 +88,10 @@ export const addPostRequestAction = (data) => ({
 });
 export const addImageRequestAction = (data) => ({
   type: ADD_IMAGE_REQUEST,
+  data,
+});
+export const removeImageRequestAction = (data) => ({
+  type: REMOVE_IMAGE_REQUEST,
   data,
 });
 export const likePostRequestAction = (data) => ({
@@ -173,6 +182,9 @@ const reducer = (state = initialState, action) => {
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
         draft.addPostError = action.error;
+        break;
+      case REMOVE_IMAGE_REQUEST:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
         break;
       case ADD_IMAGE_REQUEST:
         draft.addImageLoading = true;
