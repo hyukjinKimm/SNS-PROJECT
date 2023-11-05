@@ -27,13 +27,13 @@ const upload = multer({
     },
     filename(req, file, cb) {
       const ext = path.extname(file.originalname);
-      cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
+      cb(null, path.basename(file.originalname, ext) + "_" + Date.now() + ext);
     },
   }),
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
 });
-router.post("/image", isLoggedIn, upload.single("images"), uploadImage);
-router.post("/images", isLoggedIn, upload.array("images"), uploadImages);
+router.post("/image", isLoggedIn, upload.single("image"), uploadImage);
+router.post("/", isLoggedIn, upload.none(), uploadPost);
 router.post("/", isLoggedIn, uploadPost);
 router.post("/:postId/like", isLoggedIn, likePost);
 router.post("/:postId/unlike", isLoggedIn, unlikePost);

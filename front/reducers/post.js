@@ -4,7 +4,7 @@ import { faker } from "@faker-js/faker";
 faker.seed(123);
 export const initialState = {
   mainPosts: [],
-
+  imagePaths: [],
   addPostLoading: false,
   addPostDone: false,
   addPostError: null,
@@ -44,6 +44,10 @@ export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 
+export const ADD_IMAGE_REQUEST = "ADD_IMAGE_REQUEST";
+export const ADD_IMAGE_SUCCESS = "ADD_IMAGE_SUCCESS";
+export const ADD_IMAGE_FAILURE = "ADD_IMAGE_FAILURE";
+
 export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
 export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
 export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
@@ -75,6 +79,10 @@ export const ADD_POST = "ADD_POST";
 
 export const addPostRequestAction = (data) => ({
   type: ADD_POST_REQUEST,
+  data,
+});
+export const addImageRequestAction = (data) => ({
+  type: ADD_IMAGE_REQUEST,
   data,
 });
 export const likePostRequestAction = (data) => ({
@@ -160,11 +168,26 @@ const reducer = (state = initialState, action) => {
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.addPostError = null;
-
+        draft.imagePaths = [];
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
         draft.addPostError = action.error;
+        break;
+      case ADD_IMAGE_REQUEST:
+        draft.addImageLoading = true;
+        draft.addImageDone = false;
+        draft.addImageError = null;
+        break;
+      case ADD_IMAGE_SUCCESS:
+        draft.addImageLoading = false;
+        draft.addImageDone = true;
+        draft.addImageError = null;
+        draft.imagePaths.push(action.data.imagePath);
+        break;
+      case ADD_IMAGE_FAILURE:
+        draft.addImageLoading = false;
+        draft.addImageError = action.error;
         break;
       case LIKE_POST_REQUEST:
         draft.likePostLoading = true;

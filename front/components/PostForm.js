@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { use, useCallback, useEffect, useRef } from "react";
 import { Button, Form, Select, Upload, Input } from "antd";
+import ImgCrop from "antd-img-crop";
 import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addPostRequestAction } from "../reducers/post";
+import { addPostRequestAction, addImageRequestAction } from "../reducers/post";
 
 const normFile = (e) => {
   console.log("Upload event:", e.fileList);
@@ -59,7 +60,7 @@ const tailFormItemLayout = {
 };
 const Post = () => {
   const { me } = useSelector((state) => state.user);
-  const { addPostLoading, addPostDone, addPostError } = useSelector(
+  const { addPostLoading, addPostDone, addPostError, imagePaths } = useSelector(
     (state) => state.post
   );
   const setText = useCallback(() => {
@@ -75,52 +76,29 @@ const Post = () => {
   const formRef = useRef(null);
   const router = useRouter();
   const dispatch = useDispatch();
-  const onFinish = useCallback((e) => {
-    const data = {
-      content: e.content,
-      User: {
-        id: me?.id,
-        nickname: me?.nickname,
-      },
-    };
-
-    if (e.images) {
-      const imageData = new FormData();
-      e.images.forEach((image) => {
-        console.log(image);
-        imageData.append("images", image.originFileObj);
+  const onFinish = useCallback(
+    (e) => {
+      const data = new FormData();
+      data.append("content", e.content);
+      imagePaths.forEach((i) => {
+        data.append("image", i);
       });
-      if (e.images.length == 1) {
-        axios
-          .post("/post/image", imageData, {
-            header: {
-              ContentType: "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            dispatch(addPostRequestAction(data));
-          })
-          .catch((err) => {
-            console.log("이미지 전송 오류");
-          });
-      } else {
-        axios
-          .post("/post/images", imageData, {
-            header: {
-              ContentType: "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            dispatch(addPostRequestAction(data));
-          })
-          .catch((err) => {
-            console.log("이미지 전송 오류");
-          });
-      }
-    } else {
-      alert("이미지 첨부는 필수 입니다.");
+      dispatch(addPostRequestAction(data));
+    },
+
+    [imagePaths]
+  );
+  const onChangeImage = useCallback((e) => {
+    if (e.file.status == "done") {
+      const data = new FormData();
+      data.append("image", e.file.originFileObj);
+      dispatch(addImageRequestAction(data));
+    } else if (e.file.status == "removed") {
+      // ImagePasth 삭제 부분
+      console.log("삭제 여기", e);
     }
-  }, []);
+  });
+
   useEffect(() => {
     if (addPostError) {
       alert(addPostError);
@@ -166,16 +144,19 @@ const Post = () => {
         valuePropName="fileList"
         getValueFromEvent={normFile}
       >
-        <Upload
-          listType="picture-card"
-          accept="image/png, image/jpeg"
-          maxCount={5}
-        >
-          <div>
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-          </div>
-        </Upload>
+        <ImgCrop rotationSlider>
+          <Upload
+            listType="picture-card"
+            accept="image/png, image/jpeg"
+            maxCount={5}
+            onChange={onChangeImage}
+          >
+            <div>
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Upload</div>
+            </div>
+          </Upload>
+        </ImgCrop>
       </Form.Item>
 
       <Form.Item {...tailFormItemLayout}>

@@ -1,40 +1,52 @@
 const express = require("express");
 const { sequelize } = require("../models");
+const sharp = require("sharp");
+const fs = require("fs");
 const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const Image = require("../models/image");
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
-exports.uploadImage = async (req, res, next) => {
+exports.uploadImage = (req, res, next) => {
   try {
-    console.log(req.file);
-    res.send("ok");
-  } catch (e) {
-    console.error(e);
-    next(e); // status(500)
-  }
-};
-
-exports.uploadImages = async (req, res, next) => {
-  try {
-    console.log(req.files);
-    res.send("ok");
-  } catch (e) {
-    console.error(e);
-    next(e); // status(500)
+    sharp(req.file.path) // 압축할 이미지 경로
+      .resize({ width: 200, height: 200 }) // 비율을 유지하며 가로 세로 크기 줄이기
+      .withMetadata() // 이미지의 exif데이터 유지
+      .toBuffer((err, buffer) => {
+        if (err) throw err;
+        // 압축된 파일 새로 저장(덮어씌우기)
+        fs.writeFile(req.file.path, buffer, (err) => {
+          if (err) throw err;
+        });
+      });
+    res.json({
+      imagePath: req.file.filename,
+    });
+  } catch (err) {
+    console.log(err);
   }
 };
 
 exports.uploadPost = async (req, res, next) => {
   try {
-    console.log("hi", req.images);
-    await Post.create({
+    const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image }))
+        );
+        await post.addImages(images);
+      } else {
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
 
-    const post = await Post.findOne({
+    const fullPost = await Post.findOne({
       where: { UserId: req.user.id },
       include: [
         {
@@ -51,11 +63,14 @@ exports.uploadPost = async (req, res, next) => {
             },
           ],
         },
+        {
+          model: Image,
+        },
       ],
     });
-    console.log(post);
+    console.log(fullPost);
 
-    res.status(200).json(post);
+    res.status(200).json(fullPost);
   } catch (e) {
     console.error(e);
     next(e); // status(500)

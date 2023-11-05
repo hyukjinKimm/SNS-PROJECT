@@ -16,6 +16,9 @@ import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
   ADD_POST_FAILURE,
+  ADD_IMAGE_REQUEST,
+  ADD_IMAGE_SUCCESS,
+  ADD_IMAGE_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
   LIKE_POST_FAILURE,
@@ -61,6 +64,22 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+function addImageAPI(data) {
+  return axios.post(`/post/image`, data);
+}
+function* addImage(action) {
+  try {
+    const result = yield call(addImageAPI, action.data);
+
+    yield put({ type: ADD_IMAGE_SUCCESS, data: result.data });
+  } catch (err) {
+    yield put({ type: ADD_IMAGE_FAILURE, error: err.response.data });
+  }
+}
+
+function* watchAddImage() {
+  yield takeLatest(ADD_IMAGE_REQUEST, addImage);
+}
 function likePostAPI(data) {
   return axios.post(`/post/${data.postId}/like`);
 }
@@ -195,6 +214,7 @@ function* watchunLikeComment() {
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
+    fork(watchAddImage),
     fork(watchLikePost),
     fork(watchUnLikePost),
     fork(watchAddComment),

@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const path = require("path");
 const cookieParser = require("cookie-parser");
 const indexRouter = require("./routes");
 const postRouter = require("./routes/post");
@@ -32,6 +33,7 @@ app.use(
     credentials: true,
   })
 );
+app.use("/img", express.static(path.join(__dirname, "uploads")));
 app.use(express.json({ limit: "50mb" })); // 데이터를 req.body 안에 넣어줌
 app.use(express.urlencoded({ extended: true, limit: "50mb" })); // form 을 submit 했을때 데이터를 처리해줌
 app.use(cookieParser(process.env.COOKIE_SECRET));

@@ -23,12 +23,12 @@ const ImageSlider = ({ images }) => {
         type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
       />
-      <div style={{ width: "40vw" }}>
+      <div style={{ width: "30vw" }}>
         <Slider {...settings}>
-          {images.map((item) => (
+          {images.map((image) => (
             <div>
               <img
-                src={item.src}
+                src={`http://localhost:3065/img/${image.src}`}
                 alt=""
                 style={{ width: "100%", height: "50%" }}
               />
