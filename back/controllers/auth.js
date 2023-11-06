@@ -3,6 +3,7 @@ const bcypt = require("bcrypt");
 const passport = require("passport");
 const User = require("../models/user");
 const Post = require("../models/post");
+const Image = require("../models/image");
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
 exports.logIn = async (req, res, next) => {
@@ -26,6 +27,11 @@ exports.logIn = async (req, res, next) => {
           include: [
             {
               model: Post,
+              include: [
+                {
+                  model: Image,
+                },
+              ],
             },
             {
               model: User,

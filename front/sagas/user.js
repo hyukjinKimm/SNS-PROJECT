@@ -25,6 +25,9 @@ import {
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
   SIGN_UP_FAILURE,
+  LOAD_PROFILE_OWNER_REQUEST,
+  LOAD_PROFILE_OWNER_SUCCESS,
+  LOAD_PROFILE_OWNER_FAILURE,
 } from "../reducers/user";
 import { CHANGE_MENU, CLICK_LOGIN_MENU } from "../reducers/screen";
 
@@ -38,6 +41,18 @@ function* getUser() {
     yield put({ type: GET_USER_SUCCESS, data: result.data });
   } catch (err) {
     yield put({ type: GET_USER_FAILURE, error: err.response.data });
+  }
+}
+function loadProfileOwnerAPI(nickname) {
+  return axios.get(`/user/${encodeURIComponent(nickname)}`);
+}
+
+function* loadProfileOwner(action) {
+  try {
+    const result = yield call(loadProfileOwnerAPI, action.nickname);
+    yield put({ type: LOAD_PROFILE_OWNER_SUCCESS, data: result.data });
+  } catch (err) {
+    yield put({ type: LOAD_PROFILE_OWNER_FAILURE, error: err.response.data });
   }
 }
 
@@ -72,7 +87,6 @@ function signUpAPI(data) {
 }
 function* signUp(action) {
   try {
-    console.log("here", action.data);
     const result = yield call(signUpAPI, action.data);
     console.log(result);
 
@@ -82,6 +96,10 @@ function* signUp(action) {
     console.log(err);
     yield put({ type: SIGN_UP_FAILURE, error: err.response.data });
   }
+}
+
+function* watchLoadProfileOwner() {
+  yield takeLatest(LOAD_PROFILE_OWNER_REQUEST, loadProfileOwner);
 }
 function* watchGetUser() {
   yield takeLatest(GET_USER_REQUEST, getUser);
@@ -106,5 +124,6 @@ export default function* userSage() {
     fork(watchLogOut),
     fork(watchSignUp),
     fork(watchGetUser),
+    fork(watchLoadProfileOwner),
   ]);
 }

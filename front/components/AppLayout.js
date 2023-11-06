@@ -26,8 +26,9 @@ import { useRouter } from "next/router";
 const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const { collapsed } = useSelector((state) => state.screen);
-  const { isLoggedIn, isLogOutLoading, isLogOutError } = useSelector(
+  const { isLoggedIn, isLogOutLoading, isLogOutError, me } = useSelector(
     (state) => state.user
   );
   const { deletePostError, deleteCommentError } = useSelector(
@@ -66,7 +67,7 @@ const AppLayout = ({ children }) => {
         router.push("/login");
         break;
       case "PROFILE":
-        router.push("/profile");
+        router.push(`/${me?.nickname}`);
         break;
     }
   }, [selectedMenu]);

@@ -46,11 +46,11 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use("/", indexRouter);
 app.use("/user", userRouter);
 app.use("/auth", authRouter);
 app.use("/posts", postsRouter);
 app.use("/post", postRouter);
+app.use("/", indexRouter);
 
 //app.use((err, req, res ,next) => {
 

@@ -2,6 +2,7 @@ const express = require("express");
 const bcypt = require("bcrypt");
 const User = require("../models/user");
 const Post = require("../models/post");
+const Image = require("../models/image");
 
 exports.getUser = async (req, res, next) => {
   try {
@@ -11,6 +12,7 @@ exports.getUser = async (req, res, next) => {
         include: [
           {
             model: Post,
+            include: [{ model: Image }],
           },
           {
             model: User,
@@ -32,6 +34,37 @@ exports.getUser = async (req, res, next) => {
     } else {
       res.status(200).json(null);
     }
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
+exports.getProfileOwner = async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: { nickname: decodeURIComponent(req.params.nickname) },
+      include: [
+        {
+          model: Post,
+          include: [{ model: Image }],
+        },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
+      ],
+      attributes: { exclude: ["password"] },
+    });
+    if (!user) {
+      return res.status(403).send("존재하지 않는 유저 입니다.");
+    }
+    res.status(200).json(user);
   } catch (e) {
     console.error(e);
     next(e); // status(500)

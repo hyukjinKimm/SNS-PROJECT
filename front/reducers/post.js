@@ -20,6 +20,7 @@ export const initialState = {
   loadPostLoading: false,
   loadPostDone: false,
   loadPostError: null,
+
   clearPostLoading: false,
   clearPostDone: false,
   clearPostError: null,
@@ -80,7 +81,6 @@ export const DELETE_COMMENT_FAILURE = "DELETE_COMMENT_FAILURE";
 export const DELETE_POST_REQUEST = "DELETE_POST_REQUEST";
 export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
 export const DELETE_POST_FAILURE = "DELETE_POST_FAILURE";
-export const ADD_POST = "ADD_POST";
 
 export const addPostRequestAction = (data) => ({
   type: ADD_POST_REQUEST,
@@ -110,6 +110,7 @@ export const loadPostRequestAction = (lastId) => ({
   type: LOAD_POST_REQUEST,
   lastId: lastId,
 });
+
 export const clearPostRequestAction = (data) => ({
   type: CLEAR_POST_REQUEST,
   data,
@@ -293,6 +294,7 @@ const reducer = (state = initialState, action) => {
         draft.loadPostLoading = false;
         draft.loadPostError = action.error;
         break;
+
       case CLEAR_POST_REQUEST:
         draft.mainPosts = [];
 

@@ -125,6 +125,9 @@ function* deletePost(action) {
     yield put({ type: DELETE_POST_FAILURE, error: err.response.data });
   }
 }
+function* watchDeletePost() {
+  yield takeLatest(DELETE_POST_REQUEST, deletePost);
+}
 
 function loadPostAPI(lastId) {
   return axios.get(`/posts?lastId=${lastId || 0}`);
@@ -140,10 +143,6 @@ function* loadPost(action) {
 
 function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
-}
-
-function* watchDeletePost() {
-  yield takeLatest(DELETE_POST_REQUEST, deletePost);
 }
 
 function addCommentAPI(data) {

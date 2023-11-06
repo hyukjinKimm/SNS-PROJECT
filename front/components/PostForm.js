@@ -87,6 +87,10 @@ const Post = () => {
   const dispatch = useDispatch();
   const onFinish = useCallback(
     (e) => {
+      if (imagePaths.length == 0) {
+        alert("이미지 첨부는 필수 입니다! ");
+        return;
+      }
       const data = new FormData();
       data.append("content", e.content);
       imagePaths.forEach((i) => {

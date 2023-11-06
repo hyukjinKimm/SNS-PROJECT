@@ -1,19 +1,20 @@
-import React, { useCallback, useState } from "react";
-
+import React, { useCallback } from "react";
 import { SettingOutlined, TableOutlined } from "@ant-design/icons";
 import { Image, Row, Col, Card, Layout, theme } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 
 const { Meta } = Card;
 const { Content } = Layout;
 
-import { useDispatch, useSelector } from "react-redux";
+const UserProfile = ({}) => {
+  const { me, profileOwner, loadProfileOwnerError } = useSelector(
+    (state) => state.user
+  );
 
-const UserProfile = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const { mainPosts } = useSelector((state) => state.post);
-  const { me } = useSelector((state) => state.user);
+
   const division = useCallback((arr, n) => {
     const copy = [...arr];
     const length = arr.length;
@@ -28,7 +29,8 @@ const UserProfile = () => {
 
     return newArray;
   }, []);
-  const result = division(mainPosts, 3);
+  const result =
+    profileOwner?.Posts.length > 0 ? division(profileOwner?.Posts, 3) : [];
 
   return (
     <>
@@ -82,23 +84,23 @@ const UserProfile = () => {
                     <div key="posts">
                       게시물
                       <br />
-                      {me?.Posts.length}
+                      {profileOwner?.Posts.length}
                     </div>,
                     <div key="followers">
                       팔로워
                       <br />
-                      {me?.Followers.length}
+                      {profileOwner?.Followers.length}
                     </div>,
                     <div key="followings">
                       팔로잉
                       <br />
-                      {me?.Followings.length}
+                      {profileOwner?.Followings.length}
                     </div>,
                   ]}
                 >
                   <Meta
-                    title={me?.nickname}
-                    description={me?.description}
+                    title={profileOwner?.nickname}
+                    description={profileOwner?.description}
                     style={{ height: "11vh", paddingTop: 10 }}
                   />
                 </Card>
@@ -118,24 +120,33 @@ const UserProfile = () => {
             <div style={{ fontSize: "20px" }}>게시물</div>
           </div>
           <div>
-            {result.map((items) => {
-              return (
-                <Row gutter={[10, 10]}>
-                  {items.length > 0
-                    ? items.map((post) => {
-                        return (
-                          <Col xs={24} md={8}>
-                            <img
-                              style={{ width: "95%", height: "95%" }}
-                              src={post.Images[0].src}
-                            ></img>
-                          </Col>
-                        );
-                      })
-                    : null}
-                </Row>
-              );
-            })}
+            {result.length > 0 ? (
+              result.map((items) => {
+                return (
+                  <Row gutter={[10, 10]}>
+                    {items.length > 0
+                      ? items.map((post) => {
+                          return (
+                            <Col xs={24} md={8}>
+                              <img
+                                style={{ width: "95%", height: "95%" }}
+                                src={
+                                  "http://localhost:3065/img/" +
+                                  post.Images[0].src
+                                }
+                              ></img>
+                            </Col>
+                          );
+                        })
+                      : null}
+                  </Row>
+                );
+              })
+            ) : (
+              <div style={{ textAlign: "center", marginTop: "5%" }}>
+                게시물이 없습니다.
+              </div>
+            )}
           </div>
         </div>
       </Content>
