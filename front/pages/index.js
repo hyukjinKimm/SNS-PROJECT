@@ -1,21 +1,31 @@
 import React, { useEffect } from "react";
 import Head from "next/head";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useRouter } from "next/router";
 import { Layout, theme } from "antd";
 const { Header, Content, Footer, Sider } = Layout;
+import * as userActions from "../reducerss/user";
+import * as postActions from "../reducerss/post";
+import * as screenActions from "../reducerss/screen";
 import { clearUserErrorAction } from "../reducers/user";
 import AppLayout from "../components/AppLayout";
 import PostCards from "../components/PostCards";
 
 function Home(props) {
+  const route = useRouter();
+
   const dispatch = useDispatch();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const { mainPosts } = useSelector((state) => state.post);
+  const { selectedMenu } = useSelector((state) => state.screen);
   useEffect(() => {
-    dispatch(clearUserErrorAction());
+    dispatch(postActions.clearPost());
+    dispatch(userActions.clearUserError());
+  }, []);
+  useEffect(() => {
+    dispatch(screenActions.changeMenu("HOME"));
   }, []);
   return (
     <AppLayout>

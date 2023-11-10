@@ -13,11 +13,11 @@ import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import {
-  deletePostRequestAction,
-  likePostRequestAction,
-  unLikePostRequestAction,
-  deleteCommentRequest,
-} from "../reducers/post";
+  deletePost,
+  likePost,
+  unlikePost,
+  deleteComment,
+} from "../reducerss/post";
 import { useDispatch, useSelector } from "react-redux";
 
 const PostCard = ({ post }) => {
@@ -39,7 +39,7 @@ const PostCard = ({ post }) => {
   const onDelete = useCallback((e) => {
     setDeletePostLoading(true);
 
-    dispatch(deletePostRequestAction(post.id));
+    dispatch(deletePost(post.id));
   }, []);
   const id = useSelector((state) => state.user.me?.id);
   const [open, setOpen] = useState(false);
@@ -60,9 +60,9 @@ const PostCard = ({ post }) => {
     setLiked(!liked);
     setLikePostLoading(true);
     if (!liked) {
-      dispatch(likePostRequestAction({ postId: post.id }));
+      dispatch(likePost({ postId: post.id }));
     } else {
-      dispatch(unLikePostRequestAction({ postId: post.id }));
+      dispatch(unlikePost({ postId: post.id }));
     }
   }, [liked]);
 
@@ -135,11 +135,6 @@ const PostCard = ({ post }) => {
   const onToggleComment = useCallback(() => {
     setCommentOpened(!commentOpened);
   }, [commentOpened]);
-  const onDeleteComment = useCallback((e, comment) => {
-    const data = { postId: post.id, commentId: comment.id };
-    console.log(data);
-    dispatch(deleteCommentRequest(data));
-  }, []);
 
   useEffect(() => {
     setCommentOpened(false);

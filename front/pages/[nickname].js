@@ -3,21 +3,22 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import AppLayout from "../components/AppLayout";
 import UserProfile from "../components/UserProfile";
-import { clearPostRequestAction } from "../reducers/post";
-import { loadProfileOwnerRequestAction } from "../reducers/user";
+import * as postActions from "../reducerss/post";
+
+import { getUserInfo } from "../reducerss/user";
 import { useDispatch, useSelector } from "react-redux";
 
 function Home(props) {
   const router = useRouter();
 
   const dispatch = useDispatch();
-  const { me, profileOwner, loadProfileOwnerError } = useSelector(
+  const { me, user, loadProfileOwnerError } = useSelector(
     (state) => state.user
   );
   useEffect(() => {
     if (!router.isReady) return;
-    dispatch(clearPostRequestAction());
-    dispatch(loadProfileOwnerRequestAction(router.query.nickname));
+    dispatch(postActions.clearPost());
+    dispatch(getUserInfo(router.query.nickname));
   }, [router.isReady]);
 
   useEffect(() => {}, []);
@@ -32,7 +33,7 @@ function Home(props) {
       <Head>
         <title>프로필 | SNS-PROJECT</title>
       </Head>
-      {profileOwner ? <UserProfile /> : null}
+      {user ? <UserProfile /> : null}
     </AppLayout>
   );
 }

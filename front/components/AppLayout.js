@@ -15,12 +15,12 @@ import {
   FileAddOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-
+import * as screenActions from "../reducerss/screen";
 import { Layout, Menu, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 
-import { logOutRequestAction, userRequestAction } from "../reducers/user";
+import { logOut, getMyInfo } from "../reducerss/user";
 import { useRouter } from "next/router";
 
 const AppLayout = ({ children }) => {
@@ -36,10 +36,10 @@ const AppLayout = ({ children }) => {
   );
   const { selectedMenu } = useSelector((state) => state.screen);
   const onChangeMenu = useCallback((e) => {
-    dispatch({ type: "CHANGE_MENU", data: e.key });
+    dispatch(screenActions.changeMenu(e.key));
   }, []);
   const LogOutRequest = useCallback(() => {
-    dispatch(logOutRequestAction());
+    dispatch(logOut());
   }, []);
   useEffect(() => {
     if (isLogOutError) {
@@ -47,7 +47,7 @@ const AppLayout = ({ children }) => {
     }
   }, [isLogOutError]);
   useEffect(() => {
-    dispatch(userRequestAction());
+    dispatch(getMyInfo());
   }, []);
   useEffect(() => {
     if (deletePostError || deleteCommentError) {
@@ -55,22 +55,6 @@ const AppLayout = ({ children }) => {
     }
   }, [deletePostError, deleteCommentError]);
 
-  useEffect(() => {
-    switch (selectedMenu) {
-      case "HOME":
-        router.push("/");
-        break;
-      case "SEARCH":
-        router.push("/search");
-        break;
-      case "LOGIN":
-        router.push("/login");
-        break;
-      case "PROFILE":
-        router.push(`/${me?.nickname}`);
-        break;
-    }
-  }, [selectedMenu]);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -135,7 +119,8 @@ const AppLayout = ({ children }) => {
         ? {
             key: "PROFILE",
             icon: React.createElement(UserOutlined),
-            label: "프로필",
+
+            label: <Link href={`${me.nickname}`}>프로필</Link>,
           }
         : {
             key: "PROFILE",
@@ -167,9 +152,7 @@ const AppLayout = ({ children }) => {
         collapsible
         collapsed={collapsed}
         onCollapse={() => {
-          dispatch({
-            type: "COLLAPSED_EVENT",
-          });
+          dispatch(screenActions.collapsed());
         }}
         style={{
           overflow: "auto",
@@ -205,9 +188,7 @@ const AppLayout = ({ children }) => {
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => {
-              dispatch({
-                type: "COLLAPSED_EVENT",
-              });
+              dispatch(screenActions.collapsed());
             }}
             style={{
               marginLeft: collapsed ? 70 : 200,

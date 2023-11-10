@@ -1,15 +1,12 @@
 import React from "react";
 import { Layout, theme, Button } from "antd";
-import { MenuUnfoldOutlined } from "@ant-design/icons";
-import AppLayout from "../components/AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 function Home(props) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const collapsed = useSelector((state) => state.screen);
-  const dispatch = useDispatch();
+
   return (
     <Content
       style={{

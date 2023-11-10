@@ -95,10 +95,18 @@ const postSlice = createSlice({
   initialState,
   reducers: {
     removeImage: (state, action) => {
-      state.imagePaths = state.imagePaths.filter((v, i) => i !== action.data);
+      state.imagePaths = state.imagePaths.filter(
+        (v, i) => i !== action.payload.index
+      );
     },
     clearPost: (state, action) => {
       state.mainPosts = [];
+      (state.addPostDone = false),
+        (state.likePostDone = false),
+        (state.likeCommentDone = false),
+        (state.addImageDone = false),
+        (state.deletePostDone = false),
+        (state.addCommentDone = false);
     },
   },
   extraReducers: (builder) =>
@@ -111,24 +119,13 @@ const postSlice = createSlice({
         state.loadPostsLoading = true;
         state.loadPostsDone = false;
         state.loadPostsError = null;
-        state.mainPosts = state.mainPosts.concat(
-          Array(10)
-            .fill()
-            .map(() => {
-              return {
-                loading: true,
-                name: {},
-                picture: {},
-              };
-            })
-        );
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
         state.loadPostsLoading = false;
         state.loadPostsDone = true;
         state.loadPostsError = null;
-        state.mainPosts = state.mainPosts.slice(0, -10).concat(action.data);
-        state.hasMorePost = action.data.length == 10;
+        state.mainPosts = state.mainPosts.concat(action.payload);
+        state.hasMorePost = action.payload.length == 10;
       })
       .addCase(loadPosts.rejected, (state, action) => {
         state.loadPostsLoading = false;
@@ -158,12 +155,13 @@ const postSlice = createSlice({
         state.likePostLoading = false;
         state.likePostDone = true;
         state.likePostError = null;
-        state.mainPosts.find((post) => post.id == action.data.id).PostLikers =
-          action.data.PostLikers.map((p) => {
-            return {
-              id: p.id,
-            };
-          });
+        state.mainPosts.find(
+          (post) => post.id == action.payload.id
+        ).PostLikers = action.payload.PostLikers.map((p) => {
+          return {
+            id: p.id,
+          };
+        });
       })
       .addCase(likePost.rejected, (state, action) => {
         state.likePostLoading = false;
@@ -178,12 +176,13 @@ const postSlice = createSlice({
         state.likePostLoading = false;
         state.likePostDone = true;
         state.likePostError = null;
-        state.mainPosts.find((post) => post.id == action.data.id).PostLikers =
-          action.data.PostLikers.map((p) => {
-            return {
-              id: p.id,
-            };
-          });
+        state.mainPosts.find(
+          (post) => post.id == action.payload.id
+        ).PostLikers = action.payload.PostLikers.map((p) => {
+          return {
+            id: p.id,
+          };
+        });
       })
       .addCase(unlikePost.rejected, (state, action) => {
         state.likePostLoading = false;
@@ -198,7 +197,7 @@ const postSlice = createSlice({
         state.addImageLoading = false;
         state.addImageDone = true;
         state.addImageError = null;
-        state.imagePaths.push(action.data.imagePath);
+        state.imagePaths.push(action.payload.imagePath);
       })
       .addCase(addImage.rejected, (state, action) => {
         state.addImageLoading = false;
@@ -214,7 +213,7 @@ const postSlice = createSlice({
         state.deletePostDone = true;
         state.deletePostError = null;
         state.mainPosts = state.mainPosts.filter((post) => {
-          if (post.id != action.data.id) return true;
+          if (post.id != action.payload.id) return true;
         });
       })
       .addCase(deletePost.rejected, (state, action) => {
@@ -231,8 +230,8 @@ const postSlice = createSlice({
         state.addCommentDone = true;
         state.addCommentError = null;
         state.mainPosts
-          .find((post) => post.id == action.data.PostId)
-          .Comments.unshift(action.data);
+          .find((post) => post.id == action.payload.PostId)
+          .Comments.unshift(action.payload);
       })
       .addCase(addComment.rejected, (state, action) => {
         state.addCommentError = action.error;
@@ -247,11 +246,11 @@ const postSlice = createSlice({
         state.deleteCommentLoading = false;
         state.deleteCommentDone = true;
         state.deleteCommentError = null;
-        let comments = draft.mainPosts.find(
-          (post) => post.id == action.data.postId
+        let comments = state.mainPosts.find(
+          (post) => post.id == action.payload.postId
         ).Comments;
         let index = comments.findIndex(
-          (comment) => comment.id == action.data.commentId
+          (comment) => comment.id == action.payload.commentId
         );
         comments.splice(index, 1);
       })
@@ -268,11 +267,11 @@ const postSlice = createSlice({
         state.likeCommentLoading = false;
         state.likeCommentDone = true;
         state.likeCommentError = null;
-        main.mainPosts
-          .find((post) => post.id == action.data.postId)
+        state.mainPosts
+          .find((post) => post.id == action.payload.postId)
           .Comments.find(
-            (comment) => comment.id == action.data.commentId
-          ).CommentLikers = action.data.CommentLikers.map((p) => {
+            (comment) => comment.id == action.payload.commentId
+          ).CommentLikers = action.payload.CommentLikers.map((p) => {
           return {
             id: p.UserId,
           };
@@ -292,10 +291,10 @@ const postSlice = createSlice({
         state.likeCommentDone = true;
         state.likeCommentError = null;
         state.mainPosts
-          .find((post) => post.id == action.data.postId)
+          .find((post) => post.id == action.payload.postId)
           .Comments.find(
-            (comment) => comment.id == action.data.commentId
-          ).CommentLikers = action.data.CommentLikers.map((p) => {
+            (comment) => comment.id == action.payload.commentId
+          ).CommentLikers = action.payload.CommentLikers.map((p) => {
           return {
             id: p.UserId,
           };
@@ -306,5 +305,5 @@ const postSlice = createSlice({
         state.likeCommentLoading = false;
       }),
 });
-
+export const { clearPost, removeImage } = postSlice.actions; // 액션 생성함수
 export default postSlice.reducer; // 리듀서

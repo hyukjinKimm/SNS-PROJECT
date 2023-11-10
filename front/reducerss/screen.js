@@ -15,7 +15,7 @@ const screenSlice = createSlice({
       state.collapsed = !state.collapsed;
     },
     changeMenu: (state, action) => {
-      state.selectedMenu = action.data;
+      state.selectedMenu = action.payload;
       state.logInOrSignUp = true;
     },
     changeLogInToSignUp: (state, action) => {
@@ -24,5 +24,5 @@ const screenSlice = createSlice({
   },
 });
 export const { collapsed, changeMenu, changeLogInToSignUp } =
-  counterSlice.actions; // 액션 생성함수
+  screenSlice.actions; // 액션 생성함수
 export default screenSlice.reducer; // 리듀서

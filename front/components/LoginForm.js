@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect } from "react";
 
-import { useRouter } from "next/router";
-
+import * as screenActions from "../reducerss/screen";
 import { useDispatch, useSelector } from "react-redux";
-import { logInRequestAction } from "../reducers/user";
+import { logIn } from "../reducerss/user";
 import { Button, Checkbox, Form, Input } from "antd";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 
-import { CHANGE_LOGIN_TO_SIGN_UP } from "../reducers/screen";
 const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
 };
@@ -20,12 +19,20 @@ const FormWrapper = styled(Form)`
 `;
 // 리렌더링 시 return 부분에서 바뀐 부분만 다시그린다.
 const LoginForm = () => {
-  const { isLogInLoading, isLogInError } = useSelector((state) => state.user);
+  const router = useRouter();
+  const { logInLoading, logInError, logInDone } = useSelector(
+    (state) => state.user
+  );
   useEffect(() => {
-    if (isLogInError) {
-      alert(isLogInError);
+    if (logInError) {
+      alert(logInError);
     }
-  }, [isLogInError]);
+  }, [logInError]);
+  useEffect(() => {
+    if (logInDone) {
+      router.push("/");
+    }
+  }, [logInDone]);
 
   const dispatch = useDispatch();
 
@@ -33,7 +40,7 @@ const LoginForm = () => {
     // e.preventDefault 적용 되어있음
     console.log("LogIn 실행");
     console.log(e, e.email, e.password);
-    dispatch(logInRequestAction({ email: e.email, password: e.password }));
+    dispatch(logIn({ email: e.email, password: e.password }));
   }, []);
 
   return (
@@ -108,13 +115,13 @@ const LoginForm = () => {
             span: 16,
           }}
         >
-          <Button type="primary" htmlType="submit" loading={isLogInLoading}>
+          <Button type="primary" htmlType="submit" loading={logInLoading}>
             로그인
           </Button>
 
           <Button
             onClick={() => {
-              dispatch({ type: CHANGE_LOGIN_TO_SIGN_UP });
+              dispatch(screenActions.changeLogInToSignUp());
             }}
           >
             회원가입

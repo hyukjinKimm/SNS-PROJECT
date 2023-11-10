@@ -7,7 +7,7 @@ const { Meta } = Card;
 const { Content } = Layout;
 
 const UserProfile = ({}) => {
-  const { me, profileOwner, loadProfileOwnerError } = useSelector(
+  const { me, user, loadProfileOwnerError } = useSelector(
     (state) => state.user
   );
 

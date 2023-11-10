@@ -1,10 +1,24 @@
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 import PostForm from "../components/PostForm";
+import * as screenActions from "../reducerss/screen";
+import { useDispatch, useSelector } from "react-redux";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const Post = () => {
+  const route = useRouter();
+  const { addPostDone } = useState(() => {
+    if (addPostDone) {
+      route.push("/");
+    }
+  }, []);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(screenActions.changeMenu("POST"));
+  }, []);
+
   return (
     <>
       <Head>

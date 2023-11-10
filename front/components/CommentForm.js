@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { Button, Form, Input } from "antd";
-import { addCommentRequest } from "../reducers/post";
+import { addComment } from "../reducerss/post";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -39,7 +39,7 @@ const CommentForm = ({ postId }) => {
     };
 
     setAddCommentLoading(true);
-    dispatch(addCommentRequest(data));
+    dispatch(addComment(data));
   };
 
   return (

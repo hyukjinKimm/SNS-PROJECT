@@ -6,13 +6,12 @@ import {
 import React, { useCallback, useState, useEffect } from "react";
 
 import {
-  deletePostRequestAction,
-  likePostRequestAction,
-  unLikePostRequestAction,
-  deleteCommentRequest,
-  likeCommentRequest,
-  unLikeCommentRequest,
-} from "../reducers/post";
+  deletePost,
+  likePost,
+  deleteComment,
+  likeComment,
+  unlikeComment,
+} from "../reducerss/post";
 import { Avatar, List, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 const Comment = ({ comment, postId }) => {
@@ -23,7 +22,7 @@ const Comment = ({ comment, postId }) => {
   const onDeleteComment = useCallback((e, comment) => {
     if (confirm("댓글을 삭제하시겠습니까?")) {
       const data = { postId, commentId: comment.id };
-      dispatch(deleteCommentRequest(data));
+      dispatch(deleteComment(data));
     }
   }, []);
 
@@ -33,9 +32,9 @@ const Comment = ({ comment, postId }) => {
     setLikeCommentLoading(true);
     const data = { postId, commentId: comment.id };
     if (!liked) {
-      dispatch(likeCommentRequest(data));
+      dispatch(likeComment(data));
     } else {
-      dispatch(unLikeCommentRequest(data));
+      dispatch(unlikeComment(data));
     }
   }, [liked]);
   useEffect(() => {

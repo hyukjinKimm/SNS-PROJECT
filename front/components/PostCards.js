@@ -2,11 +2,8 @@ import React, { useEffect } from "react";
 import { List, Space } from "antd";
 
 import PostCard from "./PostCard";
-import {
-  loadMorePosts,
-  loadPostRequestAction,
-  clearPostRequestAction,
-} from "../reducers/post";
+import * as postActions from "../reducerss/post";
+import { loadMorePosts, loadPosts } from "../reducerss/post";
 import { useDispatch, useSelector } from "react-redux";
 
 const PostCards = ({ posts }) => {
@@ -15,8 +12,7 @@ const PostCards = ({ posts }) => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(clearPostRequestAction());
-    dispatch(loadPostRequestAction());
+    dispatch(loadPosts());
   }, []);
   useEffect(() => {
     if (loadPostError) {
@@ -32,7 +28,7 @@ const PostCards = ({ posts }) => {
       ) {
         if (hasMorePost && !loadPostLoading) {
           const lastId = posts[posts.length - 1]?.id;
-          dispatch(loadPostRequestAction(lastId));
+          dispatch(loadPosts(lastId));
         }
       }
     }

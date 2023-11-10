@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import { HYDRATE } from "next-redux-wrapper";
+
 import axios from "axios";
 const initialState = {
   getMyInfoLoading: false, // 유저 정보 가져오기
@@ -28,7 +30,7 @@ const initialState = {
 }; // 초기 상태 정의
 
 export const getMyInfo = createAsyncThunk("user/getMyInfo", async (data) => {
-  const response = await axios.get("/");
+  const response = await axios.get("/user");
   return response.data;
 });
 export const getUserInfo = createAsyncThunk(
@@ -58,9 +60,9 @@ const userSlice = createSlice({
   reducers: {
     clearUserError: (state, action) => {
       state.getMyInfoError = null;
-      state.isLogInError = null;
-      state.isSignUpError = null;
-      state.isLogInError = null;
+      state.logInError = null;
+      state.signUpError = null;
+      state.logInError = null;
       state.getUserInfoError = null;
     },
   },
@@ -79,8 +81,8 @@ const userSlice = createSlice({
         state.getMyInfoLoading = false;
         state.getMyInfoDone = true;
         state.getMyInfoError = null;
-        state.isLoggedIn = action.data ? true : false;
-        state.me = action.data ? action.data : null;
+        state.isLoggedIn = action.payload ? true : false;
+        state.me = action.payload ? action.payload : null;
       })
       .addCase(getMyInfo.rejected, (state, action) => {
         state.isLoggedIn = false;
@@ -95,7 +97,7 @@ const userSlice = createSlice({
         state.getUserInfoLoading = false;
         state.getUserInfoDone = true;
         state.getUserInfoError = null;
-        state.user = action.data;
+        state.user = action.payload;
       })
       .addCase(getUserInfo.rejected, (state, action) => {
         state.getUserInfoError = action.error;
@@ -109,7 +111,7 @@ const userSlice = createSlice({
         state.logInLoading = false;
         state.logInDone = true;
         state.logInError = null;
-        state.me = action.data;
+        state.me = action.payload;
       })
       .addCase(logIn.rejected, (state, action) => {
         state.isLoggedIn = false;
@@ -152,5 +154,5 @@ const userSlice = createSlice({
         state.signUpError = action.error;
       }),
 });
-
+export const { clearUserError } = userSlice.actions; // 액션 생성함수
 export default userSlice.reducer; // 리듀서

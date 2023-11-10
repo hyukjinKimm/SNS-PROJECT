@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { Button, Checkbox, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
-
+import { signUp } from "../reducerss/user";
 import { useDispatch, useSelector } from "react-redux";
 const { Option } = Select;
 
@@ -56,10 +56,7 @@ const SignUp = () => {
   const onFinish = useCallback((e) => {
     console.log("Received values of form: ", e);
     const { email, password, nickname, gender } = e;
-    dispatch({
-      type: "SIGN_UP_REQUEST",
-      data: { email, password, nickname, gender },
-    });
+    dispatch(signUp({ email, password, nickname, gender }));
   }, []);
   useEffect(() => {
     if (isSignUpError) {

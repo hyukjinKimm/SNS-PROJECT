@@ -2,12 +2,16 @@ import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 import LoginForm from "../components/LoginForm";
 import SignUpForm from "../components/SignUpForm";
-
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import * as screenActions from "../reducerss/screen";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 const LogIn = () => {
+  const dispatch = useDispatch();
   const { logInOrSignUp } = useSelector((state) => state.screen);
+  useEffect(() => {
+    dispatch(screenActions.changeMenu("LOGIN"));
+  }, []);
   return (
     <>
       <Head>

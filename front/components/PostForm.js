@@ -5,11 +5,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addPostRequestAction,
-  addImageRequestAction,
-  removeImageRequestAction,
-} from "../reducers/post";
+import * as postActions from "../reducerss/post";
+import { addPost, addImage } from "../reducerss/post";
 
 const normFile = (e) => {
   console.log("Upload event:", e.fileList);
@@ -63,6 +60,12 @@ const tailFormItemLayout = {
   },
 };
 const Post = () => {
+  const dummyRequest = ({ file, onSuccess }) => {
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+  };
+  const route = useRouter();
   const { me } = useSelector((state) => state.user);
   const {
     addPostLoading,
@@ -79,6 +82,7 @@ const Post = () => {
   }, []);
   useEffect(() => {
     if (addPostDone) {
+      route.push("/");
       setText("");
     }
   }, [addPostDone]);
@@ -96,23 +100,25 @@ const Post = () => {
       imagePaths.forEach((i) => {
         data.append("image", i);
       });
-      dispatch(addPostRequestAction(data));
+      dispatch(addPost(data));
     },
 
     [imagePaths]
   );
   const onChangeImage = useCallback((e) => {
+    console.log(e);
     if (e.file.status == "done") {
+      console.log("e/?");
       const data = new FormData();
       data.append("image", e.file.originFileObj);
-      dispatch(addImageRequestAction(data));
+      dispatch(addImage(data));
       setfileList(e.fileList);
     }
   });
   const onRemoveImage = useCallback((e) => {
     const index = fileList.findIndex((file) => file.uid == e.uid);
     const newFileList = fileList.filter((v, i) => i != index);
-    dispatch(removeImageRequestAction(index));
+    dispatch(postActions.removeImage({ index }));
     setfileList(newFileList);
   });
   useEffect(() => {
@@ -184,6 +190,7 @@ const Post = () => {
             maxCount={5}
             onChange={onChangeImage}
             onRemove={onRemoveImage}
+            customRequest={dummyRequest}
           >
             <div>
               <PlusOutlined />

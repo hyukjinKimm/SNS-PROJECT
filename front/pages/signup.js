@@ -1,10 +1,13 @@
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 import SignUpForm from "../components/SignUpForm";
-
-import React from "react";
-
+import * as screenActions from "../reducerss/screen";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 const SingUp = () => {
+  useEffect(() => {
+    dispatch(screenActions.changeMenu("LOGIN"));
+  }, []);
   return (
     <>
       <Head>
