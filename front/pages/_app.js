@@ -1,10 +1,9 @@
 import Head from "next/head";
-import PropTypes from "prop-types";
-import wrapper from "../store/configureStore";
+import { wrapper } from "../store/configureStore";
 import "./slide.css";
 import "./styles.css";
 
-function App({ Component }) {
+function App({ Component, pageProps }) {
   return (
     <>
       <Head>
@@ -16,7 +15,7 @@ function App({ Component }) {
         <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
         <title>SNS-PROJECT</title>
       </Head>
-      <Component />
+      <Component {...pageProps} />
     </>
   );
 }

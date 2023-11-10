@@ -11,6 +11,7 @@
   "dependencies": {
     "-": "^0.0.1",
     "@ant-design/icons": "^5.2.6",
+    "@reduxjs/toolkit": "^1.9.7",
     "antd": "^5.9.4",
     "antd-img-crop": "^4.13.0",
     "axios": "^1.5.1",
@@ -26,6 +27,7 @@
     "react-slick": "^0.29.0",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
+    "redux-logger": "^3.0.6",
     "redux-saga": "^1.2.3",
     "shortid": "^2.2.16",
     "slick-carousel": "^1.8.1",
