@@ -15,12 +15,12 @@ import {
   FileAddOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
-import * as screenActions from "../reducerss/screen";
+import * as screenActions from "../reducers/screen";
 import { Layout, Menu, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 const { Header, Content, Footer, Sider } = Layout;
 
-import { logOut, getMyInfo } from "../reducerss/user";
+import { logOut, getMyInfo } from "../reducers/user";
 import { useRouter } from "next/router";
 
 const AppLayout = ({ children }) => {
@@ -28,7 +28,7 @@ const AppLayout = ({ children }) => {
   const router = useRouter();
 
   const { collapsed } = useSelector((state) => state.screen);
-  const { isLoggedIn, isLogOutLoading, isLogOutError, me } = useSelector(
+  const { isLoggedIn, logOutLoading, logOutError, me } = useSelector(
     (state) => state.user
   );
   const { deletePostError, deleteCommentError } = useSelector(
@@ -42,10 +42,10 @@ const AppLayout = ({ children }) => {
     dispatch(logOut());
   }, []);
   useEffect(() => {
-    if (isLogOutError) {
-      alert(isLogOutError);
+    if (logOutError) {
+      alert(logOutError);
     }
-  }, [isLogOutError]);
+  }, [logOutError]);
   useEffect(() => {
     dispatch(getMyInfo());
   }, []);
@@ -120,7 +120,7 @@ const AppLayout = ({ children }) => {
             key: "PROFILE",
             icon: React.createElement(UserOutlined),
 
-            label: <Link href={`${me.nickname}`}>프로필</Link>,
+            label: <Link href={`/${me.nickname}`}>프로필</Link>,
           }
         : {
             key: "PROFILE",
@@ -132,9 +132,9 @@ const AppLayout = ({ children }) => {
         ? {
             key: "LOGOUT",
             icon: React.createElement(
-              isLogOutLoading ? LoadingOutlined : LogoutOutlined
+              logOutLoading ? LoadingOutlined : LogoutOutlined
             ),
-            label: "로그아웃",
+            label: <a href="http://localhost:3060">로그아웃</a>,
             onClick: LogOutRequest,
           }
         : null,
@@ -144,7 +144,7 @@ const AppLayout = ({ children }) => {
         label: <Link href="/test">테스트</Link>,
       },
     ];
-  }, [isLoggedIn, isLogOutLoading]);
+  }, [isLoggedIn, logOutLoading]);
 
   return (
     <Layout hasSider>

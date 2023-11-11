@@ -1,8 +1,7 @@
-import shortId from "shortid";
-import { produce } from "immer";
-import { faker } from "@faker-js/faker";
-faker.seed(123);
-export const initialState = {
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
+import axios from "axios";
+const initialState = {
   mainPosts: [],
   imagePaths: [],
   addPostLoading: false,
@@ -17,14 +16,14 @@ export const initialState = {
   deletePostLoading: false,
   deletePostDone: false,
   deletePostError: null,
-  loadPostLoading: false,
-  loadPostDone: false,
-  loadPostError: null,
+  loadPostsLoading: false,
+  loadPostsDone: false,
+  loadPostsError: null,
 
   clearPostLoading: false,
   clearPostDone: false,
   clearPostError: null,
-  hasMorePost: true,
+  hasMorePosts: true,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -34,242 +33,117 @@ export const initialState = {
   deleteCommentLoading: false,
   deleteCommentDone: false,
   deleteCommentError: null,
-};
+}; // 초기 상태 정의
 
-export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
-export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
-export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
-
-export const CLEAR_POST_REQUEST = "CLEAR_POST_REQUEST";
-export const CLEAR_POST_SUCCESS = "CLEAR_POST_SUCCESS";
-export const CLEAR_POST_FAILURE = "CLEAR_POST_FAILURE";
-
-export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
-export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
-export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
-
-export const ADD_IMAGE_REQUEST = "ADD_IMAGE_REQUEST";
-export const ADD_IMAGE_SUCCESS = "ADD_IMAGE_SUCCESS";
-export const ADD_IMAGE_FAILURE = "ADD_IMAGE_FAILURE";
-
-export const REMOVE_IMAGE_REQUEST = "REMOVE_IMAGE_REQUEST";
-
-export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
-export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
-export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
-
-export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
-export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
-export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
-
-export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
-export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
-export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
-
-export const LIKE_COMMENT_REQUEST = "LIKE_COMMENT_REQUEST";
-export const LIKE_COMMENT_SUCCESS = "LIKE_COMMENT_SUCCESS";
-export const LIKE_COMMENT_FAILURE = "LIKE_COMMENT_FAILURE";
-
-export const UNLIKE_COMMENT_REQUEST = "UNLIKE_COMMENT_REQUEST";
-export const UNLIKE_COMMENT_SUCCESS = "UNLIKE_COMMENT_SUCCESS";
-export const UNLIKE_COMMENT_FAILURE = "UNLIKE_COMMENT_FAILURE";
-
-export const DELETE_COMMENT_REQUEST = "DELETE_COMMENT_REQUEST";
-export const DELETE_COMMENT_SUCCESS = "DELETE_COMMENT_SUCCESS";
-export const DELETE_COMMENT_FAILURE = "DELETE_COMMENT_FAILURE";
-
-export const DELETE_POST_REQUEST = "DELETE_POST_REQUEST";
-export const DELETE_POST_SUCCESS = "DELETE_POST_SUCCESS";
-export const DELETE_POST_FAILURE = "DELETE_POST_FAILURE";
-
-export const addPostRequestAction = (data) => ({
-  type: ADD_POST_REQUEST,
-  data,
+export const loadPosts = createAsyncThunk("post/loadPosts", async (lastId) => {
+  const response = await axios.get(`posts?lastId=${lastId || 0}`);
+  return response.data;
 });
-export const addImageRequestAction = (data) => ({
-  type: ADD_IMAGE_REQUEST,
-  data,
+export const addPost = createAsyncThunk("post/addPost", async (data) => {
+  const response = await axios.post("/post", data);
+  return response.data;
 });
-export const removeImageRequestAction = (data) => ({
-  type: REMOVE_IMAGE_REQUEST,
-  data,
+export const likePost = createAsyncThunk("post/likePost", async (data) => {
+  const response = await axios.post(`/post/${data.postId}/like`);
+  return response.data;
 });
-export const likePostRequestAction = (data) => ({
-  type: LIKE_POST_REQUEST,
-  data,
+export const unlikePost = createAsyncThunk("post/unlikePost", async (data) => {
+  const response = await axios.post(`/post/${data.postId}/unlike`);
+  return response.data;
 });
-export const unLikePostRequestAction = (data) => ({
-  type: UNLIKE_POST_REQUEST,
-  data,
+export const addImage = createAsyncThunk("post/addImage", async (data) => {
+  const response = await axios.post("/post/image", data);
+  return response.data;
 });
-export const deletePostRequestAction = (data) => ({
-  type: DELETE_POST_REQUEST,
-  data,
+export const deletePost = createAsyncThunk(
+  "post/deletePost",
+  async (postId) => {
+    const response = await axios.delete(`/post/${postId}`);
+    return response.data;
+  }
+);
+export const addComment = createAsyncThunk("post/addComment", async (data) => {
+  const response = await axios.post(`/post/${data.postId}/comment`, data);
+  return response.data;
 });
-export const loadPostRequestAction = (lastId) => ({
-  type: LOAD_POST_REQUEST,
-  lastId: lastId,
-});
+export const likeComment = createAsyncThunk(
+  "post/likeComment",
+  async (data) => {
+    const response = await axios.patch("/user/likecomment", data);
+    return response.data;
+  }
+);
+export const unlikeComment = createAsyncThunk(
+  "post/unlikeComment",
+  async (data) => {
+    const response = await axios.patch("/user/unlikecomment", data);
+    return response.data;
+  }
+);
+export const deleteComment = createAsyncThunk(
+  "post/deleteComment",
+  async (data) => {
+    const response = await axios.delete(
+      `/post/${data.postId}/comment/${data.commentId}`
+    );
+    return response.data;
+  }
+);
 
-export const clearPostRequestAction = (data) => ({
-  type: CLEAR_POST_REQUEST,
-  data,
-});
-export const addCommentRequest = (data) => ({
-  type: ADD_COMMENT_REQUEST,
-  data,
-});
-export const likeCommentRequest = (data) => ({
-  type: LIKE_COMMENT_REQUEST,
-  data,
-});
-export const unLikeCommentRequest = (data) => ({
-  type: UNLIKE_COMMENT_REQUEST,
-  data,
-});
-export const deleteCommentRequest = (data) => ({
-  type: DELETE_COMMENT_REQUEST,
-  data,
-});
+const postSlice = createSlice({
+  name: "post",
+  initialState,
+  reducers: {
+    removeImage: (state, action) => {
+      state.imagePaths = state.imagePaths.filter(
+        (v, i) => i !== action.payload.index
+      );
+    },
+    initializePostState: (state, action) => {
+      state.mainPosts = [];
+      state.imagePaths = [];
+      state.addPostLoading = false;
+      state.addPostDone = false;
+      state.addPostError = null;
+      state.addImageLoading = false;
+      state.addImageDone = false;
+      state.addImageError = null;
+      state.likePostLoading = false;
+      state.likePostDone = false;
+      state.likePostError = null;
+      state.deletePostLoading = false;
+      state.deletePostDone = false;
+      state.deletePostError = null;
+      state.loadPostsLoading = false;
+      state.loadPostsDone = false;
+      state.loadPostsError = null;
 
-const dummyPost = (data) => {
-  return {
-    id: shortId.generate(),
-    ...data,
-    Image: [],
-    Comments: [],
-  };
-};
-
-export const loadMorePosts = (number) => {
-  return Array(number)
-    .fill()
-    .map((v, i) => {
-      return {
-        id: shortId.generate(),
-        User: {
-          id: shortId.generate(),
-          nickname: faker.person.firstName(),
-        },
-        content: faker.lorem.paragraph(),
-        Images: [{ src: faker.image.url() }, { src: faker.image.url() }],
-        Comments: [
-          {
-            User: {
-              id: shortId.generate(),
-              nickname: faker.person.firstName(),
-            },
-            content: faker.lorem.sentence(),
-          },
-        ],
-      };
-    });
-};
-
-const reducer = (state = initialState, action) => {
-  return produce(state, (draft) => {
-    switch (action.type) {
-      case ADD_POST_REQUEST:
-        draft.addPostLoading = true;
-        draft.addPostDone = false;
-        draft.addPostError = null;
-        break;
-      case ADD_POST_SUCCESS:
-        draft.addPostLoading = false;
-        draft.addPostDone = true;
-        draft.addPostError = null;
-        draft.imagePaths = [];
-        break;
-      case ADD_POST_FAILURE:
-        draft.addPostLoading = false;
-        draft.addPostError = action.error;
-        break;
-      case REMOVE_IMAGE_REQUEST:
-        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
-        break;
-      case ADD_IMAGE_REQUEST:
-        draft.addImageLoading = true;
-        draft.addImageDone = false;
-        draft.addImageError = null;
-        break;
-      case ADD_IMAGE_SUCCESS:
-        draft.addImageLoading = false;
-        draft.addImageDone = true;
-        draft.addImageError = null;
-        draft.imagePaths.push(action.data.imagePath);
-        break;
-      case ADD_IMAGE_FAILURE:
-        draft.addImageLoading = false;
-        draft.addImageError = action.error;
-        break;
-      case LIKE_POST_REQUEST:
-        draft.likePostLoading = true;
-        draft.likePostDone = false;
-        draft.likePostError = null;
-        break;
-      case LIKE_POST_SUCCESS:
-        draft.likePostLoading = false;
-        draft.likePostDone = true;
-        draft.likePostError = null;
-        draft.mainPosts.find((post) => post.id == action.data.id).PostLikers =
-          action.data.PostLikers.map((p) => {
-            return {
-              id: p.id,
-            };
-          });
-
-        break;
-      case LIKE_POST_FAILURE:
-        draft.likePostLoading = false;
-        draft.likePostError = action.error;
-        break;
-      case UNLIKE_POST_REQUEST:
-        draft.likePostLoading = true;
-        draft.likePostDone = false;
-        draft.likePostError = null;
-        break;
-      case UNLIKE_POST_SUCCESS:
-        draft.likePostLoading = false;
-        draft.likePostDone = true;
-        draft.likePostError = null;
-        draft.mainPosts.find((post) => post.id == action.data.id).PostLikers =
-          action.data.PostLikers.map((p) => {
-            return {
-              id: p.id,
-            };
-          });
-
-        break;
-      case UNLIKE_POST_FAILURE:
-        draft.likePostLoading = false;
-        draft.likePostError = action.error;
-        break;
-
-      case DELETE_POST_REQUEST:
-        draft.deletePostLoading = true;
-        draft.deletePostDone = false;
-        draft.deletePostError = null;
-        break;
-
-      case DELETE_POST_SUCCESS:
-        draft.deletePostLoading = true;
-        draft.deletePostDone = true;
-        draft.deletePostError = null;
-        draft.mainPosts = draft.mainPosts.filter((post) => {
-          if (post.id != action.data.id) return true;
-        });
-        break;
-      case DELETE_POST_FAILURE:
-        draft.deletePostError = true;
-        draft.deletePostLoading = false;
-        draft.deletePostError = action.error;
-        break;
-
-      case LOAD_POST_REQUEST:
-        draft.loadPostLoading = true;
-        draft.loadPostDone = false;
-        draft.loadPostError = null;
-        draft.mainPosts = draft.mainPosts.concat(
+      state.clearPostLoading = false;
+      state.clearPostDone = false;
+      state.clearPostError = null;
+      state.hasMorePosts = true;
+      state.addCommentLoading = false;
+      state.addCommentDone = false;
+      state.addCommentError = null;
+      state.likeCommentLoading = false;
+      state.likeCommentDone = false;
+      state.likeCommentError = null;
+      state.deleteCommentLoading = false;
+      state.deleteCommentDone = false;
+      state.deleteCommentError = null;
+    },
+  },
+  extraReducers: (builder) =>
+    builder
+      .addCase(HYDRATE, (state, action) => ({
+        ...state,
+        ...action.payload.post,
+      }))
+      .addCase(loadPosts.pending, (state, action) => {
+        state.loadPostsLoading = true;
+        state.loadPostsDone = false;
+        state.loadPostsError = null;
+        state.mainPosts = state.mainPosts.concat(
           Array(10)
             .fill()
             .map(() => {
@@ -280,121 +154,191 @@ const reducer = (state = initialState, action) => {
               };
             })
         );
-
-        break;
-      case LOAD_POST_SUCCESS:
-        draft.loadPostLoading = false;
-        draft.loadPostDone = true;
-        draft.loadPostError = null;
-        draft.mainPosts = draft.mainPosts.slice(0, -10).concat(action.data);
-
-        draft.hasMorePost = action.data.length == 10;
-        break;
-      case LOAD_POST_FAILURE:
-        draft.loadPostLoading = false;
-        draft.loadPostError = action.error;
-        break;
-
-      case CLEAR_POST_REQUEST:
-        draft.mainPosts = [];
-
-        break;
-
-      case ADD_COMMENT_REQUEST:
-        draft.addCommentLoading = true;
-        draft.addCommentDone = false;
-        draft.addCommentError = null;
-        break;
-      case ADD_COMMENT_SUCCESS:
-        draft.addCommentDone = true;
-        draft.addCommentLoading = false;
-
-        draft.mainPosts
-          .find((post) => post.id == action.data.PostId)
-          .Comments.unshift(action.data);
-        break;
-
-      case ADD_COMMENT_FAILURE:
-        draft.addCommentLoading = false;
-        draft.addCommentError = action.error;
-        break;
-
-      case DELETE_COMMENT_REQUEST:
-        draft.deleteCommentLoading = true;
-        draft.deleteCommentDone = false;
-        draft.deleteCommentError = null;
-        break;
-      case DELETE_COMMENT_SUCCESS:
-        draft.deleteCommentDone = true;
-        draft.deleteCommentLoading = false;
-
-        let comments = draft.mainPosts.find(
-          (post) => post.id == action.data.postId
+      })
+      .addCase(loadPosts.fulfilled, (state, action) => {
+        state.loadPostsLoading = false;
+        state.loadPostsDone = true;
+        state.loadPostsError = null;
+        state.mainPosts = state.mainPosts.slice(0, -10).concat(action.payload);
+        state.hasMorePosts = action.payload.length == 10;
+      })
+      .addCase(loadPosts.rejected, (state, action) => {
+        state.loadPostsLoading = false;
+        state.loadPostsError = action.error;
+      })
+      .addCase(addPost.pending, (state, action) => {
+        state.addPostLoading = true;
+        state.addPostDone = false;
+        state.addPostError = null;
+      })
+      .addCase(addPost.fulfilled, (state, action) => {
+        state.addPostLoading = false;
+        state.addPostDone = true;
+        state.addPostError = null;
+        state.imagePaths = [];
+      })
+      .addCase(addPost.rejected, (state, action) => {
+        state.addPostLoading = false;
+        state.addPostError = action.error;
+      })
+      .addCase(likePost.pending, (state, action) => {
+        state.likePostLoading = true;
+        state.likePostDone = false;
+        state.likePostError = null;
+      })
+      .addCase(likePost.fulfilled, (state, action) => {
+        state.likePostLoading = false;
+        state.likePostDone = true;
+        state.likePostError = null;
+        state.mainPosts.find(
+          (post) => post.id == action.payload.id
+        ).PostLikers = action.payload.PostLikers.map((p) => {
+          return {
+            id: p.id,
+          };
+        });
+      })
+      .addCase(likePost.rejected, (state, action) => {
+        state.likePostLoading = false;
+        state.likePostError = action.error;
+      })
+      .addCase(unlikePost.pending, (state, action) => {
+        state.likePostLoading = true;
+        state.likePostDone = false;
+        state.likePostError = null;
+      })
+      .addCase(unlikePost.fulfilled, (state, action) => {
+        state.likePostLoading = false;
+        state.likePostDone = true;
+        state.likePostError = null;
+        state.mainPosts.find(
+          (post) => post.id == action.payload.id
+        ).PostLikers = action.payload.PostLikers.map((p) => {
+          return {
+            id: p.id,
+          };
+        });
+      })
+      .addCase(unlikePost.rejected, (state, action) => {
+        state.likePostLoading = false;
+        state.likePostError = action.error;
+      })
+      .addCase(addImage.pending, (state, action) => {
+        state.addImageLoading = true;
+        state.addImageDone = false;
+        state.addImageError = null;
+      })
+      .addCase(addImage.fulfilled, (state, action) => {
+        state.addImageLoading = false;
+        state.addImageDone = true;
+        state.addImageError = null;
+        state.imagePaths.push(action.payload.imagePath);
+      })
+      .addCase(addImage.rejected, (state, action) => {
+        state.addImageLoading = false;
+        state.addImageError = action.error;
+      })
+      .addCase(deletePost.pending, (state, action) => {
+        state.deletePostLoading = true;
+        state.deletePostDone = false;
+        state.deletePostError = null;
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.deletePostLoading = false;
+        state.deletePostDone = true;
+        state.deletePostError = null;
+        state.mainPosts = state.mainPosts.filter((post) => {
+          if (post.id != action.payload.id) return true;
+        });
+      })
+      .addCase(deletePost.rejected, (state, action) => {
+        state.deletePostLoading = false;
+        state.deletePostError = action.error;
+      })
+      .addCase(addComment.pending, (state, action) => {
+        state.addCommentLoading = true;
+        state.addCommentDone = false;
+        state.addCommentError = null;
+      })
+      .addCase(addComment.fulfilled, (state, action) => {
+        state.addCommentLoading = false;
+        state.addCommentDone = true;
+        state.addCommentError = null;
+        state.mainPosts
+          .find((post) => post.id == action.payload.PostId)
+          .Comments.unshift(action.payload);
+      })
+      .addCase(addComment.rejected, (state, action) => {
+        state.addCommentError = action.error;
+        state.addCommentLoading = false;
+      })
+      .addCase(deleteComment.pending, (state, action) => {
+        state.deleteCommentLoading = true;
+        state.deleteCommentDone = false;
+        state.deleteCommentError = null;
+      })
+      .addCase(deleteComment.fulfilled, (state, action) => {
+        state.deleteCommentLoading = false;
+        state.deleteCommentDone = true;
+        state.deleteCommentError = null;
+        let comments = state.mainPosts.find(
+          (post) => post.id == action.payload.postId
         ).Comments;
         let index = comments.findIndex(
-          (comment) => comment.id == action.data.commentId
+          (comment) => comment.id == action.payload.commentId
         );
         comments.splice(index, 1);
-
-        break;
-
-      case DELETE_COMMENT_FAILURE:
-        draft.deleteCommentLoading = false;
-        draft.deleteCommentError = action.error;
-        break;
-      case LIKE_COMMENT_REQUEST:
-        draft.likeCommentLoading = true;
-        draft.likeCommentDone = false;
-        draft.likeCommentError = null;
-        break;
-      case LIKE_COMMENT_SUCCESS:
-        draft.likeCommentDone = true;
-        draft.likeCommentLoading = false;
-        draft.likeCommentError = null;
-        draft.mainPosts
-          .find((post) => post.id == action.data.postId)
+      })
+      .addCase(deleteComment.rejected, (state, action) => {
+        state.deleteCommentError = action.error;
+        state.deleteCommentLoading = false;
+      })
+      .addCase(likeComment.pending, (state, action) => {
+        state.likeCommentLoading = true;
+        state.likeCommentDone = false;
+        state.likeCommentError = null;
+      })
+      .addCase(likeComment.fulfilled, (state, action) => {
+        state.likeCommentLoading = false;
+        state.likeCommentDone = true;
+        state.likeCommentError = null;
+        state.mainPosts
+          .find((post) => post.id == action.payload.postId)
           .Comments.find(
-            (comment) => comment.id == action.data.commentId
-          ).CommentLikers = action.data.CommentLikers.map((p) => {
+            (comment) => comment.id == action.payload.commentId
+          ).CommentLikers = action.payload.CommentLikers.map((p) => {
           return {
             id: p.UserId,
           };
         });
-        break;
-
-      case LIKE_COMMENT_FAILURE:
-        draft.likeCommentLoading = false;
-        draft.likeCommentError = action.error;
-        break;
-      case UNLIKE_COMMENT_REQUEST:
-        draft.likeCommentLoading = true;
-        draft.likeCommentDone = false;
-        draft.likeCommentError = null;
-        break;
-      case UNLIKE_COMMENT_SUCCESS:
-        draft.likeCommentDone = true;
-        draft.likeCommentLoading = false;
-        draft.likeCommentError = null;
-        draft.mainPosts
-          .find((post) => post.id == action.data.postId)
+      })
+      .addCase(likeComment.rejected, (state, action) => {
+        state.likeCommentError = action.error;
+        state.likeCommentLoading = false;
+      })
+      .addCase(unlikeComment.pending, (state, action) => {
+        state.likeCommentLoading = true;
+        state.likeCommentDone = false;
+        state.likeCommentError = null;
+      })
+      .addCase(unlikeComment.fulfilled, (state, action) => {
+        state.likeCommentLoading = false;
+        state.likeCommentDone = true;
+        state.likeCommentError = null;
+        state.mainPosts
+          .find((post) => post.id == action.payload.postId)
           .Comments.find(
-            (comment) => comment.id == action.data.commentId
-          ).CommentLikers = action.data.CommentLikers.map((p) => {
+            (comment) => comment.id == action.payload.commentId
+          ).CommentLikers = action.payload.CommentLikers.map((p) => {
           return {
             id: p.UserId,
           };
         });
-        break;
-
-      case UNLIKE_COMMENT_FAILURE:
-        draft.likeCommentLoading = false;
-        draft.likeCommentError = action.error;
-        break;
-
-      default:
-        break;
-    }
-  });
-};
-
-export default reducer;
+      })
+      .addCase(unlikeComment.rejected, (state, action) => {
+        state.likeCommentError = action.error;
+        state.likeCommentLoading = false;
+      }),
+});
+export const { initializePostState, removeImage } = postSlice.actions; // 액션 생성함수
+export default postSlice.reducer; // 리듀서

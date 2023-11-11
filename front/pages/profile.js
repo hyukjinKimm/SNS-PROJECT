@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import AppLayout from "../components/AppLayout";
 import UserProfile from "../components/UserProfile";
-import * as screenActions from "../reducerss/screen";
-function Home(props) {
+import * as screenActions from "../reducers/screen";
+function Profile(props) {
   useEffect(() => {
     dispatch(screenActions.changeMenu("PROFILE"));
   }, []);
@@ -19,4 +19,4 @@ function Home(props) {
   );
 }
 
-export default Home;
+export default Profile;

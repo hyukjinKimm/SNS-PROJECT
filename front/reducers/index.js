@@ -1,24 +1,26 @@
-import { HYDRATE } from "next-redux-wrapper";
 import { combineReducers } from "redux";
-import user from "./user";
+import { HYDRATE } from "next-redux-wrapper";
+import axios from "axios";
 import post from "./post";
+import user from "./user";
 import screen from "./screen";
-// (이전상태, action) 통해서  => 다음상태를 만들어냄.
-const rootReducer = combineReducers({
-  // Reducers 를 합침.
-  index: (state = {}, action) => {
-    switch (action.type) {
-      case HYDRATE:
-        console.log("HYDRATE", action);
-        return { ...state, ...action.payload };
+axios.defaults.baseURL = "http://localhost:3065";
+axios.defaults.withCredentials = true;
 
-      default:
-        return state;
-    }
-  },
-  user,
-  post,
-  screen,
-});
+const rootReducer = (state, action) => {
+  if (action.type === HYDRATE) {
+    return {
+      ...state,
+      ...action.payload,
+    };
+  }
+  return combineReducers({
+    user,
+    post,
+    screen,
+    // 여기에 추가
+  })(state, action);
+};
+//cotak.tistory.com/164 [TaxFree:티스토리]
 
 export default rootReducer;

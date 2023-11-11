@@ -11,7 +11,7 @@ import {
   deleteComment,
   likeComment,
   unlikeComment,
-} from "../reducerss/post";
+} from "../reducers/post";
 import { Avatar, List, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 const Comment = ({ comment, postId }) => {

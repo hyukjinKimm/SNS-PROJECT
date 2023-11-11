@@ -15,7 +15,7 @@ const ImageSlider = ({ images }) => {
       <link
         rel="stylesheet"
         type="text/css"
-        charset="UTF-8"
+        charSet="UTF-8"
         href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css"
       />
       <link
@@ -26,7 +26,7 @@ const ImageSlider = ({ images }) => {
       <div style={{ width: "30vw" }}>
         <Slider {...settings}>
           {images.map((image) => (
-            <div>
+            <div key={image.src}>
               <img
                 src={`http://localhost:3065/img/${image.src}`}
                 alt=""

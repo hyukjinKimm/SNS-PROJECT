@@ -1,170 +1,175 @@
-import { produce } from "immer";
-export const initialState = {
-  getUserLoading: false, // 유저 정보 가져오기
-  getUserDone: false,
-  getUserError: null,
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-  isLogInLoading: false, // 로그인 시도중
-  isLogInError: null,
-  isLogInDone: false,
+import { HYDRATE } from "next-redux-wrapper";
 
-  isSignUpLoading: false, // 회원가입 시도중
-  isSignUpError: null,
-  isSignUpDone: false,
+import axios from "axios";
+const initialState = {
+  getMyInfoLoading: false, // 유저 정보 가져오기
+  getMyInfoDone: false,
+  getMyInfoError: null,
 
-  isLogOutLoading: false, // 로그아웃 시도중
-  isLogOutError: null,
-  isLogOutDone: false,
+  logInLoading: false, // 로그인 시도중
+  logInError: null,
+  logInDone: false,
 
-  loadProfileOwnerLoading: false,
-  loadProfileOwnerDone: false,
-  loadProfileOwnerError: null,
+  signUpLoading: false, // 회원가입 시도중
+  signUpError: null,
+  signUpDone: false,
+
+  logOutLoading: false, // 로그아웃 시도중
+  logOutError: null,
+  logOutDone: false,
+
+  getUserInfoLoading: false,
+  getUserInfoDone: false,
+  getUserInfoError: null,
 
   isLoggedIn: false,
   me: null,
-  profileOwner: null,
-};
-export const LOAD_PROFILE_OWNER_REQUEST = "LOAD_PROFILE_OWNER_REQUEST";
-export const LOAD_PROFILE_OWNER_SUCCESS = "LOAD_PROFILE_OWNER_SUCCESS";
-export const LOAD_PROFILE_OWNER_FAILURE = "LOAD_PROFILE_OWNER_FAILURE";
-export const GET_USER_REQUEST = "GET_USER_REQUEST";
-export const GET_USER_SUCCESS = "GET_USER_SUCCESS";
-export const GET_USER_FAILURE = "GET_USER_FAILURE";
-export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
-export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
-export const LOG_IN_FAILURE = "LOG_IN_FAILURE";
-export const LOG_OUT_REQUEST = "LOG_OUT_REQUEST";
-export const LOG_OUT_SUCCESS = "LOG_OUT_SUCCESS";
-export const LOG_OUT_FAILURE = "LOG_OUT_FAILURE";
-export const SIGN_UP_REQUEST = "SIGN_UP_REQUEST";
-export const SIGN_UP_SUCCESS = "SIGN_UP_SUCCESS";
-export const SIGN_UP_FAILURE = "SIGN_UP_FAILURE";
+  user: null,
+}; // 초기 상태 정의
 
-export const CLEAR_USER_ERROR = "CLEAR_USER_ERROR";
-export const userRequestAction = () => {
-  return {
-    type: GET_USER_REQUEST,
-  };
-};
-export const clearUserErrorAction = () => {
-  return {
-    type: CLEAR_USER_ERROR,
-  };
-};
-export const logInRequestAction = (data) => {
-  return {
-    type: LOG_IN_REQUEST,
-    data,
-  };
-};
-export const logOutRequestAction = () => {
-  return {
-    type: LOG_OUT_REQUEST,
-  };
-};
-export const loadProfileOwnerRequestAction = (nickname) => ({
-  type: LOAD_PROFILE_OWNER_REQUEST,
-  nickname,
+export const getMyInfo = createAsyncThunk("user/getMyInfo", async (data) => {
+  const response = await axios.get("/user");
+  return response.data;
+});
+export const getUserInfo = createAsyncThunk(
+  "user/getUserInfo",
+  async (nickname) => {
+    const response = await axios.get(`/user/${encodeURIComponent(nickname)}`);
+    return response.data;
+  }
+);
+
+export const logIn = createAsyncThunk("user/logIn", async (data) => {
+  const response = await axios.post("/auth/login", data);
+  return response.data;
+});
+export const logOut = createAsyncThunk("user/logOut", async (data) => {
+  const response = await axios.get("/auth/logout");
+  return response.data;
+});
+export const signUp = createAsyncThunk("user/signUp", async (data) => {
+  const response = await axios.post("/user", data);
+  return response.data;
 });
 
-const reducer = (state = initialState, action) => {
-  return produce(state, (draft) => {
-    switch (action.type) {
-      case CLEAR_USER_ERROR:
-        draft.getUserError = null;
-        draft.isLogInError = null;
-        draft.isSignUpError = null;
-        draft.isLogInError = null;
-        draft.loadProfileOwnerError = null;
-        break;
-      case GET_USER_REQUEST:
-        draft.getUserLoading = true;
-        draft.getUserDone = false;
-        draft.getUserError = null;
-        break;
-      case GET_USER_SUCCESS:
-        draft.getUserLoading = false;
-        draft.getUserDone = true;
-        draft.getUserError = null;
-        draft.isLoggedIn = action.data ? true : false;
-        draft.me = action.data ? action.data : null;
-        break;
-      case GET_USER_FAILURE:
-        draft.isLoggedIn = false;
-        draft.getUserError = action.error;
-        break;
-      case LOAD_PROFILE_OWNER_REQUEST:
-        draft.loadProfileOwnerLoading = true;
-        draft.loadProfileOwnerDone = false;
-        draft.loadProfileOwnerError = null;
-        break;
-      case LOAD_PROFILE_OWNER_SUCCESS:
-        draft.loadProfileOwnerLoading = false;
-        draft.loadProfileOwnerDone = true;
-        draft.loadProfileOwnerError = null;
-        draft.profileOwner = action.data;
-        break;
-      case LOAD_PROFILE_OWNER_FAILURE:
-        draft.loadProfileOwnerError = action.error;
-        break;
-      case LOG_IN_REQUEST:
-        draft.isLogInLoading = true;
-        draft.isLogInDone = false;
-        draft.isLogInError = null;
-        break;
-      case LOG_IN_SUCCESS:
-        draft.isLogInLoading = false;
-        draft.isLogInDone = true;
-        draft.isLogInError = null;
-        draft.isLoggedIn = true;
-        draft.me = action.data;
-        break;
-      case LOG_IN_FAILURE:
-        draft.isLoggedIn = false;
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    initializeUserState: (state, action) => {
+      state.getMyInfoLoading = false;
+      state.getMyInfoDone = false;
+      state.getMyInfoError = null;
 
-        draft.isLogInLoading = false;
-        draft.isLogInError = action.error;
-        draft.isLogInDone = true;
-        break;
-      case LOG_OUT_REQUEST:
-        draft.isLogOutLoading = true;
-        draft.isLogOutDone = false;
-        draft.isLogOutError = null;
-        break;
+      state.logInLoading = false;
+      state.logInError = null;
+      state.logInDone = false;
 
-      case LOG_OUT_SUCCESS:
-        draft.isLogOutLoading = false;
-        draft.isLogOutDone = true;
-        draft.isLogOutError = null;
-        draft.me = null;
-        draft.isLoggedIn = false;
-        break;
+      (state.signUpLoading = false),
+        (state.signUpError = null),
+        (state.signUpDone = false),
+        (state.logOutLoading = false);
+      state.logOutError = null;
+      state.logOutDone = false;
 
-      case LOG_OUT_FAILURE:
-        draft.isLogOutLoading = false;
-        draft.isLogOutDone = true;
-        draft.isLogOutError = action.error;
-        break;
-      case SIGN_UP_REQUEST:
-        draft.isSignUpLoading = true;
-        draft.isSignUpDone = false;
-        draft.isSignUpError = null;
-        break;
-      case SIGN_UP_SUCCESS:
-        draft.isSignUpLoading = false;
-        draft.isSignUpDone = true;
-        draft.isSignUpError = null;
-        break;
-      case SIGN_UP_FAILURE:
-        draft.isSignUpLoading = false;
-        draft.isSignUpDone = true;
-        draft.isSignUpError = action.error;
-        break;
+      state.getUserInfoLoading = false;
+      state.getUserInfoDone = false;
+      state.getUserInfoError = null;
 
-      default:
-        break;
-    }
-  });
-};
-
-export default reducer;
+      state.isLoggedIn = false;
+      state.me = null;
+      state.user = null;
+    },
+  },
+  extraReducers: (builder) =>
+    builder
+      .addCase(HYDRATE, (state, action) => ({
+        ...state,
+        ...action.payload.user,
+      }))
+      .addCase(getMyInfo.pending, (state, action) => {
+        state.getMyInfoLoading = true;
+        state.getMyInfoDone = false;
+        state.getMyInfoError = null;
+      })
+      .addCase(getMyInfo.fulfilled, (state, action) => {
+        state.getMyInfoLoading = false;
+        state.getMyInfoDone = true;
+        state.getMyInfoError = null;
+        state.isLoggedIn = action.payload ? true : false;
+        state.me = action.payload ? action.payload : null;
+      })
+      .addCase(getMyInfo.rejected, (state, action) => {
+        state.isLoggedIn = false;
+        state.getMyInfoError = action.error;
+      })
+      .addCase(getUserInfo.pending, (state, action) => {
+        state.getUserInfoLoading = true;
+        state.getUserInfoDone = false;
+        state.getUserInfoError = null;
+      })
+      .addCase(getUserInfo.fulfilled, (state, action) => {
+        state.getUserInfoLoading = false;
+        state.getUserInfoDone = true;
+        state.getUserInfoError = null;
+        state.user = action.payload;
+      })
+      .addCase(getUserInfo.rejected, (state, action) => {
+        state.getUserInfoError = action.error;
+      })
+      .addCase(logIn.pending, (state, action) => {
+        state.logInLoading = true;
+        state.logInDone = false;
+        state.logInError = null;
+      })
+      .addCase(logIn.fulfilled, (state, action) => {
+        state.logInLoading = false;
+        state.logInDone = true;
+        state.logInError = null;
+        state.me = action.payload;
+      })
+      .addCase(logIn.rejected, (state, action) => {
+        state.isLoggedIn = false;
+        state.logInLoading = false;
+        state.logInDone = true;
+        state.logInError = action.error;
+      })
+      .addCase(logOut.pending, (state, action) => {
+        state.logOutLoading = true;
+        state.logOutDone = false;
+        state.logOutError = null;
+      })
+      .addCase(logOut.fulfilled, (state, action) => {
+        state.logOutLoading = false;
+        state.logOutDone = true;
+        state.logOutError = null;
+        state.me = null;
+        state.isLoggedIn = false;
+      })
+      .addCase(logOut.rejected, (state, action) => {
+        state.logOutLoading = false;
+        state.logOutDone = true;
+        state.logOutError = action.error;
+      })
+      .addCase(signUp.pending, (state, action) => {
+        state.signUpLoading = true;
+        state.signUpDone = false;
+        state.signUpError = null;
+      })
+      .addCase(signUp.fulfilled, (state, action) => {
+        state.signUpLoading = false;
+        state.signUpDone = true;
+        state.signUpError = null;
+        state.me = null;
+        state.isLoggedIn = false;
+      })
+      .addCase(signUp.rejected, (state, action) => {
+        state.signUpLoading = false;
+        state.signUpDone = true;
+        state.signUpError = action.error;
+      }),
+});
+export const { initializeUserState } = userSlice.actions; // 액션 생성함수
+export default userSlice.reducer; // 리듀서

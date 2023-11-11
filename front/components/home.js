@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout, theme, Button } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+
 const { Header, Content, Footer, Sider } = Layout;
 function Home(props) {
   const {

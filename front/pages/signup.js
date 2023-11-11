@@ -1,7 +1,7 @@
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 import SignUpForm from "../components/SignUpForm";
-import * as screenActions from "../reducerss/screen";
+import * as screenActions from "../reducers/screen";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 const SingUp = () => {

@@ -7,9 +7,7 @@ const { Meta } = Card;
 const { Content } = Layout;
 
 const UserProfile = ({}) => {
-  const { me, user, loadProfileOwnerError } = useSelector(
-    (state) => state.user
-  );
+  const { me, user, getUserInfoError } = useSelector((state) => state.user);
 
   const {
     token: { colorBgContainer },
@@ -29,8 +27,7 @@ const UserProfile = ({}) => {
 
     return newArray;
   }, []);
-  const result =
-    profileOwner?.Posts.length > 0 ? division(profileOwner?.Posts, 3) : [];
+  const result = user?.Posts.length > 0 ? division(user?.Posts, 3) : [];
 
   return (
     <>
@@ -84,23 +81,23 @@ const UserProfile = ({}) => {
                     <div key="posts">
                       게시물
                       <br />
-                      {profileOwner?.Posts.length}
+                      {user?.Posts.length}
                     </div>,
                     <div key="followers">
                       팔로워
                       <br />
-                      {profileOwner?.Followers.length}
+                      {user?.Followers.length}
                     </div>,
                     <div key="followings">
                       팔로잉
                       <br />
-                      {profileOwner?.Followings.length}
+                      {user?.Followings.length}
                     </div>,
                   ]}
                 >
                   <Meta
-                    title={profileOwner?.nickname}
-                    description={profileOwner?.description}
+                    title={user?.nickname}
+                    description={user?.description}
                     style={{ height: "11vh", paddingTop: 10 }}
                   />
                 </Card>

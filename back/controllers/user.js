@@ -4,7 +4,7 @@ const User = require("../models/user");
 const Post = require("../models/post");
 const Image = require("../models/image");
 
-exports.getUser = async (req, res, next) => {
+exports.getMyInfo = async (req, res, next) => {
   try {
     if (req.user) {
       const user = await User.findOne({
@@ -39,7 +39,7 @@ exports.getUser = async (req, res, next) => {
     next(e); // status(500)
   }
 };
-exports.getProfileOwner = async (req, res, next) => {
+exports.getUser = async (req, res, next) => {
   try {
     const user = await User.findOne({
       where: { nickname: decodeURIComponent(req.params.nickname) },
@@ -60,6 +60,7 @@ exports.getProfileOwner = async (req, res, next) => {
         },
       ],
       attributes: { exclude: ["password"] },
+      order: [[Post, "createdAt", "DESC"]],
     });
     if (!user) {
       return res.status(403).send("존재하지 않는 유저 입니다.");

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import AppLayout from "../components/AppLayout";
 import PostForm from "../components/PostForm";
-import * as screenActions from "../reducerss/screen";
+import * as screenActions from "../reducers/screen";
 import { useDispatch, useSelector } from "react-redux";
 
 import React, { useEffect, useState } from "react";

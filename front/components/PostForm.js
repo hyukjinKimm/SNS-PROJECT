@@ -5,8 +5,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import * as postActions from "../reducerss/post";
-import { addPost, addImage } from "../reducerss/post";
+import * as postActions from "../reducers/post";
+import { addPost, addImage } from "../reducers/post";
 
 const normFile = (e) => {
   console.log("Upload event:", e.fileList);

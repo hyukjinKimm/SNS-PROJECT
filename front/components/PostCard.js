@@ -17,19 +17,13 @@ import {
   likePost,
   unlikePost,
   deleteComment,
-} from "../reducerss/post";
+} from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 
 const PostCard = ({ post }) => {
   const { me, isLoggedIn } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
-  const {
-    deletePostDone,
-    deletePostError,
-    likePostDone,
-    likePostError,
-    unLikePostError,
-  } = useSelector((state) => state.post);
+  const { deletePostDone, likePostDone } = useSelector((state) => state.post);
   useEffect(() => {
     if (deletePostDone) {
       setDeletePostLoading(false);

@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import { Button, Checkbox, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
-import { signUp } from "../reducerss/user";
+import * as screenActions from "../reducers/screen";
+import { signUp } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 const { Option } = Select;
 
@@ -49,7 +50,9 @@ const tailFormItemLayout = {
 };
 
 const SignUp = () => {
-  const { isSignUpLoading, isSignUpError } = useSelector((state) => state.user);
+  const { signUpLoading, signUpError, signUpDone } = useSelector(
+    (state) => state.user
+  );
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -59,10 +62,15 @@ const SignUp = () => {
     dispatch(signUp({ email, password, nickname, gender }));
   }, []);
   useEffect(() => {
-    if (isSignUpError) {
-      alert(isSignUpError);
+    if (signUpError) {
+      alert(signUpError);
     }
-  }, [isSignUpError]);
+  }, [signUpError]);
+  useEffect(() => {
+    if (signUpDone) {
+      router.push("/login");
+    }
+  }, [signUpDone]);
   return (
     <Form
       {...formItemLayout}
@@ -181,7 +189,7 @@ const SignUp = () => {
         </Checkbox>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit" loading={isSignUpLoading}>
+        <Button type="primary" htmlType="submit" loading={signUpLoading}>
           가입하기
         </Button>
       </Form.Item>

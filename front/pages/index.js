@@ -4,10 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { Layout, theme } from "antd";
 const { Header, Content, Footer, Sider } = Layout;
-import * as userActions from "../reducerss/user";
-import * as postActions from "../reducerss/post";
-import * as screenActions from "../reducerss/screen";
-import { clearUserErrorAction } from "../reducers/user";
+import * as userActions from "../reducers/user";
+import * as postActions from "../reducers/post";
+import * as screenActions from "../reducers/screen";
+import { initializeUserState } from "../reducers/user";
 import AppLayout from "../components/AppLayout";
 import PostCards from "../components/PostCards";
 
@@ -21,8 +21,8 @@ function Home(props) {
   const { mainPosts } = useSelector((state) => state.post);
   const { selectedMenu } = useSelector((state) => state.screen);
   useEffect(() => {
-    dispatch(postActions.clearPost());
-    dispatch(userActions.clearUserError());
+    dispatch(postActions.initializePostState());
+    dispatch(userActions.initializeUserState());
   }, []);
   useEffect(() => {
     dispatch(screenActions.changeMenu("HOME"));

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 
-import * as screenActions from "../reducerss/screen";
+import * as screenActions from "../reducers/screen";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../reducerss/user";
+import { logIn } from "../reducers/user";
 import { Button, Checkbox, Form, Input } from "antd";
 import { useRouter } from "next/router";
 import styled from "styled-components";
@@ -121,7 +121,7 @@ const LoginForm = () => {
 
           <Button
             onClick={() => {
-              dispatch(screenActions.changeLogInToSignUp());
+              dispatch(screenActions.changeLogInToSignUp(false));
             }}
           >
             회원가입

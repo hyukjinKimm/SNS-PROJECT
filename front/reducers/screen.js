@@ -1,32 +1,28 @@
-export const initialState = {
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
+
+const initialState = {
   collapsed: false,
   selectedMenu: "HOME",
   logInOrSignUp: true,
-};
+}; // 초기 상태 정의
 
-import { produce } from "immer";
-export const COLLAPSED_EVENT = "COLLAPSED_EVENT";
-export const CHANGE_MENU = "CHANGE_MENU";
-export const CHANGE_LOGIN_TO_SIGN_UP = "CHANGE_LOGIN_TO_SIGN_UP";
-export const CLICK_LOGIN_MENU = "CLICK_LOGIN_MENU";
-const reducer = (state = initialState, action) => {
-  return produce(state, (draft) => {
-    switch (action.type) {
-      case COLLAPSED_EVENT:
-        draft.collapsed = !draft.collapsed;
-        break;
-      case CHANGE_MENU:
-        draft.selectedMenu = action.data;
-        draft.logInOrSignUp = true;
-        break;
-      case CHANGE_LOGIN_TO_SIGN_UP:
-        draft.logInOrSignUp = !draft.logInOrSignUp;
-        break;
-
-      default:
-        break;
-    }
-  });
-};
-
-export default reducer;
+const screenSlice = createSlice({
+  name: "screen",
+  initialState,
+  reducers: {
+    collapsed: (state, action) => {
+      state.collapsed = !state.collapsed;
+    },
+    changeMenu: (state, action) => {
+      state.selectedMenu = action.payload;
+      state.logInOrSignUp = true;
+    },
+    changeLogInToSignUp: (state, action) => {
+      state.logInOrSignUp = action.payload;
+    },
+  },
+});
+export const { collapsed, changeMenu, changeLogInToSignUp } =
+  screenSlice.actions; // 액션 생성함수
+export default screenSlice.reducer; // 리듀서

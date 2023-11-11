@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 import logger from "redux-logger";
 
-import reducer from "../reducerss";
+import reducer from "../reducers";
 
 const makeStore = (context) =>
   configureStore({

@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { List, Space } from "antd";
 
 import PostCard from "./PostCard";
-import * as postActions from "../reducerss/post";
-import { loadMorePosts, loadPosts } from "../reducerss/post";
+import * as postActions from "../reducers/post";
+import { loadMorePosts, loadPosts } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 
 const PostCards = ({ posts }) => {
-  const { hasMorePost, loadPostLoading, loadPostError } = useSelector(
+  const { hasMorePosts, loadPostsLoading, loadPostsError } = useSelector(
     (state) => state.post
   );
   const dispatch = useDispatch();
@@ -15,10 +15,10 @@ const PostCards = ({ posts }) => {
     dispatch(loadPosts());
   }, []);
   useEffect(() => {
-    if (loadPostError) {
-      alert(loadPostError);
+    if (loadPostsError) {
+      alert(loadPostsError);
     }
-  }, [loadPostError]);
+  }, [loadPostsError]);
   useEffect(() => {
     function onScroll() {
       if (
@@ -26,7 +26,7 @@ const PostCards = ({ posts }) => {
           document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 300
       ) {
-        if (hasMorePost && !loadPostLoading) {
+        if (hasMorePosts && !loadPostsLoading) {
           const lastId = posts[posts.length - 1]?.id;
           dispatch(loadPosts(lastId));
         }
@@ -37,13 +37,13 @@ const PostCards = ({ posts }) => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePost, loadPostLoading]);
+  }, [hasMorePosts, loadPostsLoading]);
   return (
     <>
       <List
         itemLayout="vertical"
         size="large"
-        loading={loadPostLoading}
+        loading={loadPostsLoading}
         dataSource={posts}
         footer={
           <div>
