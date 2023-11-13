@@ -120,7 +120,7 @@ const AppLayout = ({ children }) => {
             key: "PROFILE",
             icon: React.createElement(UserOutlined),
 
-            label: <Link href={`/${me.nickname}`}>프로필</Link>,
+            label: <a href={`/${me.nickname}`}>프로필</a>,
           }
         : {
             key: "PROFILE",

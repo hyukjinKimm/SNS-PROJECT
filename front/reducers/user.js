@@ -20,6 +20,10 @@ const initialState = {
   logOutError: null,
   logOutDone: false,
 
+  followLoading: false,
+  followError: null,
+  followDone: false,
+
   getUserInfoLoading: false,
   getUserInfoDone: false,
   getUserInfoError: null,
@@ -53,6 +57,14 @@ export const signUp = createAsyncThunk("user/signUp", async (data) => {
   const response = await axios.post("/user", data);
   return response.data;
 });
+export const Follow = createAsyncThunk("user/follow", async (id) => {
+  const response = await axios.post(`/user/${id}/follow`);
+  return response.data;
+});
+export const unFollow = createAsyncThunk("user/unfollow", async (id) => {
+  const response = await axios.post(`/user/${id}/unfollow`);
+  return response.data;
+});
 
 const userSlice = createSlice({
   name: "user",
@@ -67,10 +79,15 @@ const userSlice = createSlice({
       state.logInError = null;
       state.logInDone = false;
 
-      (state.signUpLoading = false),
-        (state.signUpError = null),
-        (state.signUpDone = false),
-        (state.logOutLoading = false);
+      state.signUpLoading = false;
+      state.signUpError = null;
+      state.signUpDone = false;
+
+      state.followLoading = false;
+      state.followDone = false;
+      state.followError = null;
+
+      state.logOutLoading = false;
       state.logOutError = null;
       state.logOutDone = false;
 
@@ -104,6 +121,36 @@ const userSlice = createSlice({
       .addCase(getMyInfo.rejected, (state, action) => {
         state.isLoggedIn = false;
         state.getMyInfoError = action.error;
+      })
+      .addCase(Follow.pending, (state, action) => {
+        state.followLoading = true;
+        state.followDone = false;
+        state.followError = null;
+      })
+      .addCase(Follow.fulfilled, (state, action) => {
+        state.followLoading = false;
+        state.followDone = true;
+        state.followError = null;
+        state.me.Followings.push({ id: action.payload.id });
+      })
+      .addCase(Follow.rejected, (state, action) => {
+        state.followError = action.error;
+      })
+      .addCase(unFollow.pending, (state, action) => {
+        state.followLoading = true;
+        state.followDone = false;
+        state.followError = null;
+      })
+      .addCase(unFollow.fulfilled, (state, action) => {
+        state.followLoading = false;
+        state.followDone = true;
+        state.followError = null;
+        state.me.Followings = state.me.Followings.filter((following) => {
+          if (following.id != action.payload.id) return true;
+        });
+      })
+      .addCase(unFollow.rejected, (state, action) => {
+        state.followError = action.error;
       })
       .addCase(getUserInfo.pending, (state, action) => {
         state.getUserInfoLoading = true;

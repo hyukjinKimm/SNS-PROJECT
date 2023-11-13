@@ -3,7 +3,7 @@ const bcypt = require("bcrypt");
 const User = require("../models/user");
 const Post = require("../models/post");
 const Image = require("../models/image");
-
+const { sequelize } = require("../models");
 exports.getMyInfo = async (req, res, next) => {
   try {
     if (req.user) {
@@ -26,10 +26,13 @@ exports.getMyInfo = async (req, res, next) => {
           },
         ],
         attributes: { exclude: ["password"] },
+        joinTableAttributes: [],
       });
+
       if (!user) {
         return res.status(403).send("존재하지 않는 유저 입니다.");
       }
+
       res.status(200).json(user);
     } else {
       res.status(200).json(null);
@@ -93,5 +96,45 @@ exports.joinUser = async (req, res, next) => {
   } catch (e) {
     console.error(e);
     next(e); // status(500)
+  }
+};
+
+exports.follow = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
+      await user.addFollowing(parseInt(req.params.id, 10));
+      res.json({
+        id: parseInt(req.params.id),
+        message: "follow success",
+      });
+    } else {
+      res.status(404).send("no user");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
+exports.unfollow = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
+      await sequelize.models.Follow.destroy({
+        where: { FollowerId: req.user.id, FollowId: req.params.id },
+      });
+      return res.json({
+        id: parseInt(req.params.id),
+        message: "unFollow success",
+      });
+    } else {
+      res.status(404).send("no user");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };

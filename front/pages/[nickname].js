@@ -17,9 +17,8 @@ function Home(props) {
     if (!router.isReady) return;
     dispatch(postActions.initializePostState());
     dispatch(getUserInfo(router.query.nickname));
-  }, [router.isReady]);
+  }, [router.isReady, me]);
 
-  useEffect(() => {}, []);
   useEffect(() => {
     if (getUserInfoError) {
       alert("존재하지 않는 유저 입니다.");

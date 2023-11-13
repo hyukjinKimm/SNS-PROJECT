@@ -1,18 +1,32 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { SettingOutlined, TableOutlined } from "@ant-design/icons";
-import { Image, Row, Col, Card, Layout, theme } from "antd";
+import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-
+import { Follow, unFollow } from "../reducers/user";
 const { Meta } = Card;
 const { Content } = Layout;
 
 const UserProfile = ({}) => {
-  const { me, user, getUserInfoError } = useSelector((state) => state.user);
+  const { me, user, followLoading, followError } = useSelector(
+    (state) => state.user
+  );
 
+  const dispatch = useDispatch();
+  const onClickFollow = useCallback(() => {
+    dispatch(Follow(user.id));
+  }, [user]);
+  const onClickunFollow = useCallback(() => {
+    dispatch(unFollow(user.id));
+  }, [user]);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  useEffect(() => {
+    if (followError) {
+      alert(followError);
+    }
+  }, [followError]);
   const division = useCallback((arr, n) => {
     const copy = [...arr];
     const length = arr.length;
@@ -100,6 +114,21 @@ const UserProfile = ({}) => {
                     description={user?.description}
                     style={{ height: "11vh", paddingTop: 10 }}
                   />
+                  {me?.id != user?.id ? (
+                    me?.Followings?.find((e) => {
+                      if (e.id == user.id) {
+                        return true;
+                      }
+                    }) ? (
+                      <Button onClick={onClickunFollow} loading={followLoading}>
+                        언팔로우
+                      </Button>
+                    ) : (
+                      <Button onClick={onClickFollow} loading={followLoading}>
+                        팔로우
+                      </Button>
+                    )
+                  ) : null}
                 </Card>
               </div>
             </Col>
