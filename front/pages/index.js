@@ -1,34 +1,26 @@
 import React, { useEffect } from "react";
 import Head from "next/head";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
 import { Layout, theme } from "antd";
-const { Header, Content, Footer, Sider } = Layout;
+import { wrapper } from "../store/configureStore";
+import { getMyInfo } from "../reducers/user";
+import axios from "axios";
+const { Content } = Layout;
 import * as userActions from "../reducers/user";
 import * as postActions from "../reducers/post";
 import * as screenActions from "../reducers/screen";
-import { initializeUserState } from "../reducers/user";
+import { loadMorePosts, loadPosts } from "../reducers/post";
+
 import AppLayout from "../components/AppLayout";
 import PostCards from "../components/PostCards";
 
 function Home(props) {
-  const route = useRouter();
-
-  const dispatch = useDispatch();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const { mainPosts } = useSelector((state) => state.post);
-  const { selectedMenu } = useSelector((state) => state.screen);
-  useEffect(() => {
-    dispatch(postActions.initializePostState());
-    dispatch(userActions.initializeUserState());
-  }, []);
-  useEffect(() => {
-    dispatch(screenActions.changeMenu("HOME"));
-  }, []);
   return (
-    <AppLayout>
+    <>
       <Head>
         <title>홈페이지 | SNS-PROJECT</title>
       </Head>
@@ -47,8 +39,25 @@ function Home(props) {
           <PostCards posts={mainPosts} />
         </div>
       </Content>
-    </AppLayout>
+    </>
   );
 }
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req }) => {
+      const cookie = req ? req.headers.cookie : "";
+      axios.defaults.headers.Cookie = "";
 
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+      store.dispatch(screenActions.changeMenu("HOME"));
+      store.dispatch(postActions.initializePostState());
+      await store.dispatch(getMyInfo());
+      await store.dispatch(loadPosts());
+      return {
+        props: {},
+      };
+    }
+);
 export default Home;

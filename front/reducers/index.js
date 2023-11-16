@@ -8,19 +8,21 @@ axios.defaults.baseURL = "http://localhost:3065";
 axios.defaults.withCredentials = true;
 
 const rootReducer = (state, action) => {
-  if (action.type === HYDRATE) {
-    return {
-      ...state,
-      ...action.payload,
-    };
+  switch (action.type) {
+    case HYDRATE:
+      console.log("HYDRATE", action.payload);
+      return { ...action.payload };
+    default: {
+      const combinedReducer = combineReducers({
+        user,
+        post,
+        screen,
+      });
+      return combinedReducer(state, action);
+    }
   }
-  return combineReducers({
-    user,
-    post,
-    screen,
-    // 여기에 추가
-  })(state, action);
 };
+
 //cotak.tistory.com/164 [TaxFree:티스토리]
 
 export default rootReducer;

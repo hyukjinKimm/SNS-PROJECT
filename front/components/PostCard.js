@@ -1,3 +1,5 @@
+import React, { useCallback, useState, useEffect } from "react";
+
 import {
   MessageOutlined,
   RetweetOutlined,
@@ -6,20 +8,12 @@ import {
   EllipsisOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-const count = 3;
-import React, { useCallback, useState, useEffect } from "react";
 import { Avatar, List, Space, Button, Skeleton, Popover } from "antd";
 import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
-import {
-  deletePost,
-  likePost,
-  unlikePost,
-  deleteComment,
-} from "../reducers/post";
+import { deletePost, likePost, unlikePost } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
-
 const PostCard = ({ post }) => {
   const { me, isLoggedIn } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
@@ -198,7 +192,11 @@ const PostCard = ({ post }) => {
           >
             <List.Item.Meta
               avatar={<Avatar>{post.User.nickname[0]} </Avatar>}
-              title={<a href={post.User.nickname}>{post.User.nickname}</a>}
+              title={
+                <a href={"/profile/" + post.User.nickname}>
+                  {post.User.nickname}
+                </a>
+              }
               description={post.description}
             />
             {post.Images && <ImageSlider images={post.Images} />}

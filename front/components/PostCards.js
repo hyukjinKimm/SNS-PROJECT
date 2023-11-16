@@ -1,24 +1,15 @@
 import React, { useEffect } from "react";
-import { List, Space } from "antd";
-
-import PostCard from "./PostCard";
-import * as postActions from "../reducers/post";
-import { loadMorePosts, loadPosts } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 
+import { List, Space } from "antd";
+import PostCard from "./PostCard";
+
+import { loadPosts } from "../reducers/post";
+
 const PostCards = ({ posts }) => {
-  const { hasMorePosts, loadPostsLoading, loadPostsError } = useSelector(
-    (state) => state.post
-  );
+  const { hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(loadPosts());
-  }, []);
-  useEffect(() => {
-    if (loadPostsError) {
-      alert(loadPostsError);
-    }
-  }, [loadPostsError]);
+
   useEffect(() => {
     function onScroll() {
       if (
@@ -32,7 +23,6 @@ const PostCards = ({ posts }) => {
         }
       }
     }
-
     window.addEventListener("scroll", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);

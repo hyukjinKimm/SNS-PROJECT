@@ -40,6 +40,7 @@ export const getMyInfo = createAsyncThunk("user/getMyInfo", async (data) => {
 export const getUserInfo = createAsyncThunk(
   "user/getUserInfo",
   async (nickname) => {
+    console.log("hi", nickname);
     const response = await axios.get(`/user/${encodeURIComponent(nickname)}`);
     return response.data;
   }
@@ -175,6 +176,7 @@ const userSlice = createSlice({
         state.logInLoading = false;
         state.logInDone = true;
         state.logInError = null;
+        state.isLoggedIn = true;
         state.me = action.payload;
       })
       .addCase(logIn.rejected, (state, action) => {

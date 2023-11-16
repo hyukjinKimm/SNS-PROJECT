@@ -38,8 +38,6 @@ const LoginForm = () => {
 
   const onFinish = useCallback(async (e) => {
     // e.preventDefault 적용 되어있음
-    console.log("LogIn 실행");
-    console.log(e, e.email, e.password);
     dispatch(logIn({ email: e.email, password: e.password }));
   }, []);
 

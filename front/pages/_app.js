@@ -3,6 +3,8 @@ import { wrapper } from "../store/configureStore";
 import "./slide.css";
 import "./styles.css";
 
+import AppLayout from "../components/AppLayout";
+
 function App({ Component, pageProps }) {
   return (
     <>
@@ -15,7 +17,9 @@ function App({ Component, pageProps }) {
         <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
         <title>SNS-PROJECT</title>
       </Head>
-      <Component {...pageProps} />
+      <AppLayout>
+        <Component {...pageProps} />
+      </AppLayout>
     </>
   );
 }

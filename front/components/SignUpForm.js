@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect } from "react";
-import { Button, Checkbox, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
-import * as screenActions from "../reducers/screen";
-import { signUp } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
+import { Button, Checkbox, Form, Input, Select } from "antd";
+import { signUp } from "../reducers/user";
+
 const { Option } = Select;
 
 const formItemLayout = {
@@ -50,25 +50,17 @@ const tailFormItemLayout = {
 };
 
 const SignUp = () => {
-  const { signUpLoading, signUpError, signUpDone } = useSelector(
-    (state) => state.user
-  );
-  const [form] = Form.useForm();
+  const { signUpLoading, signUpDone } = useSelector((state) => state.user);
   const router = useRouter();
+  const [form] = Form.useForm();
   const dispatch = useDispatch();
   const onFinish = useCallback((e) => {
-    console.log("Received values of form: ", e);
     const { email, password, nickname, gender } = e;
     dispatch(signUp({ email, password, nickname, gender }));
   }, []);
   useEffect(() => {
-    if (signUpError) {
-      alert(signUpError);
-    }
-  }, [signUpError]);
-  useEffect(() => {
     if (signUpDone) {
-      router.push("/login");
+      router.replace("/login");
     }
   }, [signUpDone]);
   return (
