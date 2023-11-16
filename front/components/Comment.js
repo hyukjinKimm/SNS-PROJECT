@@ -110,7 +110,11 @@ const Comment = ({ comment, postId }) => {
         extra={[<LikeIcon liked={liked} onClick={onToggleLike} />]}
       >
         <List.Item.Meta
-          avatar={<Avatar> {comment.User.nickname[0]}</Avatar>}
+          avatar={
+            <a href={"/profile/" + comment.User.nickname}>
+              <Avatar>{comment.User.nickname[0]}</Avatar>
+            </a>
+          }
           description={comment.content}
         />
       </List.Item>
