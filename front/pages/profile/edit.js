@@ -1,83 +1,58 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   AppstoreOutlined,
   MailOutlined,
   SettingOutlined,
+  GlobalOutlined,
 } from "@ant-design/icons";
 import ProfileEdit from "../../components/ProfileEdit";
 import { Menu } from "antd";
 const items = [
   {
-    label: "Navigation One",
-    key: "mail",
-    icon: <MailOutlined />,
-  },
-  {
-    label: "Navigation Two",
-    key: "app",
-    icon: <AppstoreOutlined />,
-    disabled: true,
-  },
-  {
-    label: "Navigation Three - Submenu",
-    key: "SubMenu",
+    label: "프로필 수정",
+    key: "profileEdit",
     icon: <SettingOutlined />,
-    children: [
-      {
-        type: "group",
-        label: "Item 1",
-        children: [
-          {
-            label: "Option 1",
-            key: "setting:1",
-          },
-          {
-            label: "Option 2",
-            key: "setting:2",
-          },
-        ],
-      },
-      {
-        type: "group",
-        label: "Item 2",
-        children: [
-          {
-            label: "Option 3",
-            key: "setting:3",
-          },
-          {
-            label: "Option 4",
-            key: "setting:4",
-          },
-        ],
-      },
-    ],
   },
   {
-    label: (
-      <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-        Navigation Four - Link
-      </a>
-    ),
-    key: "alipay",
+    label: "언어 기본 설정",
+    key: "languageSetting",
+    icon: <GlobalOutlined />,
+  },
+  {
+    label: "계정 설정",
+    key: "accountSetting",
+    icon: <SettingOutlined />,
   },
 ];
 const Edit = () => {
-  const [current, setCurrent] = useState("mail");
+  const [current, setCurrent] = useState("profileEdit");
+
   const onClick = (e) => {
-    console.log("click ", e);
     setCurrent(e.key);
   };
+
+  const whichComponent = useCallback(() => {
+    switch (current) {
+      case "profileEdit":
+        return <ProfileEdit />;
+        break;
+      case "languageSetting":
+        return <ProfileEdit />;
+        break;
+      case "accountSetting":
+        return <ProfileEdit />;
+        break;
+    }
+  }, [current]);
   return (
     <>
-      {" "}
       <Menu
         onClick={onClick}
         selectedKeys={[current]}
         mode="horizontal"
         items={items}
       />
-      <ProfileEdit />
+      {whichComponent(current)}
     </>
   );
 };

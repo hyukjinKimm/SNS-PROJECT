@@ -14,6 +14,9 @@ import {
   Switch,
   TreeSelect,
   Upload,
+  Image,
+  Row,
+  Col,
 } from "antd";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -27,113 +30,89 @@ const FormDisabledDemo = () => {
   const [componentDisabled, setComponentDisabled] = useState(true);
   return (
     <>
-      <Checkbox
-        style={{ marginLeft: "15px" }}
-        checked={componentDisabled}
-        onChange={(e) => setComponentDisabled(e.target.checked)}
-      >
-        Form disabled
-      </Checkbox>
       <Form
         labelCol={{
-          span: 8,
+          span: 2,
         }}
         wrapperCol={{
           span: 10,
         }}
         layout="horizontal"
-        disabled={componentDisabled}
         style={{
           width: "60vw",
+          marginTop: "30px",
+          marginLeft: "3vw",
         }}
       >
-        <Form.Item label="Checkbox" name="disabled" valuePropName="checked">
-          <Checkbox>Checkbox</Checkbox>
+        <Row style={{ marginBottom: "20px" }}>
+          <Col>
+            <div
+              style={{
+                marginLeft: "1vw",
+                width: "9vw",
+                height: "9vw",
+                borderRadius: "70%",
+                overflow: "hidden",
+              }}
+            >
+              <Image
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+                width={"10vw"}
+                height={"10vw"}
+                src="https://cdn.pixabay.com/photo/2023/10/30/16/56/euonymus-europaeus-8353310_1280.jpg"
+              />
+            </div>
+          </Col>
+          <Col>
+            <div
+              style={{
+                fontWeight: "bold",
+                textAlign: "center",
+                marginTop: "10px",
+                marginLeft: "20px",
+                fontSize: "20px",
+              }}
+            >
+              youcancallmekimm
+            </div>
+            <div
+              style={{
+                fontWeight: "bolder",
+                textAlign: "center",
+                marginTop: "30px",
+                marginLeft: "20px",
+                fontSize: "15px",
+              }}
+            >
+              프로필 사진 바꾸기
+            </div>
+          </Col>
+        </Row>
+        <Form.Item label="닉네임">
+          <Input maxLength={100} placeholder="youcancallmekimm" />
         </Form.Item>
-        <Form.Item label="Radio">
+        <Form.Item label="소개">
+          <Input.TextArea
+            showCount
+            maxLength={200}
+            placeholder="오늘은 어떤 행복한 일이 있었나요?"
+            rows={5}
+          />
+        </Form.Item>
+        <Form.Item label="성별">
           <Radio.Group>
-            <Radio value="apple"> Apple </Radio>
-            <Radio value="pear"> Pear </Radio>
+            <Radio value="male"> 남성 </Radio>
+            <Radio value="female"> 여성 </Radio>
+            <Radio value="ohter"> 그 외 </Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="Input">
-          <Input />
-        </Form.Item>
-        <Form.Item label="Select">
-          <Select>
-            <Select.Option value="demo">Demo</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item label="TreeSelect">
-          <TreeSelect
-            treeData={[
-              {
-                title: "Light",
-                value: "light",
-                children: [
-                  {
-                    title: "Bamboo",
-                    value: "bamboo",
-                  },
-                ],
-              },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item label="Cascader">
-          <Cascader
-            options={[
-              {
-                value: "zhejiang",
-                label: "Zhejiang",
-                children: [
-                  {
-                    value: "hangzhou",
-                    label: "Hangzhou",
-                  },
-                ],
-              },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item label="DatePicker">
+
+        <Form.Item label="생일">
           <DatePicker />
-        </Form.Item>
-        <Form.Item label="RangePicker">
-          <RangePicker />
-        </Form.Item>
-        <Form.Item label="InputNumber">
-          <InputNumber />
-        </Form.Item>
-        <Form.Item label="TextArea">
-          <TextArea rows={4} />
-        </Form.Item>
-        <Form.Item label="Switch" valuePropName="checked">
-          <Switch />
-        </Form.Item>
-        <Form.Item
-          label="Upload"
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-        >
-          <Upload action="/upload.do" listType="picture-card">
-            <div>
-              <PlusOutlined />
-              <div
-                style={{
-                  marginTop: 8,
-                }}
-              >
-                Upload
-              </div>
-            </div>
-          </Upload>
-        </Form.Item>
-        <Form.Item label="Button">
-          <Button>Button</Button>
-        </Form.Item>
-        <Form.Item label="Slider">
-          <Slider />
         </Form.Item>
       </Form>
     </>
