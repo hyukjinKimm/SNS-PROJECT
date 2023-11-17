@@ -166,17 +166,21 @@ const AppLayout = ({ children }) => {
               dispatch(screenActions.collapsed());
             }}
             style={{
-              marginLeft: collapsed ? 70 : 200,
-              fontSize: "16px",
+              marginLeft: collapsed ? 72 : 200,
+              fontSize: "15px",
               width: 64,
               height: 64,
             }}
           />
+
+          <a href="https://github.com/hyukjinKimm">
+            SNS-PROJECT @2023 Made by HYUKJIN KIM
+          </a>
         </Header>
         <Content
           style={{
             minHeight: "100vh",
-            marginLeft: collapsed ? 100 : 200,
+            marginLeft: collapsed ? 70 : 200,
             overflow: "initial",
           }}
         >

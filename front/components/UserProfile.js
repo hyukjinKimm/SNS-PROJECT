@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from "react";
+import Link from "next/link";
 import { SettingOutlined, TableOutlined } from "@ant-design/icons";
 import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -86,11 +87,13 @@ const UserProfile = ({}) => {
                 <Card
                   size={64}
                   actions={[
-                    <div key="edit">
-                      프로필 수정
-                      <br />
-                      <SettingOutlined key="edit_icon" />
-                    </div>,
+                    me && me.id == user.id ? (
+                      <div key="edit">
+                        <Link href="/profile/edit"> 프로필 수정</Link>
+                        <br />
+                        <SettingOutlined key="edit_icon" />
+                      </div>
+                    ) : null,
                     <div key="posts">
                       게시물
                       <br />
