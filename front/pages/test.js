@@ -1,107 +1,80 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 import {
   AppstoreOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
+  MailOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
-const { Header, Content, Footer, Sider } = Layout;
+import { Menu, Layout } from "antd";
+const { Content } = Layout;
+import ProfileEdit from "../../components/ProfileEdit";
+function getItem(label, key, icon, children, type) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+    type,
+    onClick: () => {
+      console.log("hi");
+    },
+  };
+}
 const items = [
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  AppstoreOutlined,
-  TeamOutlined,
-  ShopOutlined,
-].map((icon, index) => ({
-  key: String(index + 1),
-  icon: React.createElement(icon),
-  label: `nav ${index + 1}`,
-}));
-
+  getItem(
+    "설정",
+    "grp",
+    null,
+    [
+      getItem("프로필 편집", "profileEdit"),
+      getItem("언어 기본 설정", "languageSetting"),
+      getItem("계정설정", "acoountSetting"),
+    ],
+    "group"
+  ),
+];
 const Edit = () => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+  const [nav, setNav] = useState(0);
+  const onClick = useCallback((e) => {
+    console.log(e);
+    if (e.key == "profileEdit") {
+      setNav(1);
+    } else if (e.key == "languageSetting") {
+      setNav(2);
+    } else if (e.key == "accountSetting") {
+      setNav(3);
+    }
+  }, []);
   return (
     <>
-      <Layout hasSider>
-        <Sider
+      <div>
+        <Menu
+          onClick={onClick}
           style={{
-            overflow: "auto",
+            width: 256,
             height: "100vh",
-            position: "fixed",
-            left: 0,
-            top: 0,
-            bottom: 0,
           }}
-        >
-          <div className="demo-logo-vertical" />
-          <Menu
-            theme="dark"
-            mode="inline"
-            defaultSelectedKeys={["4"]}
-            items={items}
-          />
-        </Sider>
-        <Layout
-          className="site-layout"
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
+          mode="inline"
+          items={items}
+        />
+        <Content
           style={{
-            marginLeft: 200,
+            margin: "24px 16px 0",
+            overflow: "initial",
           }}
         >
-          <Header
-            style={{
-              padding: 0,
-              background: colorBgContainer,
-            }}
-          />
-          <Content
-            style={{
-              margin: "24px 16px 0",
-              overflow: "initial",
-            }}
-          >
-            <div
-              style={{
-                padding: 24,
-                textAlign: "center",
-                background: colorBgContainer,
-              }}
-            >
-              <p>long content</p>
-              {
-                // indicates very long content
-                Array.from(
-                  {
-                    length: 100,
-                  },
-                  (_, index) => (
-                    <React.Fragment key={index}>
-                      {index % 20 === 0 && index ? "more" : "..."}
-                      <br />
-                    </React.Fragment>
-                  )
-                )
-              }
-            </div>
-          </Content>
-          <Footer
-            style={{
-              textAlign: "center",
-            }}
-          >
-            Ant Design ©2023 Created by Ant UED
-          </Footer>
-        </Layout>
-      </Layout>
+          <div>
+            {nav == 1 ? (
+              <ProfileEdit />
+            ) : nav == 2 ? (
+              <LanguageSetting />
+            ) : nav == 3 ? (
+              <WithDraw />
+            ) : null}
+          </div>
+        </Content>
+      </div>
     </>
   );
 };

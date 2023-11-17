@@ -1,61 +1,83 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import {
   AppstoreOutlined,
   MailOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
+import ProfileEdit from "../../components/ProfileEdit";
 import { Menu } from "antd";
-function getItem(label, key, icon, children, type) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type,
-    onClick: () => {
-      console.log("hi");
-    },
-  };
-}
 const items = [
-  getItem(
-    "설정",
-    "grp",
-    null,
-    [
-      getItem("프로필 편집", "profile edit"),
-      getItem("언어 기본 설정", "language setting"),
-      getItem("회원탈퇴", "withdraw"),
+  {
+    label: "Navigation One",
+    key: "mail",
+    icon: <MailOutlined />,
+  },
+  {
+    label: "Navigation Two",
+    key: "app",
+    icon: <AppstoreOutlined />,
+    disabled: true,
+  },
+  {
+    label: "Navigation Three - Submenu",
+    key: "SubMenu",
+    icon: <SettingOutlined />,
+    children: [
+      {
+        type: "group",
+        label: "Item 1",
+        children: [
+          {
+            label: "Option 1",
+            key: "setting:1",
+          },
+          {
+            label: "Option 2",
+            key: "setting:2",
+          },
+        ],
+      },
+      {
+        type: "group",
+        label: "Item 2",
+        children: [
+          {
+            label: "Option 3",
+            key: "setting:3",
+          },
+          {
+            label: "Option 4",
+            key: "setting:4",
+          },
+        ],
+      },
     ],
-    "group"
-  ),
+  },
+  {
+    label: (
+      <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+        Navigation Four - Link
+      </a>
+    ),
+    key: "alipay",
+  },
 ];
 const Edit = () => {
+  const [current, setCurrent] = useState("mail");
   const onClick = (e) => {
     console.log("click ", e);
+    setCurrent(e.key);
   };
-  const [nav, setNav] = useState(0);
-
   return (
     <>
+      {" "}
       <Menu
         onClick={onClick}
-        style={{
-          width: 256,
-          height: "100vh",
-        }}
-        defaultSelectedKeys={["1"]}
-        defaultOpenKeys={["sub1"]}
-        mode="inline"
+        selectedKeys={[current]}
+        mode="horizontal"
         items={items}
       />
-      {nav == 1 ? (
-        <ProfileEdit />
-      ) : nav == 2 ? (
-        <LanguageSetting />
-      ) : nav == 3 ? (
-        <WithDraw />
-      ) : null}
+      <ProfileEdit />
     </>
   );
 };
