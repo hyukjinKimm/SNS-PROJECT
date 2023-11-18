@@ -14,14 +14,7 @@ const LogIn = () => {
   const dispatch = useDispatch();
   const { signUpDone, me } = useSelector((state) => state.user);
   const { logInOrSignUp } = useSelector((state) => state.screen);
-  useEffect(() => {
-    if (me) {
-      if (typeof window !== "undefined") {
-        alert("로그인 상태입니다.");
-        router.push("/");
-      }
-    }
-  }, []);
+
   useEffect(() => {
     if (signUpDone) {
       dispatch(screenActions.changeLogInToSignUp(true));
@@ -40,7 +33,7 @@ const LogIn = () => {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
-    async ({ req }) => {
+    async ({ req, res }) => {
       const cookie = req ? req.headers.cookie : "";
       axios.defaults.headers.Cookie = "";
 
@@ -49,7 +42,13 @@ export const getServerSideProps = wrapper.getServerSideProps(
       }
 
       store.dispatch(screenActions.changeMenu("LOGIN"));
-      await store.dispatch(getMyInfo());
+      const data = await store.dispatch(getMyInfo());
+      if (data.payload) {
+        res.writeHead(301, { Location: "/" });
+        res.end();
+
+        return true;
+      }
       return { props: {} };
     }
 );
