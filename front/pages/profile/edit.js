@@ -4,13 +4,9 @@ import { getMyInfo } from "../../reducers/user";
 import * as screenActions from "../../reducers/screen";
 import axios from "axios";
 import { wrapper } from "../../store/configureStore";
-import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-  GlobalOutlined,
-} from "@ant-design/icons";
+import { SettingOutlined, GlobalOutlined } from "@ant-design/icons";
 import ProfileEdit from "../../components/ProfileEdit";
+import AccountSetting from "../../components/AccountSetting";
 import { Menu } from "antd";
 import { useRouter } from "next/router";
 
@@ -56,7 +52,7 @@ const Edit = () => {
         return <ProfileEdit />;
         break;
       case "accountSetting":
-        return <ProfileEdit />;
+        return <AccountSetting />;
         break;
     }
   }, [current]);

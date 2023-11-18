@@ -43,6 +43,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       }
       const me = await store.dispatch(getMyInfo());
       const user = await store.dispatch(getUserInfo(params.nickname));
+
       if (!me.payload) {
         store.dispatch(screenActions.changeMenu("HOME"));
       } else {

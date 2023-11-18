@@ -108,7 +108,6 @@ const Post = () => {
   const onChangeImage = useCallback((e) => {
     console.log(e);
     if (e.file.status == "done") {
-      console.log("e/?");
       const data = new FormData();
       data.append("image", e.file.originFileObj);
       dispatch(addImage(data));

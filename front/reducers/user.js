@@ -28,8 +28,13 @@ const initialState = {
   getUserInfoDone: false,
   getUserInfoError: null,
 
+  addProfileImageLoading: false,
+  addProfileImageDone: false,
+  addProfileImageError: null,
+
   isLoggedIn: false,
   me: null,
+  profileImagePath: "",
   user: null,
 }; // 초기 상태 정의
 
@@ -66,6 +71,14 @@ export const unFollow = createAsyncThunk("user/unfollow", async (id) => {
   const response = await axios.post(`/user/${id}/unfollow`);
   return response.data;
 });
+
+export const addProfileImage = createAsyncThunk(
+  "user/addProfileImage",
+  async (data) => {
+    const response = await axios.post("/user/image", data);
+    return response.data;
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -218,6 +231,22 @@ const userSlice = createSlice({
         state.signUpLoading = false;
         state.signUpDone = true;
         state.signUpError = action.error;
+      })
+      .addCase(addProfileImage.pending, (state, action) => {
+        state.addProfileImageLoading = true;
+        state.addProfileImageDone = false;
+        state.addProfileImageError = null;
+      })
+      .addCase(addProfileImage.fulfilled, (state, action) => {
+        state.addProfileImageLoading = false;
+        state.addProfileImageDone = true;
+        state.addProfileImageError = null;
+        state.profileImagePath = action.payload.imagePath;
+        state.me.src = action.payload.imagePath;
+      })
+      .addCase(addProfileImage.rejected, (state, action) => {
+        state.addProfileImageLoading = false;
+        state.addProfileImageError = action.error;
       }),
 });
 export const { initializeUserState } = userSlice.actions; // 액션 생성함수

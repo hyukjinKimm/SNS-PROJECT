@@ -4,6 +4,8 @@ const User = require("../models/user");
 const Post = require("../models/post");
 const Image = require("../models/image");
 const { sequelize } = require("../models");
+const sharp = require("sharp");
+const fs = require("fs");
 exports.getMyInfo = async (req, res, next) => {
   try {
     if (req.user) {
@@ -91,6 +93,7 @@ exports.joinUser = async (req, res, next) => {
       password: hashPassword,
       nickname,
       gender,
+      src: gender == "male" ? "default_male.png" : "default_female.jpg",
     });
     res.status(200).json(newUser);
   } catch (e) {
@@ -136,5 +139,25 @@ exports.unfollow = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     next(error);
+  }
+};
+
+exports.uploadImage = (req, res, next) => {
+  try {
+    sharp(req.file.path) // 압축할 이미지 경로
+      .resize({ width: 200, height: 200 }) // 비율을 유지하며 가로 세로 크기 줄이기
+      .withMetadata() // 이미지의 exif데이터 유지
+      .toBuffer((err, buffer) => {
+        if (err) throw err;
+        // 압축된 파일 새로 저장(덮어씌우기)
+        fs.writeFile(req.file.path, buffer, (err) => {
+          if (err) throw err;
+        });
+      });
+    res.json({
+      imagePath: req.file.filename,
+    });
+  } catch (err) {
+    console.log(err);
   }
 };

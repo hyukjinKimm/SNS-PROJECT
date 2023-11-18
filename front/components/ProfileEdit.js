@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import {
   Button,
   Cascader,
@@ -18,6 +18,9 @@ import {
   Row,
   Col,
 } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { addProfileImage } from "../reducers/user";
+
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const normFile = (e) => {
@@ -26,8 +29,36 @@ const normFile = (e) => {
   }
   return e?.fileList;
 };
-const FormDisabledDemo = () => {
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+    md: {
+      span: 18,
+      offset: 6,
+    },
+  },
+};
+const ProfileEdit = () => {
   const [componentDisabled, setComponentDisabled] = useState(true);
+  const dispatch = useDispatch();
+  const { me } = useSelector((state) => state.user);
+  const imageInput = useRef();
+  const onChangeImages = useCallback((e) => {
+    console.log(e);
+    const imageData = new FormData();
+    imageData.append("image", e.target.files[0]);
+    dispatch(addProfileImage(imageData));
+  });
+  const onChangeImage = useCallback(() => {
+    imageInput.current.click();
+  }, [imageInput.current]);
   return (
     <>
       <Form
@@ -61,9 +92,9 @@ const FormDisabledDemo = () => {
                   height: "100%",
                   objectFit: "cover",
                 }}
-                width={"10vw"}
-                height={"10vw"}
-                src="https://cdn.pixabay.com/photo/2023/10/30/16/56/euonymus-europaeus-8353310_1280.jpg"
+                width={"9vw"}
+                height={"9vw"}
+                src={"http://localhost:3065/img/" + me.src}
               />
             </div>
           </Col>
@@ -72,13 +103,21 @@ const FormDisabledDemo = () => {
               style={{
                 fontWeight: "bold",
                 textAlign: "center",
-                marginTop: "10px",
+                marginTop: "30px",
                 marginLeft: "20px",
                 fontSize: "20px",
               }}
             >
-              youcancallmekimm
+              {me.nickname}
             </div>
+            <input
+              type="file"
+              name="image"
+              ref={imageInput}
+              onChange={onChangeImages}
+              style={{ display: "none" }}
+            />
+
             <div
               style={{
                 fontWeight: "bolder",
@@ -86,7 +125,9 @@ const FormDisabledDemo = () => {
                 marginTop: "30px",
                 marginLeft: "20px",
                 fontSize: "15px",
+                cursor: "pointer",
               }}
+              onClick={onChangeImage}
             >
               프로필 사진 바꾸기
             </div>
@@ -99,7 +140,7 @@ const FormDisabledDemo = () => {
           <Input.TextArea
             showCount
             maxLength={200}
-            placeholder="오늘은 어떤 행복한 일이 있었나요?"
+            placeholder={me.description}
             rows={5}
           />
         </Form.Item>
@@ -114,8 +155,14 @@ const FormDisabledDemo = () => {
         <Form.Item label="생일">
           <DatePicker />
         </Form.Item>
+        <Form.Item {...tailFormItemLayout}>
+          <Button type="primary" htmlType="submit" loading={false}>
+            제출
+          </Button>
+        </Form.Item>
       </Form>
     </>
   );
 };
-export default () => <FormDisabledDemo />;
+
+export default ProfileEdit;

@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect } from "react";
 import Link from "next/link";
 import { SettingOutlined, TableOutlined } from "@ant-design/icons";
-import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
+import { Image, Row, Col, Card, Layout, theme, Button, Avatar } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, unFollow } from "../reducers/user";
 const { Meta } = Card;
 const { Content } = Layout;
 
-const UserProfile = ({}) => {
-  const { me, user, followLoading, followError } = useSelector(
+const UserProfile = () => {
+  const { me, followLoading, user, followError } = useSelector(
     (state) => state.user
   );
 
@@ -77,7 +77,7 @@ const UserProfile = ({}) => {
                   }}
                   width={"11vw"}
                   height={"11vw"}
-                  src="https://cdn.pixabay.com/photo/2023/10/30/16/56/euonymus-europaeus-8353310_1280.jpg"
+                  src={"http://localhost:3065/img/" + user.src}
                 />
               </div>
             </Col>
