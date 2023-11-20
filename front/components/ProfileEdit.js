@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   Button,
   Cascader,
@@ -19,7 +19,8 @@ import {
   Col,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { addProfileImage } from "../reducers/user";
+import { addProfileImage, profileEdit } from "../reducers/user";
+import { useRouter } from "next/router";
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -48,7 +49,29 @@ const tailFormItemLayout = {
 const ProfileEdit = () => {
   const [componentDisabled, setComponentDisabled] = useState(true);
   const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  const route = useRouter();
+  const { me, profileImagePath, profileEditDone } = useSelector(
+    (state) => state.user
+  );
+  const onFinish = useCallback(
+    (e) => {
+      console.log(profileImagePath);
+      console.log(e);
+      const { nickname, description } = e;
+      const data = {
+        nickname,
+        description,
+        src: profileImagePath,
+      };
+      dispatch(profileEdit(data));
+    },
+    [profileImagePath]
+  );
+  useEffect(() => {
+    if (profileEditDone) {
+      route.replace("/");
+    }
+  }, [profileEditDone]);
   const imageInput = useRef();
   const onChangeImages = useCallback((e) => {
     console.log(e);
@@ -74,6 +97,7 @@ const ProfileEdit = () => {
           marginTop: "30px",
           marginLeft: "3vw",
         }}
+        onFinish={onFinish}
       >
         <Row style={{ marginBottom: "20px" }}>
           <Col>
@@ -133,10 +157,10 @@ const ProfileEdit = () => {
             </div>
           </Col>
         </Row>
-        <Form.Item label="닉네임">
-          <Input maxLength={100} placeholder="youcancallmekimm" />
+        <Form.Item label="닉네임" name="nickname">
+          <Input maxLength={100} placeholder={me.nickname} />
         </Form.Item>
-        <Form.Item label="소개">
+        <Form.Item label="소개" name="description">
           <Input.TextArea
             showCount
             maxLength={200}
@@ -144,17 +168,7 @@ const ProfileEdit = () => {
             rows={5}
           />
         </Form.Item>
-        <Form.Item label="성별">
-          <Radio.Group>
-            <Radio value="male"> 남성 </Radio>
-            <Radio value="female"> 여성 </Radio>
-            <Radio value="ohter"> 그 외 </Radio>
-          </Radio.Group>
-        </Form.Item>
 
-        <Form.Item label="생일">
-          <DatePicker />
-        </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Button type="primary" htmlType="submit" loading={false}>
             제출

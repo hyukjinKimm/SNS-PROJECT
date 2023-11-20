@@ -79,7 +79,7 @@ exports.getUser = async (req, res, next) => {
 
 exports.joinUser = async (req, res, next) => {
   try {
-    const { email, password, nickname, gender } = req.body;
+    const { email, password, nickname, gender, birth } = req.body;
     const exUser = await User.findOne({
       where: { email },
     });
@@ -94,6 +94,7 @@ exports.joinUser = async (req, res, next) => {
       nickname,
       gender,
       src: gender == "male" ? "default_male.png" : "default_female.jpg",
+      birth: birth ? birth : null,
     });
     res.status(200).json(newUser);
   } catch (e) {
@@ -159,5 +160,33 @@ exports.uploadImage = (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
+  }
+};
+
+exports.profileEdit = async (req, res, next) => {
+  try {
+    if (req.user) {
+      const updataData = {};
+      if (req.body.nickname) {
+        updataData.nickname = req.body.nickname;
+      }
+      if (req.body.description) {
+        updataData.description = req.body.description;
+      }
+      if (req.body.src) {
+        updataData.src = req.body.src;
+      }
+
+      const user = await User.update(updataData, {
+        where: { id: req.user.id },
+      });
+      res.status(200).json(user);
+    } else {
+      res.status(402).send("로그인 필요");
+    }
+    res.status(200).send("ok");
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
   }
 };

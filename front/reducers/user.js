@@ -32,6 +32,10 @@ const initialState = {
   addProfileImageDone: false,
   addProfileImageError: null,
 
+  profileEditLoading: false,
+  profileEditDone: false,
+  profileEditError: null,
+
   isLoggedIn: false,
   me: null,
   profileImagePath: "",
@@ -79,6 +83,13 @@ export const addProfileImage = createAsyncThunk(
     return response.data;
   }
 );
+export const profileEdit = createAsyncThunk(
+  "user/profileEdit",
+  async (data) => {
+    const response = await axios.post("/user/edit", data);
+    return response.data;
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -108,6 +119,12 @@ const userSlice = createSlice({
       state.getUserInfoLoading = false;
       state.getUserInfoDone = false;
       state.getUserInfoError = null;
+
+      state.profileImagePath = "";
+
+      state.profileEditLoading = false;
+      state.profileEditDone = false;
+      state.profileEditError = null;
 
       state.isLoggedIn = false;
       state.me = null;
@@ -247,6 +264,21 @@ const userSlice = createSlice({
       .addCase(addProfileImage.rejected, (state, action) => {
         state.addProfileImageLoading = false;
         state.addProfileImageError = action.error;
+      })
+      .addCase(profileEdit.pending, (state, action) => {
+        state.profileEditLoading = true;
+        state.profileEditDone = false;
+        state.profileEditError = null;
+      })
+      .addCase(profileEdit.fulfilled, (state, action) => {
+        state.profileEditLoading = false;
+        state.profileEditDone = true;
+        state.profileEditError = null;
+        state.profileImagePath = "";
+      })
+      .addCase(profileEdit.rejected, (state, action) => {
+        state.profileEditLoading = false;
+        state.profileEditError = action.error;
       }),
 });
 export const { initializeUserState } = userSlice.actions; // 액션 생성함수

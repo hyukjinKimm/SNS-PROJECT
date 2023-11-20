@@ -9,6 +9,7 @@ const {
   follow,
   unfollow,
   uploadImage,
+  profileEdit,
 } = require("../controllers/user");
 const { likeComment, unLikeComment } = require("../controllers/comment");
 const router = express.Router();
@@ -27,6 +28,7 @@ const upload = multer({
 });
 router.get("/", getMyInfo);
 router.post("/image", isLoggedIn, upload.single("image"), uploadImage);
+router.post("/edit", isLoggedIn, profileEdit);
 router.get("/:nickname", getUser);
 router.post("/", isNotLoggedIn, joinUser);
 router.patch("/likecomment", isLoggedIn, likeComment);

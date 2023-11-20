@@ -120,7 +120,7 @@ const AppLayout = ({ children }) => {
         label: <Link href="/test">테스트</Link>,
       },
     ];
-  }, [isLoggedIn, logOutLoading]);
+  }, [isLoggedIn, logOutLoading, me]);
 
   return (
     <Layout hasSider>

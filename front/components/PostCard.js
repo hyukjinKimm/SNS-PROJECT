@@ -191,7 +191,9 @@ const PostCard = ({ post }) => {
             }
           >
             <List.Item.Meta
-              avatar={<Avatar>{post.User.nickname[0]} </Avatar>}
+              avatar={
+                <Avatar src={`http://localhost:3065/img/${post.User.src}`} />
+              }
               title={
                 <a href={"/profile/" + post.User.nickname}>
                   {post.User.nickname}

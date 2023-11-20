@@ -26,6 +26,10 @@ class User extends Sequelize.Model {
           allowNull: true,
           defaultValue: "default description",
         },
+        birth: {
+          type: Sequelize.DATE,
+          allowNull: true,
+        },
         password: {
           type: Sequelize.STRING(100),
           allowNull: true,

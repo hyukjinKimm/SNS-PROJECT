@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Checkbox, Form, Input, Select } from "antd";
+import { Button, Checkbox, Form, Input, Select, DatePicker } from "antd";
 import { signUp } from "../reducers/user";
 
 const { Option } = Select;
@@ -55,8 +55,8 @@ const SignUp = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const onFinish = useCallback((e) => {
-    const { email, password, nickname, gender } = e;
-    dispatch(signUp({ email, password, nickname, gender }));
+    const { email, password, nickname, gender, birth } = e;
+    dispatch(signUp({ email, password, nickname, gender, birth }));
   }, []);
   useEffect(() => {
     if (signUpDone) {
@@ -162,6 +162,9 @@ const SignUp = () => {
           <Option value="female">여자</Option>
           <Option value="other">그 외</Option>
         </Select>
+      </Form.Item>
+      <Form.Item label="생일" name="birth">
+        <DatePicker />
       </Form.Item>
       <Form.Item
         name="confirm"
