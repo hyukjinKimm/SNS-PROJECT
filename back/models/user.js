@@ -58,7 +58,9 @@ class User extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.User.hasMany(db.Post);
+    db.User.hasMany(db.Post, {
+      onDelete: "CASCADE",
+    });
     db.User.hasMany(db.Comment);
     db.User.belongsToMany(db.Post, {
       through: "UserLikePost",

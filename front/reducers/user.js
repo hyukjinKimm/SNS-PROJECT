@@ -36,6 +36,10 @@ const initialState = {
   profileEditDone: false,
   profileEditError: null,
 
+  signOutLoading: false,
+  signOutDone: false,
+  signOutError: null,
+
   isLoggedIn: false,
   me: null,
   profileImagePath: "",
@@ -90,6 +94,10 @@ export const profileEdit = createAsyncThunk(
     return response.data;
   }
 );
+export const signOut = createAsyncThunk("user/signOut", async (data) => {
+  const response = await axios.post("/user/signout", data);
+  return response.data;
+});
 
 const userSlice = createSlice({
   name: "user",
@@ -125,6 +133,10 @@ const userSlice = createSlice({
       state.profileEditLoading = false;
       state.profileEditDone = false;
       state.profileEditError = null;
+
+      state.signOutLoading = false;
+      state.signOutDone = false;
+      state.signOutError = null;
 
       state.isLoggedIn = false;
       state.me = null;
@@ -279,6 +291,20 @@ const userSlice = createSlice({
       .addCase(profileEdit.rejected, (state, action) => {
         state.profileEditLoading = false;
         state.profileEditError = action.error;
+      })
+      .addCase(signOut.pending, (state, action) => {
+        state.signOutLoading = true;
+        state.signOutDone = false;
+        state.signOutError = null;
+      })
+      .addCase(signOut.fulfilled, (state, action) => {
+        state.signOutLoading = false;
+        state.signOutDone = true;
+        state.signOutError = null;
+      })
+      .addCase(signOut.rejected, (state, action) => {
+        state.signOutLoading = false;
+        state.signOutError = action.error;
       }),
 });
 export const { initializeUserState } = userSlice.actions; // 액션 생성함수

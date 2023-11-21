@@ -1,5 +1,5 @@
 const express = require("express");
-const bcypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const Post = require("../models/post");
 const Image = require("../models/image");
@@ -86,8 +86,14 @@ exports.joinUser = async (req, res, next) => {
     if (exUser) {
       return res.status(403).send("이미 사용중인 email 입니다.");
     }
+    const sameNicknameUser = await User.findOne({
+      where: { nickname },
+    });
 
-    const hashPassword = await bcypt.hash(password, 12);
+    if (sameNicknameUser) {
+      return res.status(403).send("이미 사용중인 nickname 입니다.");
+    }
+    const hashPassword = await bcrypt.hash(password, 12);
     const newUser = await User.create({
       email,
       password: hashPassword,
@@ -185,6 +191,29 @@ exports.profileEdit = async (req, res, next) => {
       res.status(402).send("로그인 필요");
     }
     res.status(200).send("ok");
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
+
+exports.signOut = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const exUser = await User.findOne({
+      where: { email },
+    });
+    if (!exUser) {
+      return res.status(403).send("유효하지 않은 이메일 입니다.");
+    }
+
+    const result = await bcrypt.compare(password, exUser.password);
+    if (result) {
+      await User.destroy({ where: { id: req.user.id }, force: true });
+      return res.status(200).send("회원탈퇴 완료.");
+    } else {
+      return res.status(403).send("비밀번호가 틀립니다.");
+    }
   } catch (e) {
     console.error(e);
     next(e); // status(500)

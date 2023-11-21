@@ -50,9 +50,8 @@ const ProfileEdit = () => {
   const [componentDisabled, setComponentDisabled] = useState(true);
   const dispatch = useDispatch();
   const route = useRouter();
-  const { me, profileImagePath, profileEditDone } = useSelector(
-    (state) => state.user
-  );
+  const { me, profileImagePath, profileEditDone, profileEditLoading } =
+    useSelector((state) => state.user);
   const onFinish = useCallback(
     (e) => {
       console.log(profileImagePath);
@@ -170,7 +169,7 @@ const ProfileEdit = () => {
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit" loading={false}>
+          <Button type="primary" htmlType="submit" loading={profileEditLoading}>
             제출
           </Button>
         </Form.Item>
