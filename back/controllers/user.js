@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const Post = require("../models/post");
 const Image = require("../models/image");
+const Comment = require("../models/comment");
 const { sequelize } = require("../models");
 const sharp = require("sharp");
 const fs = require("fs");
@@ -14,7 +15,11 @@ exports.getMyInfo = async (req, res, next) => {
         include: [
           {
             model: Post,
-            include: [{ model: Image }],
+            include: [
+              { model: Image },
+              { model: Comment },
+              { model: User, as: "PostLikers", attributes: ["id"] },
+            ],
           },
           {
             model: User,
@@ -51,7 +56,11 @@ exports.getUser = async (req, res, next) => {
       include: [
         {
           model: Post,
-          include: [{ model: Image }],
+          include: [
+            { model: Image },
+            { model: Comment },
+            { model: User, as: "PostLikers", attributes: ["id"] },
+          ],
         },
         {
           model: User,

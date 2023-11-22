@@ -171,7 +171,7 @@ const Post = () => {
         <Input.TextArea
           showCount
           maxLength={200}
-          placeholder="오늘은 어떤 행복한 일이 있었나요?"
+          placeholder="문구를 입력하세요.."
           rows={5}
         />
       </Form.Item>

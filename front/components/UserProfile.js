@@ -1,9 +1,25 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { SettingOutlined, TableOutlined } from "@ant-design/icons";
-import { Image, Row, Col, Card, Layout, theme, Button, Avatar } from "antd";
+import {
+  SettingOutlined,
+  TableOutlined,
+  HeartFilled,
+  MessageFilled,
+} from "@ant-design/icons";
+import {
+  Image,
+  Row,
+  Col,
+  Card,
+  Layout,
+  theme,
+  Button,
+  Avatar,
+  Space,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, unFollow } from "../reducers/user";
+import UserProfilePostCard from "./UserProfilePostCard";
 const { Meta } = Card;
 const { Content } = Layout;
 
@@ -43,7 +59,16 @@ const UserProfile = () => {
     return newArray;
   }, []);
   const result = user?.Posts.length > 0 ? division(user?.Posts, 3) : [];
-
+  const imgCoverStyle = useMemo(() => {
+    return {};
+  }, []);
+  const handleMouseOver = useCallback((e) => {
+    console.log(e.target);
+    console.log("in");
+  }, []);
+  const handleMouseOut = useCallback((e) => {
+    console.log("out");
+  }, []);
   return (
     <>
       <Content
@@ -55,7 +80,7 @@ const UserProfile = () => {
         <div
           style={{
             padding: 24,
-            paddingLeft: "10vw",
+            paddingLeft: "4vw",
             background: colorBgContainer,
           }}
         >
@@ -142,28 +167,23 @@ const UserProfile = () => {
             background: colorBgContainer,
           }}
         >
-          <div style={{ textAlign: "center" }}>
-            <TableOutlined style={{ fontSize: "30px", marginBottom: "20" }} />
-            <br />
-            <div style={{ fontSize: "20px" }}>게시물</div>
-          </div>
-          <div>
+          <div style={{ width: "70%" }}>
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+              <TableOutlined style={{ fontSize: "30px", marginBottom: "20" }} />
+              <br />
+              <div style={{ fontSize: "20px" }}>게시물</div>
+            </div>
             {result.length > 0 ? (
               result.map((items) => {
+                console.log(items);
                 return (
                   <Row gutter={[10, 10]}>
                     {items.length > 0
                       ? items.map((post) => {
                           return (
-                            <Col xs={24} md={8}>
-                              <img
-                                style={{ width: "95%", height: "95%" }}
-                                src={
-                                  "http://localhost:3065/img/" +
-                                  post.Images[0].src
-                                }
-                              ></img>
-                            </Col>
+                            <UserProfilePostCard
+                              post={post}
+                            ></UserProfilePostCard>
                           );
                         })
                       : null}
