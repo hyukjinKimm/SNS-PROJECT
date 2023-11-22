@@ -1,22 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
-import {
-  SettingOutlined,
-  TableOutlined,
-  HeartFilled,
-  MessageFilled,
-} from "@ant-design/icons";
-import {
-  Image,
-  Row,
-  Col,
-  Card,
-  Layout,
-  theme,
-  Button,
-  Avatar,
-  Space,
-} from "antd";
+import { SettingOutlined, TableOutlined } from "@ant-design/icons";
+import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, unFollow } from "../reducers/user";
 import UserProfilePostCard from "./UserProfilePostCard";
@@ -59,16 +44,7 @@ const UserProfile = () => {
     return newArray;
   }, []);
   const result = user?.Posts.length > 0 ? division(user?.Posts, 3) : [];
-  const imgCoverStyle = useMemo(() => {
-    return {};
-  }, []);
-  const handleMouseOver = useCallback((e) => {
-    console.log(e.target);
-    console.log("in");
-  }, []);
-  const handleMouseOut = useCallback((e) => {
-    console.log("out");
-  }, []);
+
   return (
     <>
       <Content
