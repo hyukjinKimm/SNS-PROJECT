@@ -16,7 +16,6 @@ const UserProfilePostCard = ({ post }) => {
   const handleMouseOut = useCallback(
     (e) => {
       if (isSwitched) {
-        setTimeout(() => {}, 200);
         setIsSwitched(false);
       }
     },
@@ -30,7 +29,7 @@ const UserProfilePostCard = ({ post }) => {
       style={{
         position: "relative",
         width: "10vw",
-        height: "30vh",
+        height: "40vh",
       }}
     >
       <img
@@ -45,7 +44,7 @@ const UserProfilePostCard = ({ post }) => {
           width: "87%",
           height: "90%",
           textAlign: "center",
-          lineHeight: "29vh",
+          lineHeight: "35vh",
           background: "black",
           color: "white",
           opacity: isSwitched ? "0.7" : "0",

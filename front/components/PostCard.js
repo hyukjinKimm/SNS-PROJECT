@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-
+import dayjs from "dayjs";
 import {
   MessageOutlined,
   RetweetOutlined,
@@ -127,6 +127,8 @@ const PostCard = ({ post }) => {
   useEffect(() => {
     setCommentOpened(false);
   }, [me, isLoggedIn]);
+  const data = dayjs(post.createdAt);
+
   return (
     <>
       {post.loading ? (
@@ -163,41 +165,59 @@ const PostCard = ({ post }) => {
             ]}
             extra={
               post.User.id === me?.id ? (
-                <Popover
-                  placement="left"
-                  content={
-                    <Space>
-                      <Button type="primary" onClick={hide}>
-                        수정
-                      </Button>
-                      <Button
-                        danger
-                        onClick={onDelete}
-                        loading={deletePostLoading}
-                      >
-                        삭제
-                      </Button>
-                      <Button onClick={hide}>신고</Button>
-                      <Button onClick={hide}>닫기</Button>
-                    </Space>
-                  }
-                  trigger="click"
-                  open={open}
-                  onOpenChange={handleOpenChange}
-                >
-                  <EllipsisOutlined style={{ fontSize: "40px" }} />
-                </Popover>
+                <>
+                  <div>
+                    <Popover
+                      placement="left"
+                      content={
+                        <Space>
+                          <Button type="primary" onClick={hide}>
+                            수정
+                          </Button>
+                          <Button
+                            danger
+                            onClick={onDelete}
+                            loading={deletePostLoading}
+                          >
+                            삭제
+                          </Button>
+                          <Button onClick={hide}>신고</Button>
+                          <Button onClick={hide}>닫기</Button>
+                        </Space>
+                      }
+                      trigger="click"
+                      open={open}
+                      onOpenChange={handleOpenChange}
+                    >
+                      <EllipsisOutlined style={{ fontSize: "40px" }} />
+                    </Popover>
+                  </div>
+                </>
               ) : null
             }
           >
             <List.Item.Meta
               avatar={
-                <Avatar src={`http://localhost:3065/img/${post.User.src}`} />
+                <>
+                  <Avatar src={`http://localhost:3065/img/${post.User.src}`} />
+                </>
               }
               title={
-                <a href={"/profile/" + post.User.nickname}>
-                  {post.User.nickname}
-                </a>
+                <>
+                  <a href={"/profile/" + post.User.nickname}>
+                    {post.User.nickname}
+                  </a>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      marginLeft: "5%",
+                      display: "inline",
+                      color: "#808080",
+                    }}
+                  >
+                    {data.format("YY-MM-DD")}
+                  </div>
+                </>
               }
               description={post.description}
             />
