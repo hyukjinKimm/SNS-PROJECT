@@ -25,9 +25,11 @@ const PostCard = ({ post }) => {
     return;
   }, [deletePostDone]);
   const onDelete = useCallback((e) => {
-    setDeletePostLoading(true);
+    if (confirm("게시글을 삭제 하시겠습니까?")) {
+      setDeletePostLoading(true);
 
-    dispatch(deletePost(post.id));
+      dispatch(deletePost(post.id));
+    }
   }, []);
   const id = useSelector((state) => state.user.me?.id);
   const [open, setOpen] = useState(false);
@@ -210,7 +212,7 @@ const PostCard = ({ post }) => {
                   <div
                     style={{
                       fontSize: "13px",
-                      marginLeft: "5%",
+                      marginLeft: "4%",
                       display: "inline",
                       color: "#808080",
                     }}

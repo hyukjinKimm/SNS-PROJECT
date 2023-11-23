@@ -1,15 +1,19 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { SettingOutlined, TableOutlined } from "@ant-design/icons";
+import {
+  SettingOutlined,
+  TableOutlined,
+  MessageFilled,
+} from "@ant-design/icons";
 import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { Follow, unFollow } from "../reducers/user";
+import { Follow, getUserInfo, unFollow } from "../reducers/user";
 import UserProfilePostCard from "./UserProfilePostCard";
 const { Meta } = Card;
 const { Content } = Layout;
 
 const UserProfile = () => {
-  const { me, followLoading, user, followError } = useSelector(
+  const { me, followLoading, user, followError, followDone } = useSelector(
     (state) => state.user
   );
 
@@ -23,7 +27,11 @@ const UserProfile = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
+  useEffect(() => {
+    if (followDone) {
+      dispatch(getUserInfo(user.nickname));
+    }
+  }, [followDone]);
   useEffect(() => {
     if (followError) {
       alert(followError);
@@ -86,6 +94,9 @@ const UserProfile = () => {
             <Col>
               <div style={{ width: "40vw" }}>
                 <Card
+                  bodyStyle={{
+                    fontSize: "15px",
+                  }}
                   size={64}
                   actions={[
                     me && me.id == user.id ? (
@@ -94,7 +105,13 @@ const UserProfile = () => {
                         <br />
                         <SettingOutlined key="edit_icon" />
                       </div>
-                    ) : null,
+                    ) : (
+                      <div key="message">
+                        <Link href="/profile/edit"> 메세지보내기</Link>
+                        <br />
+                        <MessageFilled key="message_icon" />
+                      </div>
+                    ),
                     <div key="posts">
                       게시물
                       <br />
