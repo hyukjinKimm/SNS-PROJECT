@@ -214,7 +214,7 @@ const PostCard = ({ post }) => {
                       fontSize: "13px",
                       marginLeft: "4%",
                       display: "inline",
-                      color: "#808080",
+                      color: "#ced4da",
                     }}
                   >
                     {data.format("YY-MM-DD")}
@@ -223,7 +223,7 @@ const PostCard = ({ post }) => {
               }
               description={post.description}
             />
-            {post.Images && <ImageSlider images={post.Images} />}
+            {post.Images && <ImageSlider images={post.Images} size={"20vw"} />}
             <div>{post.content}</div>
           </List.Item>
 

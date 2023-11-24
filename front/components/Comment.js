@@ -87,10 +87,10 @@ const Comment = ({ comment, postId }) => {
         actions={[
           <div>좋아요 {comment?.CommentLikers?.length}개</div>,
           <div>답글달기</div>,
-          comment.User.id === me?.id && (
+          comment.UserId === me?.id && (
             <div style={{ color: "blue", fontSize: "10px" }}>수정하기</div>
           ),
-          comment.User.id === me?.id && (
+          comment.UserId === me?.id && (
             <div
               onClick={(e) => {
                 onDeleteComment(e, comment);
@@ -111,9 +111,7 @@ const Comment = ({ comment, postId }) => {
       >
         <List.Item.Meta
           avatar={
-            <a href={"/profile/" + comment.User.nickname}>
-              <Avatar>{comment.User.nickname[0]}</Avatar>
-            </a>
+            <Avatar src={"http://localhost:3065/img/" + comment.User.src} />
           }
           description={comment.content}
         />

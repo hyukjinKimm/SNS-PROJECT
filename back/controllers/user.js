@@ -58,7 +58,17 @@ exports.getUser = async (req, res, next) => {
           model: Post,
           include: [
             { model: Image },
-            { model: Comment },
+            {
+              model: Comment,
+              include: [
+                { model: User, attributes: { exclude: ["password"] } },
+                {
+                  model: User,
+                  as: "CommentLikers",
+                  attributes: { exclude: ["password"] },
+                },
+              ],
+            },
             { model: User, as: "PostLikers", attributes: ["id"] },
           ],
         },

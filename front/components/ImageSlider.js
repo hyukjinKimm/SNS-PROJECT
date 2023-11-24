@@ -9,7 +9,7 @@ const settings = {
   slidesToShow: 1,
   slidesToScroll: 1,
 };
-const ImageSlider = ({ images }) => {
+const ImageSlider = ({ images, size, profile }) => {
   return (
     <>
       <link
@@ -23,14 +23,14 @@ const ImageSlider = ({ images }) => {
         type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css"
       />
-      <div style={{ width: "20vw" }}>
+      <div style={{ width: size }}>
         <Slider {...settings}>
           {images.map((image) => (
             <div key={image.src}>
               <img
                 src={`http://localhost:3065/img/${image.src}`}
                 alt=""
-                style={{ width: "100%", height: "50%" }}
+                style={{ width: "100%", height: profile ? "75vh" : null }}
               />
             </div>
           ))}

@@ -11,7 +11,7 @@ import * as screenActions from "../../reducers/screen";
 import { getUserInfo } from "../../reducers/user";
 import { useRouter } from "next/router";
 
-function Profile(props) {
+const Profile = () => {
   const router = useRouter();
   const { me, user } = useSelector((state) => state.user);
 
@@ -32,18 +32,19 @@ function Profile(props) {
       {user ? <UserProfile /> : null}
     </>
   );
-}
+};
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, params }) => {
       const cookie = req ? req.headers.cookie : "";
       axios.defaults.headers.Cookie = "";
+      console.log("here");
       if (req && cookie) {
         axios.defaults.headers.Cookie = cookie;
       }
       const me = await store.dispatch(getMyInfo());
       const user = await store.dispatch(getUserInfo(params.nickname));
-
+      console.log("hi");
       if (!me.payload) {
         store.dispatch(screenActions.changeMenu("HOME"));
       } else {

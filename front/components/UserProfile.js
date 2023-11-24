@@ -8,7 +8,7 @@ import {
 import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, getUserInfo, unFollow } from "../reducers/user";
-import UserProfilePostCard from "./UserProfilePostCard";
+import UserProfilePostImage from "./UserProfilePostImage";
 const { Meta } = Card;
 const { Content } = Layout;
 
@@ -174,9 +174,9 @@ const UserProfile = () => {
                     {items.length > 0
                       ? items.map((post) => {
                           return (
-                            <UserProfilePostCard
+                            <UserProfilePostImage
                               post={post}
-                            ></UserProfilePostCard>
+                            ></UserProfilePostImage>
                           );
                         })
                       : null}
