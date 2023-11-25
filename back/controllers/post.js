@@ -87,16 +87,45 @@ exports.likePost = async (req, res, next) => {
         // like 한 post 가 없음
 
         await user.addPostLikings(parseInt(req.params.postId, 10));
-        const postWithLikers = await Post.findOne({
+        const post = await Post.findOne({
           where: { id: req.params.postId },
-          include: {
-            model: User,
-            attributes: ["id"],
-            as: "PostLikers",
-          },
+          include: [
+            {
+              model: User,
+              attributes: { exclude: ["password"] },
+            },
+            {
+              model: Comment,
+              include: [
+                {
+                  model: User,
+                  attributes: { exclude: ["password"] },
+                },
+                {
+                  model: User,
+                  as: "CommentLikers",
+                  attributes: { exclude: ["password"] },
+                },
+              ],
+            },
+            {
+              model: Image,
+            },
+            {
+              model: User,
+
+              as: "PostLikers",
+              attributes: ["id"],
+            },
+            {
+              model: Post,
+              as: "Retweetings",
+              attributes: ["id"],
+            },
+          ],
         });
 
-        res.status(200).json(postWithLikers);
+        res.status(200).json(post);
       } else {
         res.status(404).send("존재하지 않는 포스트 입니다.");
       }
@@ -121,15 +150,44 @@ exports.unlikePost = async (req, res, next) => {
         await sequelize.models.UserLikePost.destroy({
           where: { UserId: req.user.id, PostId: req.params.postId },
         });
-        const postWithLikers = await Post.findOne({
+        const post = await Post.findOne({
           where: { id: req.params.postId },
-          include: {
-            model: User,
-            attributes: ["id"],
-            as: "PostLikers",
-          },
+          include: [
+            {
+              model: User,
+              attributes: { exclude: ["password"] },
+            },
+            {
+              model: Comment,
+              include: [
+                {
+                  model: User,
+                  attributes: { exclude: ["password"] },
+                },
+                {
+                  model: User,
+                  as: "CommentLikers",
+                  attributes: { exclude: ["password"] },
+                },
+              ],
+            },
+            {
+              model: Image,
+            },
+            {
+              model: User,
+
+              as: "PostLikers",
+              attributes: ["id"],
+            },
+            {
+              model: Post,
+              as: "Retweetings",
+              attributes: ["id"],
+            },
+          ],
         });
-        res.status(200).json(postWithLikers);
+        res.status(200).json(post);
       } else {
         res.status(404).send("존재하지 않는 포스트 입니다.");
       }
@@ -156,8 +214,8 @@ exports.commentPost = async (req, res, next) => {
       PostId: req.params.postId,
       UserId: req.user.id,
     });
-    const commentWithUser = await Comment.findOne({
-      where: { id: comment.id },
+    const AllComments = await Comment.findAll({
+      where: { postId: req.params.postId },
       include: [
         {
           model: User,
@@ -169,9 +227,10 @@ exports.commentPost = async (req, res, next) => {
           attributes: { exclude: ["password"] },
         },
       ],
+      order: [["createdAt", "ASC"]],
     });
 
-    res.status(200).json(commentWithUser);
+    res.status(200).json({ PostId: req.params.postId, AllComments });
   } catch (e) {
     console.error(e);
     next(e); // status(500)

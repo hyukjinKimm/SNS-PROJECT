@@ -3,6 +3,8 @@ import {
   LoadingOutlined,
   HeartTwoTone,
 } from "@ant-design/icons";
+
+import dayjs from "dayjs";
 import React, { useCallback, useState, useEffect } from "react";
 
 import {
@@ -14,9 +16,10 @@ import {
 } from "../reducers/post";
 import { Avatar, List, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { getUserInfo } from "../reducers/user";
 const Comment = ({ comment, postId }) => {
   const dispatch = useDispatch();
-  const { me, isLoggedIn } = useSelector((state) => state.user);
+  const { me, isLoggedIn, user } = useSelector((state) => state.user);
   const { likeCommentDone } = useSelector((state) => state.post);
   const [likeCommentLoading, setLikeCommentLoading] = useState(false);
   const onDeleteComment = useCallback((e, comment) => {
@@ -38,10 +41,13 @@ const Comment = ({ comment, postId }) => {
     }
   }, [liked]);
   useEffect(() => {
-    if (likeCommentDone) {
+    if (likeCommentDone && likeCommentLoading) {
       setLikeCommentLoading(false);
+      if (user) {
+        dispatch(getUserInfo(user.nickname));
+      }
     }
-  }, [likeCommentDone]);
+  }, [likeCommentDone, user]);
   useEffect(() => {
     if (
       comment?.CommentLikers?.find((e) => {
@@ -60,7 +66,11 @@ const Comment = ({ comment, postId }) => {
       likeCommentLoading ? (
         <LoadingOutlined />
       ) : (
-        <Space>
+        <Space
+          style={{
+            height: "8vh",
+          }}
+        >
           {liked
             ? React.createElement(HeartTwoTone, {
                 twoToneColor: "#eb2f96",
@@ -81,9 +91,13 @@ const Comment = ({ comment, postId }) => {
       ),
     [liked, likeCommentLoading, isLoggedIn]
   );
+  const date = dayjs(comment.createdAt);
   return (
     <>
       <List.Item
+        style={{
+          marginLeft: "0",
+        }}
         actions={[
           <div>좋아요 {comment?.CommentLikers?.length}개</div>,
           <div>답글달기</div>,
@@ -114,6 +128,24 @@ const Comment = ({ comment, postId }) => {
             <Avatar src={"http://localhost:3065/img/" + comment.User.src} />
           }
           description={comment.content}
+          title={
+            <>
+              <a href={"/profile/" + comment.User.nickname}>
+                {comment.User.nickname}
+              </a>
+              <br />
+              <div
+                style={{
+                  fontSize: "10px",
+
+                  display: "inline",
+                  color: "#ced4da",
+                }}
+              >
+                {date.format("YY-MM-DD")}
+              </div>
+            </>
+          }
         />
       </List.Item>
     </>

@@ -1,6 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Row, Col, List, Avatar } from "antd";
+import {
+  Row,
+  Col,
+  List,
+  Avatar,
+  Space,
+  Button,
+  Skeleton,
+  Popover,
+  Divider,
+} from "antd";
 import ImageSlider from "../ImageSlider";
 import dayjs from "dayjs";
 import {
@@ -12,6 +22,7 @@ import {
   Indicator,
   SlickWrapper,
 } from "./styles";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import CommentForm from "../CommentForm";
 import Comment from "../Comment";
@@ -19,8 +30,13 @@ import Comment from "../Comment";
 const UserProfilePostCard = ({ post, onClose }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const { user } = useSelector((state) => state.user);
+  const { addCommentDone } = useSelector((state) => state.post);
   const data = dayjs(post.createdAt);
 
+  useEffect(() => {
+    if (addCommentDone) {
+    }
+  }, []);
   return (
     <>
       <Overlay>
@@ -32,7 +48,6 @@ const UserProfilePostCard = ({ post, onClose }) => {
             position: "relative",
             top: 0,
             left: "16%",
-
             backgroundPosition: "center",
           }}
         >
@@ -46,7 +61,7 @@ const UserProfilePostCard = ({ post, onClose }) => {
           <Col
             style={{
               backgroundColor: "white",
-              width: "30%",
+              width: "40%",
             }}
           >
             <List
@@ -108,19 +123,42 @@ const UserProfilePostCard = ({ post, onClose }) => {
               }}
             ></div>
 
-            <List
+            <div
+              id="scrollableDiv"
               style={{
-                marginLeft: "10px",
-                marginRight: "10px",
+                height: 400,
+                overflow: "auto",
+                padding: "0 16px",
+                border: "1px solid rgba(140, 140, 140, 0.35)",
               }}
-              className="demo-loadmore-list"
-              itemLayout="vertical"
-              dataSource={post.Comments}
-              renderItem={(comment) => (
-                <Comment key={comment.id} comment={comment} postId={post.id} />
-              )}
-            />
-            <CommentForm />
+            >
+              <InfiniteScroll
+                dataLength={post.Comments.length}
+                loader={
+                  <Skeleton
+                    avatar
+                    paragraph={{
+                      rows: 1,
+                    }}
+                    active
+                  />
+                }
+                scrollableTarget="scrollableDiv"
+                endMessage={<Divider plain>댓글의 끝 입니다. 🤐</Divider>}
+              >
+                <List
+                  dataSource={post.Comments}
+                  renderItem={(comment) => (
+                    <Comment
+                      key={comment.id}
+                      comment={comment}
+                      postId={post.id}
+                    />
+                  )}
+                />
+              </InfiniteScroll>
+            </div>
+            <CommentForm postId={post.id} />
           </Col>
         </Row>
       </Overlay>

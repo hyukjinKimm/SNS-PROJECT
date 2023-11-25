@@ -8,7 +8,8 @@ import {
   EllipsisOutlined,
   LoadingOutlined,
 } from "@ant-design/icons";
-import { Avatar, List, Space, Button, Skeleton, Popover } from "antd";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { Avatar, List, Space, Button, Skeleton, Popover, Divider } from "antd";
 import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
@@ -129,7 +130,7 @@ const PostCard = ({ post }) => {
   useEffect(() => {
     setCommentOpened(false);
   }, [me, isLoggedIn]);
-  const data = dayjs(post.createdAt);
+  const date = dayjs(post.createdAt);
 
   return (
     <>
@@ -217,7 +218,7 @@ const PostCard = ({ post }) => {
                       color: "#ced4da",
                     }}
                   >
-                    {data.format("YY-MM-DD")}
+                    {date.format("YY-MM-DD")}
                   </div>
                 </>
               }
@@ -231,18 +232,46 @@ const PostCard = ({ post }) => {
             <List.Item>
               {post.Comments.length} 개의 댓글
               {post.Comments.length > 0 && (
-                <List
-                  className="demo-loadmore-list"
-                  itemLayout="vertical"
-                  dataSource={post.Comments}
-                  renderItem={(comment) => (
-                    <Comment
-                      key={comment.id}
-                      comment={comment}
-                      postId={post.id}
-                    />
-                  )}
-                />
+                <>
+                  <div
+                    id="scrollableDiv"
+                    style={{
+                      height: 400,
+                      overflow: "auto",
+                      padding: "0",
+                      border: "1px solid rgba(140, 140, 140, 0.35)",
+                    }}
+                  >
+                    <InfiniteScroll
+                      style={{
+                        padding: "0",
+                      }}
+                      dataLength={post.Comments.length}
+                      loader={
+                        <Skeleton
+                          avatar
+                          paragraph={{
+                            rows: 1,
+                          }}
+                          active
+                        />
+                      }
+                      scrollableTarget="scrollableDiv"
+                      endMessage={<Divider plain>댓글의 끝 입니다. 🤐</Divider>}
+                    >
+                      <List
+                        dataSource={post.Comments}
+                        renderItem={(comment) => (
+                          <Comment
+                            key={comment.id}
+                            comment={comment}
+                            postId={post.id}
+                          />
+                        )}
+                      />
+                    </InfiniteScroll>
+                  </div>
+                </>
               )}
               {me && isLoggedIn ? <CommentForm postId={post.id} /> : null}
             </List.Item>

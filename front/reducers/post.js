@@ -19,6 +19,9 @@ const initialState = {
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+  loadPostLoading: false,
+  loadPostDone: false,
+  loadPostError: null,
 
   clearPostLoading: false,
   clearPostDone: false,
@@ -35,6 +38,10 @@ const initialState = {
   deleteCommentError: null,
 }; // 초기 상태 정의
 
+export const loadPost = createAsyncThunk("post/loadPost", async (postId) => {
+  const response = await axios.get(`post/${postId}`);
+  return response.data;
+});
 export const loadPosts = createAsyncThunk("post/loadPosts", async (lastId) => {
   const response = await axios.get(`posts?lastId=${lastId || 0}`);
   return response.data;
@@ -118,6 +125,10 @@ const postSlice = createSlice({
       state.loadPostsDone = false;
       state.loadPostsError = null;
 
+      state.loadPostLoading = false;
+      state.loadPostDone = false;
+      state.loadPostError = null;
+
       state.clearPostLoading = false;
       state.clearPostDone = false;
       state.clearPostError = null;
@@ -190,13 +201,13 @@ const postSlice = createSlice({
         state.likePostLoading = false;
         state.likePostDone = true;
         state.likePostError = null;
-        state.mainPosts.find(
-          (post) => post.id == action.payload.id
-        ).PostLikers = action.payload.PostLikers.map((p) => {
-          return {
-            id: p.id,
-          };
-        });
+
+        if (state.mainPosts.length > 0) {
+          let index = state.mainPosts.findIndex(
+            (post) => post.id == action.payload.id
+          );
+          state.mainPosts[index] = action.payload;
+        }
       })
       .addCase(likePost.rejected, (state, action) => {
         state.likePostLoading = false;
@@ -211,13 +222,12 @@ const postSlice = createSlice({
         state.likePostLoading = false;
         state.likePostDone = true;
         state.likePostError = null;
-        state.mainPosts.find(
-          (post) => post.id == action.payload.id
-        ).PostLikers = action.payload.PostLikers.map((p) => {
-          return {
-            id: p.id,
-          };
-        });
+        if (state.mainPosts.length) {
+          let index = state.mainPosts.findIndex(
+            (post) => post.id == action.payload.id
+          );
+          state.mainPosts[index] = action.payload;
+        }
       })
       .addCase(unlikePost.rejected, (state, action) => {
         state.likePostLoading = false;
@@ -247,9 +257,11 @@ const postSlice = createSlice({
         state.deletePostLoading = false;
         state.deletePostDone = true;
         state.deletePostError = null;
-        state.mainPosts = state.mainPosts.filter((post) => {
-          if (post.id != action.payload.id) return true;
-        });
+        if (state.mainPosts.length) {
+          state.mainPosts = state.mainPosts.filter((post) => {
+            if (post.id != action.payload.id) return true;
+          });
+        }
       })
       .addCase(deletePost.rejected, (state, action) => {
         state.deletePostLoading = false;
@@ -264,9 +276,11 @@ const postSlice = createSlice({
         state.addCommentLoading = false;
         state.addCommentDone = true;
         state.addCommentError = null;
-        state.mainPosts
-          .find((post) => post.id == action.payload.PostId)
-          .Comments.unshift(action.payload);
+        if (state.mainPosts.length) {
+          state.mainPosts.find(
+            (post) => post.id == action.payload.PostId
+          ).Comments = action.payload.AllComments;
+        }
       })
       .addCase(addComment.rejected, (state, action) => {
         state.addCommentError = action.error;
@@ -281,13 +295,15 @@ const postSlice = createSlice({
         state.deleteCommentLoading = false;
         state.deleteCommentDone = true;
         state.deleteCommentError = null;
-        let comments = state.mainPosts.find(
-          (post) => post.id == action.payload.postId
-        ).Comments;
-        let index = comments.findIndex(
-          (comment) => comment.id == action.payload.commentId
-        );
-        comments.splice(index, 1);
+        if (state.mainPosts.length) {
+          let comments = state.mainPosts.find(
+            (post) => post.id == action.payload.postId
+          ).Comments;
+          let index = comments.findIndex(
+            (comment) => comment.id == action.payload.commentId
+          );
+          comments.splice(index, 1);
+        }
       })
       .addCase(deleteComment.rejected, (state, action) => {
         state.deleteCommentError = action.error;
@@ -302,15 +318,13 @@ const postSlice = createSlice({
         state.likeCommentLoading = false;
         state.likeCommentDone = true;
         state.likeCommentError = null;
-        state.mainPosts
-          .find((post) => post.id == action.payload.postId)
-          .Comments.find(
-            (comment) => comment.id == action.payload.commentId
-          ).CommentLikers = action.payload.CommentLikers.map((p) => {
-          return {
-            id: p.UserId,
-          };
-        });
+        if (state.mainPosts.length) {
+          state.mainPosts
+            .find((post) => post.id == action.payload.Post.id)
+            .Comments.find(
+              (comment) => comment.id == action.payload.id
+            ).CommentLikers = action.payload.CommentLikers;
+        }
       })
       .addCase(likeComment.rejected, (state, action) => {
         state.likeCommentError = action.error;
@@ -325,15 +339,13 @@ const postSlice = createSlice({
         state.likeCommentLoading = false;
         state.likeCommentDone = true;
         state.likeCommentError = null;
-        state.mainPosts
-          .find((post) => post.id == action.payload.postId)
-          .Comments.find(
-            (comment) => comment.id == action.payload.commentId
-          ).CommentLikers = action.payload.CommentLikers.map((p) => {
-          return {
-            id: p.UserId,
-          };
-        });
+        if (state.mainPosts.length > 0) {
+          state.mainPosts
+            .find((post) => post.id == action.payload.Post.id)
+            .Comments.find(
+              (comment) => comment.id == action.payload.id
+            ).CommentLikers = action.payload.CommentLikers;
+        }
       })
       .addCase(unlikeComment.rejected, (state, action) => {
         state.likeCommentError = action.error;

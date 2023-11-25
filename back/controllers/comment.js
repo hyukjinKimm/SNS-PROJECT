@@ -21,6 +21,7 @@ exports.updateComment = async (req, res, next) => {
               content: req.body.content,
               where: { id: parseInt(req.params.commentId, 10) },
             });
+
             res.status(201).json({
               postId: req.params.postId,
               commentId: req.params.commentId,
@@ -84,7 +85,6 @@ exports.deleteComment = async (req, res, next) => {
 
 exports.likeComment = async (req, res, next) => {
   try {
-    console.log("here", req.body);
     const user = await User.findOne({ where: { id: req.user.id } });
     if (user) {
       // req.user.id가 followerId, req.params.id가 followingId
@@ -99,16 +99,25 @@ exports.likeComment = async (req, res, next) => {
             UserId: req.user.id,
             CommentId: req.body.commentId,
           });
-          const CommentLikers = await sequelize.models.UserLikeComment.findAll({
-            where: { CommentId: req.body.commentId },
-            attributes: ["UserId"],
+
+          const result = await Comment.findOne({
+            where: { id: req.body.commentId },
+            include: [
+              {
+                model: User,
+                attributes: { exclude: ["password"] },
+              },
+              {
+                model: User,
+                as: "CommentLikers",
+                attributes: { exclude: ["password"] },
+              },
+              {
+                model: Post,
+                attributes: ["id"],
+              },
+            ],
           });
-          const result = {
-            commentId: req.body.commentId,
-            postId: req.body.postId,
-            CommentLikers,
-            message: "like comment success",
-          };
 
           res.status(200).json(result);
         } else {
@@ -143,16 +152,24 @@ exports.unLikeComment = async (req, res, next) => {
             where: { UserId: req.user.id, CommentId: req.body.commentId },
           });
 
-          const CommentLikers = await sequelize.models.UserLikeComment.findAll({
-            where: { CommentId: req.body.commentId },
-            attributes: ["UserId"],
+          const result = await Comment.findOne({
+            where: { id: req.body.commentId },
+            include: [
+              {
+                model: User,
+                attributes: { exclude: ["password"] },
+              },
+              {
+                model: User,
+                as: "CommentLikers",
+                attributes: { exclude: ["password"] },
+              },
+              {
+                model: Post,
+                attributes: ["id"],
+              },
+            ],
           });
-          const result = {
-            commentId: req.body.commentId,
-            postId: req.body.postId,
-            CommentLikers,
-            message: "unlike comment success",
-          };
 
           res.status(200).json(result);
         } else {

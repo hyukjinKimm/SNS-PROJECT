@@ -3,6 +3,7 @@ import { Button, Form, Input } from "antd";
 import { addComment } from "../reducers/post";
 
 import { useDispatch, useSelector } from "react-redux";
+import { getUserInfo } from "../reducers/user";
 
 const CommentForm = ({ postId }) => {
   const formRef = useRef(null);
@@ -10,6 +11,7 @@ const CommentForm = ({ postId }) => {
   const { addCommentDone, addCommentError } = useSelector(
     (state) => state.post
   );
+  const { user } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
   const setComment = useCallback(() => {
@@ -19,12 +21,16 @@ const CommentForm = ({ postId }) => {
   }, []);
 
   useEffect(() => {
-    if (addCommentDone) {
+    if (addCommentDone && addCommentLoading) {
       setAddCommentLoading(false);
       setComment();
+
+      if (user) {
+        dispatch(getUserInfo(user.nickname));
+      }
     }
     return;
-  }, [addCommentDone]);
+  }, [addCommentDone, user]);
   useEffect(() => {
     if (addCommentError) {
       alert(addCommentError);

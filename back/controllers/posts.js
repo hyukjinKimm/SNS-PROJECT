@@ -52,7 +52,7 @@ exports.getPosts = async (req, res, next) => {
       ],
       order: [
         ["createdAt", "DESC"],
-        [Comment, "createdAt", "DESC"],
+        [Comment, "createdAt", "ASC"],
       ],
     });
 
