@@ -55,7 +55,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store.dispatch(postActions.initializePostState());
       store.dispatch(userActions.initializeUserState());
       await store.dispatch(getMyInfo());
-      await store.dispatch(loadPosts());
+      await store.dispatch(loadPosts({}));
       return {
         props: {},
       };

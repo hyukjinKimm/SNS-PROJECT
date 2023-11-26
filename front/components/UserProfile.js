@@ -9,6 +9,7 @@ import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, getUserInfo, unFollow } from "../reducers/user";
 import UserProfilePostImage from "./UserProfilePostImage";
+import { loadPosts } from "../reducers/post";
 const { Meta } = Card;
 const { Content } = Layout;
 
@@ -16,6 +17,7 @@ const UserProfile = () => {
   const { me, followLoading, user, followError, followDone } = useSelector(
     (state) => state.user
   );
+  const { mainPosts } = useSelector((state) => state.post);
 
   const dispatch = useDispatch();
   const onClickFollow = useCallback(() => {
@@ -51,8 +53,26 @@ const UserProfile = () => {
 
     return newArray;
   }, []);
-  const result = user?.Posts.length > 0 ? division(user?.Posts, 3) : [];
-
+  const result = mainPosts?.length > 0 ? division(mainPosts, 3) : [];
+  const { hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+  useEffect(() => {
+    function onScroll() {
+      if (
+        document.documentElement.scrollTop +
+          document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 300
+      ) {
+        if (hasMorePosts && !loadPostsLoading) {
+          const lastId = mainPosts[mainPosts?.length - 1]?.id;
+          dispatch(loadPosts({ lastId, userId: user.id }));
+        }
+      }
+    }
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [hasMorePosts, loadPostsLoading]);
   return (
     <>
       <Content
@@ -115,7 +135,7 @@ const UserProfile = () => {
                     <div key="posts">
                       게시물
                       <br />
-                      {user?.Posts.length}
+                      {mainPosts?.length}
                     </div>,
                     <div key="followers">
                       팔로워
@@ -168,7 +188,6 @@ const UserProfile = () => {
             </div>
             {result.length > 0 ? (
               result.map((items) => {
-                console.log(items);
                 return (
                   <Row gutter={[10, 10]}>
                     {items.length > 0

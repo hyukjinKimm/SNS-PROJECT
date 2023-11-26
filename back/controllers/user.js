@@ -14,14 +14,6 @@ exports.getMyInfo = async (req, res, next) => {
         where: { id: req.user.id },
         include: [
           {
-            model: Post,
-            include: [
-              { model: Image },
-              { model: Comment },
-              { model: User, as: "PostLikers", attributes: ["id"] },
-            ],
-          },
-          {
             model: User,
             as: "Followings",
             attributes: ["id"],
@@ -55,24 +47,6 @@ exports.getUser = async (req, res, next) => {
       where: { nickname: decodeURIComponent(req.params.nickname) },
       include: [
         {
-          model: Post,
-          include: [
-            { model: Image },
-            {
-              model: Comment,
-              include: [
-                { model: User, attributes: { exclude: ["password"] } },
-                {
-                  model: User,
-                  as: "CommentLikers",
-                  attributes: { exclude: ["password"] },
-                },
-              ],
-            },
-            { model: User, as: "PostLikers", attributes: ["id"] },
-          ],
-        },
-        {
           model: User,
           as: "Followings",
           attributes: ["id"],
@@ -84,7 +58,6 @@ exports.getUser = async (req, res, next) => {
         },
       ],
       attributes: { exclude: ["password"] },
-      order: [[Post, "createdAt", "DESC"]],
     });
     if (!user) {
       return res.status(403).send("존재하지 않는 유저 입니다.");

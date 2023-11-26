@@ -19,7 +19,7 @@ const PostCards = ({ posts }) => {
       ) {
         if (hasMorePosts && !loadPostsLoading) {
           const lastId = posts[posts.length - 1]?.id;
-          dispatch(loadPosts(lastId));
+          dispatch(loadPosts({ lastId }));
         }
       }
     }

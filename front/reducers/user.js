@@ -53,7 +53,6 @@ export const getMyInfo = createAsyncThunk("user/getMyInfo", async (data) => {
 export const getUserInfo = createAsyncThunk(
   "user/getUserInfo",
   async (nickname) => {
-    console.log("hi", nickname);
     const response = await axios.get(`/user/${encodeURIComponent(nickname)}`);
     return response.data;
   }

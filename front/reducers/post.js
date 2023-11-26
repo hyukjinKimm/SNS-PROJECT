@@ -42,10 +42,17 @@ export const loadPost = createAsyncThunk("post/loadPost", async (postId) => {
   const response = await axios.get(`post/${postId}`);
   return response.data;
 });
-export const loadPosts = createAsyncThunk("post/loadPosts", async (lastId) => {
-  const response = await axios.get(`posts?lastId=${lastId || 0}`);
-  return response.data;
-});
+export const loadPosts = createAsyncThunk(
+  "post/loadPosts",
+
+  async (data) => {
+    const { lastId, userId } = data;
+    const response = await axios.get(
+      `posts?lastId=${lastId || 0}&userId=${userId || 0}`
+    );
+    return response.data;
+  }
+);
 export const addPost = createAsyncThunk("post/addPost", async (data) => {
   const response = await axios.post("/post", data);
   return response.data;
@@ -154,7 +161,9 @@ const postSlice = createSlice({
         state.loadPostsLoading = true;
         state.loadPostsDone = false;
         state.loadPostsError = null;
-        state.mainPosts = state.mainPosts.concat(
+
+        /*
+             state.mainPosts = state.mainPosts.concat(
           Array(10)
             .fill()
             .map(() => {
@@ -165,12 +174,16 @@ const postSlice = createSlice({
               };
             })
         );
+
+        */
       })
       .addCase(loadPosts.fulfilled, (state, action) => {
         state.loadPostsLoading = false;
         state.loadPostsDone = true;
         state.loadPostsError = null;
-        state.mainPosts = state.mainPosts.slice(0, -10).concat(action.payload);
+        /**    state.mainPosts = state.mainPosts.slice(0, -10).concat(action.payload);*/
+        state.mainPosts = state.mainPosts.concat(action.payload);
+
         state.hasMorePosts = action.payload.length == 10;
       })
       .addCase(loadPosts.rejected, (state, action) => {

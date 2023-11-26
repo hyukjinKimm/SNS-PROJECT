@@ -10,6 +10,7 @@ import { getMyInfo } from "../../reducers/user";
 import * as screenActions from "../../reducers/screen";
 import { getUserInfo } from "../../reducers/user";
 import { useRouter } from "next/router";
+import { loadPosts } from "../../reducers/post";
 
 const Profile = () => {
   const router = useRouter();
@@ -38,13 +39,21 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ req, params }) => {
       const cookie = req ? req.headers.cookie : "";
       axios.defaults.headers.Cookie = "";
-      console.log("here");
+
       if (req && cookie) {
         axios.defaults.headers.Cookie = cookie;
       }
+
       const me = await store.dispatch(getMyInfo());
       const user = await store.dispatch(getUserInfo(params.nickname));
-      console.log("hi");
+
+      await store.dispatch(
+        loadPosts({
+          lastId: null,
+
+          userId: user.payload.id,
+        })
+      );
       if (!me.payload) {
         store.dispatch(screenActions.changeMenu("HOME"));
       } else {

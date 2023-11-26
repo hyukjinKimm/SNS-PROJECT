@@ -13,6 +13,9 @@ exports.getPosts = async (req, res, next) => {
       where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
     }
 
+    if (parseInt(req.query.userId, 10)) {
+      where.UserId = parseInt(req.query.userId, 10);
+    }
     const posts = await Post.findAll({
       where,
       limit: 10,
