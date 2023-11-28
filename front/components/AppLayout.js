@@ -7,6 +7,7 @@ import {
   LoginOutlined,
   MessageOutlined,
   ExclamationOutlined,
+  HeartOutlined,
   HomeOutlined,
   LogoutOutlined,
   MenuUnfoldOutlined,
@@ -14,7 +15,7 @@ import {
   LoadingOutlined,
   FileAddOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Button } from "antd";
+import { Layout, Menu, theme, Button, Badge, Avatar } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import * as screenActions from "../reducers/screen";
 import { logOut, getMyInfo } from "../reducers/user";
@@ -40,67 +41,135 @@ const AppLayout = ({ children }) => {
     return [
       {
         key: "HOME",
-        icon: React.createElement(HomeOutlined),
+        icon: React.createElement(HomeOutlined, {
+          style: {
+            fontSize: "20px",
+          },
+        }),
         label: <a href="http://localhost:3060">홈</a>,
       },
       {
         key: "SEARCH",
-        icon: React.createElement(SearchOutlined),
+        icon: React.createElement(SearchOutlined, {
+          style: {
+            fontSize: "20px",
+          },
+        }),
         label: "검색",
       },
       isLoggedIn
         ? null
         : {
             key: "LOGIN",
-            icon: React.createElement(LoginOutlined),
+            icon: React.createElement(LoginOutlined, {
+              style: {
+                fontSize: "20px",
+              },
+            }),
             label: <Link href="http://localhost:3060/login">로그인</Link>,
           },
 
       isLoggedIn
         ? {
             key: "MESSAGE",
-            icon: React.createElement(MessageOutlined),
+            icon: (
+              <Badge
+                style={{
+                  fontSize: 14,
+                  textAlign: "center",
+                }}
+                count={5}
+                offset={[2, 4]}
+              >
+                <MessageOutlined
+                  style={{ fontSize: 20 }}
+                  shape="square"
+                  size="large"
+                />
+              </Badge>
+            ),
             label: "메시지",
           }
         : {
             key: "MESSAGE",
-            icon: React.createElement(MessageOutlined),
+            icon: React.createElement(MessageOutlined, {
+              style: {
+                fontSize: "20px",
+              },
+            }),
             label: "메시지",
             disabled: true,
           },
       isLoggedIn
         ? {
             key: "NOTICE",
-            icon: React.createElement(ExclamationOutlined),
+            icon: (
+              <Badge
+                style={{
+                  fontSize: 14,
+                  textAlign: "center",
+                }}
+                count={5}
+                offset={[2, 2]}
+              >
+                <HeartOutlined
+                  shape="square"
+                  size="large"
+                  style={{
+                    fontSize: "20px",
+                  }}
+                />
+              </Badge>
+            ),
             label: "알림",
           }
         : {
             key: "NOTICE",
-            icon: React.createElement(ExclamationOutlined),
+            icon: React.createElement(HeartOutlined, {
+              style: {
+                fontSize: "20px",
+              },
+            }),
             label: "알림",
             disabled: true,
           },
       isLoggedIn
         ? {
             key: "POST",
-            icon: React.createElement(FileAddOutlined),
+            icon: React.createElement(FileAddOutlined, {
+              style: {
+                fontSize: "20px",
+              },
+            }),
             label: <Link href="/post">만들기</Link>,
           }
         : {
             key: "POST",
-            icon: React.createElement(FileAddOutlined),
+            icon: React.createElement(FileAddOutlined, {
+              style: {
+                fontSize: "20px",
+              },
+            }),
             label: "만들기",
             disabled: true,
           },
       isLoggedIn
         ? {
             key: "PROFILE",
-            icon: React.createElement(UserOutlined),
+            icon: React.createElement(UserOutlined, {
+              style: {
+                fontSize: "20px",
+              },
+            }),
             label: <a href={`/profile/${me.nickname}`}>프로필</a>,
           }
         : {
             key: "PROFILE",
-            icon: React.createElement(UserOutlined),
+            icon: React.createElement(UserOutlined, {
+              style: {
+                fontSize: "20px",
+              },
+            }),
             label: "프로필",
             disabled: true,
           },
@@ -108,15 +177,46 @@ const AppLayout = ({ children }) => {
         ? {
             key: "LOGOUT",
             icon: React.createElement(
-              logOutLoading ? LoadingOutlined : LogoutOutlined
+              logOutLoading ? LoadingOutlined : LogoutOutlined,
+              {
+                style: {
+                  fontSize: "20px",
+                },
+              }
             ),
             label: <a href="http://localhost:3060">로그아웃</a>,
             onClick: LogOutRequest,
           }
         : null,
       {
+        key: "NOTICE",
+        icon: (
+          <Badge
+            style={{
+              fontSize: 14,
+              textAlign: "center",
+            }}
+            count={5}
+            offset={[2, 2]}
+          >
+            <HeartOutlined
+              shape="square"
+              size="large"
+              style={{
+                fontSize: "20px",
+              }}
+            />
+          </Badge>
+        ),
+        label: <a href="http://localhost:3060">공지사항</a>,
+      },
+      {
         key: "TEST",
-        icon: React.createElement(LoginOutlined),
+        icon: React.createElement(LoginOutlined, {
+          style: {
+            fontSize: "20px",
+          },
+        }),
         label: <Link href="/test">테스트</Link>,
       },
     ];
