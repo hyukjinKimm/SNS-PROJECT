@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   SettingOutlined,
@@ -8,15 +8,16 @@ import {
 import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, getUserInfo, unFollow } from "../reducers/user";
+import FollowerList from "./FollowerList";
 import UserProfilePostImage from "./UserProfilePostImage";
 import { loadPosts } from "../reducers/post";
+
 const { Meta } = Card;
 const { Content } = Layout;
 
 const UserProfile = () => {
-  const { me, followLoading, user, followError, followDone } = useSelector(
-    (state) => state.user
-  );
+  const { me, followLoading, user, followError, followDone, isLoggedIn } =
+    useSelector((state) => state.user);
   const { mainPosts } = useSelector((state) => state.post);
 
   const dispatch = useDispatch();
@@ -73,6 +74,14 @@ const UserProfile = () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, [hasMorePosts, loadPostsLoading]);
+
+  const [showFollower, setShowFollower] = useState(false);
+  const onClickFollowerList = useCallback(() => {
+    setShowFollower(true);
+  }, []);
+  const onCloseFollowerList = useCallback(() => {
+    setShowFollower(false);
+  }, []);
   return (
     <>
       <Content
@@ -135,9 +144,9 @@ const UserProfile = () => {
                     <div key="posts">
                       게시물
                       <br />
-                      {mainPosts?.length}
+                      {user.Posts?.length}
                     </div>,
-                    <div key="followers">
+                    <div key="followers" onClick={onClickFollowerList}>
                       팔로워
                       <br />
                       {user?.Followers.length}
@@ -154,7 +163,7 @@ const UserProfile = () => {
                     description={user?.description}
                     style={{ height: "11vh", paddingTop: 10 }}
                   />
-                  {me?.id != user?.id ? (
+                  {isLoggedIn && me?.id != user?.id ? (
                     me?.Followings?.find((e) => {
                       if (e.id == user.id) {
                         return true;
@@ -210,6 +219,12 @@ const UserProfile = () => {
           </div>
         </div>
       </Content>
+      {showFollower && (
+        <FollowerList
+          followers={user.Followers}
+          onClose={onCloseFollowerList}
+        />
+      )}
     </>
   );
 };

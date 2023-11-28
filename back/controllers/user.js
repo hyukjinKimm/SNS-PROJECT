@@ -14,6 +14,10 @@ exports.getMyInfo = async (req, res, next) => {
         where: { id: req.user.id },
         include: [
           {
+            model: Post,
+            attributes: ["id"],
+          },
+          {
             model: User,
             as: "Followings",
             attributes: ["id"],
@@ -47,14 +51,19 @@ exports.getUser = async (req, res, next) => {
       where: { nickname: decodeURIComponent(req.params.nickname) },
       include: [
         {
+          model: Post,
+          attributes: ["id"],
+        },
+
+        {
           model: User,
           as: "Followings",
-          attributes: ["id"],
+          attributes: ["id", "src", "description", "nickname"],
         },
         {
           model: User,
           as: "Followers",
-          attributes: ["id"],
+          attributes: ["id", "src", "description", "nickname"],
         },
       ],
       attributes: { exclude: ["password"] },
