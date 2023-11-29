@@ -25,18 +25,15 @@ import {
 } from "./styles";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
-import { Follow, getUserInfo, unFollow } from "../../reducers/user";
 import CommentForm from "../CommentForm";
 import Comment from "../Comment";
+import { Follow, getUserInfo, unFollow } from "../../reducers/user";
 
-const FollowerList = ({ followers, onClose }) => {
-  const { isLoggedIn, me, user, followDone, followLoading } = useSelector(
+const FollowingList = ({ followings, onClose }) => {
+  const { isLoggedIn, me, user, followDone } = useSelector(
     (state) => state.user
   );
   const dispatch = useDispatch();
-  const onClickFollow = useCallback((id) => {
-    dispatch(Follow(id));
-  }, []);
   const onClickunFollow = useCallback((id) => {
     dispatch(unFollow(id));
   }, []);
@@ -45,7 +42,6 @@ const FollowerList = ({ followers, onClose }) => {
       dispatch(getUserInfo(user.nickname));
     }
   }, [followDone]);
-
   return (
     <>
       <Overlay>
@@ -74,7 +70,7 @@ const FollowerList = ({ followers, onClose }) => {
                   fontFamily: "Georgia",
                 }}
               >
-                팔로워
+                팔로우
               </div>
               <Input.Search
                 style={{
@@ -104,7 +100,7 @@ const FollowerList = ({ followers, onClose }) => {
               }}
             >
               <InfiniteScroll
-                dataLength={followers.length}
+                dataLength={followings.length}
                 loader={
                   <Skeleton
                     avatar
@@ -115,64 +111,47 @@ const FollowerList = ({ followers, onClose }) => {
                   />
                 }
                 scrollableTarget="scrollableDiv"
-                endMessage={<Divider plain>팔로워의 끝 입니다.. 🤐</Divider>}
+                endMessage={
+                  <Divider plain>팔로우 목록의 끝 입니다.. 🤐</Divider>
+                }
               >
                 <List
-                  dataSource={followers}
-                  renderItem={(follower) => (
+                  dataSource={followings}
+                  renderItem={(following) => (
                     <List.Item
-                      key={follower.id}
+                      key={following.id}
                       actions={[
                         isLoggedIn ? (
-                          me.Followings?.findIndex((f) => f.id == follower.id) >
-                          -1 ? (
-                            <Button
-                              type="primary"
-                              key="list-loadmore-edit"
-                              onClick={() => {
-                                onClickunFollow(follower.id);
-                              }}
-                              loading={false}
-                            >
-                              언팔로우
-                            </Button>
-                          ) : (
-                            <Button
-                              type="primary"
-                              key="list-loadmore-edit"
-                              onClick={() => {
-                                onClickFollow(follower.id);
-                              }}
-                              loading={false}
-                            >
-                              팔로우
-                            </Button>
-                          )
+                          <Button
+                            type="primary"
+                            key="list-loadmore-edit"
+                            onClick={() => {
+                              onClickunFollow(following.id);
+                            }}
+                            loading={false}
+                          >
+                            언팔로우
+                          </Button>
                         ) : null,
                       ]}
                     >
-                      <Skeleton
-                        avatar
-                        title={false}
-                        loading={follower.loading}
-                        active
-                      >
+                      <Skeleton avatar title={false} loading={false} active>
                         <List.Item.Meta
                           avatar={
                             <>
                               <Avatar
-                                src={`http://localhost:3065/img/${follower.src}`}
+                                src={`http://localhost:3065/img/${following.src}`}
                               />
                             </>
                           }
                           title={
                             <a
-                              href={`http://localhost:3060/profile/${follower.nickname}`}
+                              href={`http://localhost:3060/profile/${following.nickname}`}
                             >
-                              {follower.nickname}
+                              {following.nickname}
                             </a>
                           }
-                          description={follower.description}
+                          description={following.description}
                         />
                       </Skeleton>
                     </List.Item>
@@ -187,4 +166,4 @@ const FollowerList = ({ followers, onClose }) => {
   );
 };
 
-export default FollowerList;
+export default FollowingList;

@@ -9,6 +9,7 @@ import { Image, Row, Col, Card, Layout, theme, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, getUserInfo, unFollow } from "../reducers/user";
 import FollowerList from "./FollowerList";
+import FollowingList from "./FollowingList";
 import UserProfilePostImage from "./UserProfilePostImage";
 import { loadPosts } from "../reducers/post";
 
@@ -16,8 +17,9 @@ const { Meta } = Card;
 const { Content } = Layout;
 
 const UserProfile = () => {
-  const { me, followLoading, user, followError, followDone, isLoggedIn } =
-    useSelector((state) => state.user);
+  const { me, user, followError, followDone, isLoggedIn } = useSelector(
+    (state) => state.user
+  );
   const { mainPosts } = useSelector((state) => state.post);
 
   const dispatch = useDispatch();
@@ -27,6 +29,7 @@ const UserProfile = () => {
   const onClickunFollow = useCallback(() => {
     dispatch(unFollow(user.id));
   }, [user]);
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -81,6 +84,14 @@ const UserProfile = () => {
   }, []);
   const onCloseFollowerList = useCallback(() => {
     setShowFollower(false);
+  }, []);
+
+  const [showFollowing, setShowFollowing] = useState(false);
+  const onClickFollowingList = useCallback(() => {
+    setShowFollowing(true);
+  }, []);
+  const onCloseFollowingList = useCallback(() => {
+    setShowFollowing(false);
   }, []);
   return (
     <>
@@ -151,7 +162,7 @@ const UserProfile = () => {
                       <br />
                       {user?.Followers.length}
                     </div>,
-                    <div key="followings">
+                    <div key="followings" onClick={onClickFollowingList}>
                       팔로우
                       <br />
                       {user?.Followings.length}
@@ -169,11 +180,11 @@ const UserProfile = () => {
                         return true;
                       }
                     }) ? (
-                      <Button onClick={onClickunFollow} loading={followLoading}>
+                      <Button onClick={onClickunFollow} loading={false}>
                         언팔로우
                       </Button>
                     ) : (
-                      <Button onClick={onClickFollow} loading={followLoading}>
+                      <Button onClick={onClickFollow} loading={false}>
                         팔로우
                       </Button>
                     )
@@ -223,6 +234,12 @@ const UserProfile = () => {
         <FollowerList
           followers={user.Followers}
           onClose={onCloseFollowerList}
+        />
+      )}
+      {showFollowing && (
+        <FollowingList
+          followings={user.Followings}
+          onClose={onCloseFollowingList}
         />
       )}
     </>
