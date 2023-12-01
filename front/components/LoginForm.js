@@ -117,6 +117,13 @@ const LoginForm = () => {
             로그인
           </Button>
 
+          <a id="custom-login-btn" href="http://localhost:3065/auth/kakao">
+            <img
+              src="//k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg"
+              width="200px"
+            />
+          </a>
+
           <Button
             onClick={() => {
               dispatch(screenActions.changeLogInToSignUp(false));
