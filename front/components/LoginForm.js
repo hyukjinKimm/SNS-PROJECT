@@ -125,6 +125,10 @@ const LoginForm = () => {
             <img src="/naver-login-btn.png" width="200px" />
           </a>
 
+          <a id="custom-login-btn" href="http://localhost:3065/auth/google">
+            <img src="/google-login-btn.png" width="200px" />
+          </a>
+
           <Button
             onClick={() => {
               dispatch(screenActions.changeLogInToSignUp(false));

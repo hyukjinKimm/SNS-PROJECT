@@ -7,11 +7,11 @@ class User extends Sequelize.Model {
         email: {
           type: Sequelize.STRING(40),
           allowNull: true,
-          unique: true,
         },
         nickname: {
           type: Sequelize.STRING(100),
           allowNull: false,
+          unique: true,
         },
         src: {
           type: Sequelize.STRING(200),
@@ -35,7 +35,7 @@ class User extends Sequelize.Model {
           allowNull: true,
         },
         provider: {
-          type: Sequelize.ENUM("local", "kakao", "goggle", "naver"),
+          type: Sequelize.ENUM("local", "kakao", "google", "naver"),
           allowNull: false,
           defaultValue: "local",
         },

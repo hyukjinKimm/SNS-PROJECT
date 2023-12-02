@@ -32,15 +32,31 @@ module.exports = () => {
               console.log("done");
             });
 
-            const newUser = await User.create({
-              email: profile.email,
-              nickname: profile.nickname,
-              snsId: profile.id,
-              provider: "naver",
-              src: src ? src : "default_male.png",
-              gender: profile.gender == "M" ? "male" : "female",
+            const sameNicknameUser = await User.findOne({
+              // 구글 플랫폼에서 로그인 했고 & snsId필드에 구글 아이디가 일치할경우
+              where: { nickname: profile.nickname },
             });
-            done(null, newUser);
+            if (sameNicknameUser) {
+              const newUser = await User.create({
+                email: profile.email,
+                nickname: "기본닉네임_" + Date.now(),
+                snsId: profile.id,
+                provider: "naver",
+                src: src ? src : "default_male.png",
+                gender: profile.gender == "M" ? "male" : "female",
+              });
+              done(null, newUser);
+            } else {
+              const newUser = await User.create({
+                email: profile.email,
+                nickname: profile.nickname,
+                snsId: profile.id,
+                provider: "naver",
+                src: src ? src : "default_male.png",
+                gender: profile.gender == "M" ? "male" : "female",
+              });
+              done(null, newUser);
+            }
           }
         } catch (error) {
           console.error(error);
