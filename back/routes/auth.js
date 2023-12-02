@@ -18,6 +18,18 @@ router.get(
     res.redirect("http://localhost:3060/"); // 성공 시에는 /로 이동
   }
 );
+router.get("/naver", passport.authenticate("naver", { authType: "reprompt" }));
+
+// GET /auth/kakao/callback
+router.get(
+  "/naver/callback",
+  passport.authenticate("naver", {
+    failureRedirect: "/?error=네이버로그인 실패",
+  }),
+  (req, res) => {
+    res.redirect("http://localhost:3060/"); // 성공 시에는 /로 이동
+  }
+);
 
 router.get("/logout", isLoggedIn, logOut);
 

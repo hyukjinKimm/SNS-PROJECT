@@ -44,6 +44,8 @@ app.use(
     secret: process.env.SESSION_SECRET,
   })
 );
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/user", userRouter);

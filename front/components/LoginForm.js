@@ -6,7 +6,7 @@ import { logIn } from "../reducers/user";
 import { Button, Checkbox, Form, Input } from "antd";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-
+import Image from "next/image";
 const onFinishFailed = (errorInfo) => {
   console.log("Failed:", errorInfo);
 };
@@ -118,10 +118,11 @@ const LoginForm = () => {
           </Button>
 
           <a id="custom-login-btn" href="http://localhost:3065/auth/kakao">
-            <img
-              src="//k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg"
-              width="200px"
-            />
+            <img src="/kakao-login-btn.png" width="200px" />
+          </a>
+
+          <a id="custom-login-btn" href="http://localhost:3065/auth/naver">
+            <img src="/naver-login-btn.png" width="200px" />
           </a>
 
           <Button

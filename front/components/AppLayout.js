@@ -78,8 +78,9 @@ const AppLayout = ({ children }) => {
                   fontSize: 14,
                   textAlign: "center",
                 }}
-                count={5}
-                offset={[2, 4]}
+                count={2}
+                size="small"
+                offset={[2, 8]}
               >
                 <MessageOutlined
                   style={{ fontSize: 20 }}
@@ -110,7 +111,8 @@ const AppLayout = ({ children }) => {
                   textAlign: "center",
                 }}
                 count={5}
-                offset={[2, 2]}
+                size="small"
+                offset={[2, 8]}
               >
                 <HeartOutlined
                   shape="square"
@@ -197,7 +199,8 @@ const AppLayout = ({ children }) => {
               textAlign: "center",
             }}
             count={5}
-            offset={[2, 2]}
+            size="small"
+            offset={[2, 8]}
           >
             <HeartOutlined
               shape="square"

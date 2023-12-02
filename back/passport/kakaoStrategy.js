@@ -4,7 +4,7 @@ const passport = require("passport");
 const KakaoStrategy = require("passport-kakao").Strategy;
 
 const User = require("../models/user");
-
+const { download } = require("../middlewares");
 module.exports = () => {
   passport.use(
     new KakaoStrategy(
@@ -21,22 +21,14 @@ module.exports = () => {
           if (exUser) {
             done(null, exUser);
           } else {
-            let src = false;
-            if (profile._json.properties.profile_image) {
-              src = "_" + Date.now() + ".png";
-              console.log(src);
-              const file = fs.createWriteStream("uploads/" + src);
-              http.get(
-                profile._json.properties.profile_image,
-                function (response) {
-                  response.pipe(file);
-                  // after download completed close filestream
-                  file.on("finish", () => {
-                    file.close();
-                  });
-                }
-              );
-            }
+            const src = "_" + Date.now() + ".png";
+            download(
+              profile._json.properties.profile_image,
+              "./uploads/" + src,
+              function () {
+                console.log("done");
+              }
+            );
 
             const newUser = await User.create({
               email: profile._json?.kakao_account?.email,
