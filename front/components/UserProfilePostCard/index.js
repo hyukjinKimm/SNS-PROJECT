@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import {
   Row,
@@ -11,6 +11,14 @@ import {
   Popover,
   Divider,
 } from "antd";
+import {
+  EllipsisOutlined,
+  RetweetOutlined,
+  LoadingOutlined,
+  HeartTwoTone,
+  MessageOutlined,
+  HeartOutlined,
+} from "@ant-design/icons";
 import ImageSlider from "../ImageSlider";
 import dayjs from "dayjs";
 import {
@@ -22,21 +30,126 @@ import {
   Indicator,
   SlickWrapper,
 } from "./styles";
+import { deletePost, likePost, unlikePost } from "../../reducers/post";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CommentForm from "../CommentForm";
 import Comment from "../Comment";
+import UserProfilePostOption from "../UserProfilePostOption";
 
 const UserProfilePostCard = ({ post, onClose }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const { user } = useSelector((state) => state.user);
-  const { addCommentDone } = useSelector((state) => state.post);
+  const { user, me, isLoggedIn } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { likePostDone } = useSelector((state) => state.post);
+  const [showPostOption, setShowPostOption] = useState(false);
+  const onClickPostOption = useCallback(() => {
+    setShowPostOption(true);
+  }, []);
+  const onClosePostOption = useCallback(() => {
+    setShowPostOption(false);
+  }, []);
   const data = dayjs(post.createdAt);
+  const [liked, setLiked] = useState(false);
+  const [likePostLoading, setLikePostLoading] = useState(false);
+  const onToggleLike = useCallback(() => {
+    if (!me) {
+    }
+    setLiked(!liked);
+    setLikePostLoading(true);
+    if (!liked) {
+      dispatch(likePost({ postId: post.id }));
+    } else {
+      dispatch(unlikePost({ postId: post.id }));
+    }
+  }, [liked]);
+  useEffect(() => {
+    if (likePostDone) {
+      setLikePostLoading(false);
+    }
+  }, [likePostDone]);
+  useEffect(() => {
+    if (
+      post?.PostLikers?.find((e) => {
+        if (e.id == me?.id) {
+          return true;
+        }
+      })
+    ) {
+      setLiked(true);
+    } else {
+      setLiked(false);
+    }
+  }, [me]);
+  const [commentOpened, setCommentOpened] = useState(false);
+  const CommentIcon = useCallback(
+    ({ icon, text, commentOpened, onToggleComment }) => (
+      <Space>
+        {React.createElement(icon, {
+          style: {
+            marginLeft: 20,
+            fontSize: 30,
+          },
+          onClick: () => {
+            onToggleComment();
+          },
+        })}
+      </Space>
+    ),
+    [commentOpened]
+  );
+  const onToggleComment = useCallback(() => {
+    setCommentOpened(!commentOpened);
+  }, [commentOpened]);
 
   useEffect(() => {
-    if (addCommentDone) {
-    }
-  }, []);
+    setCommentOpened(false);
+  }, [me, isLoggedIn]);
+  const RetweetIcon = useCallback(({ icon, text }) => (
+    <Space>
+      {React.createElement(icon, {
+        style: {
+          marginLeft: 5,
+          fontSize: 30,
+        },
+      })}
+      {text}
+    </Space>
+  ));
+  const LikeIcon = useCallback(
+    ({ text, liked, onToggleLike }) =>
+      likePostLoading ? (
+        <LoadingOutlined />
+      ) : (
+        <Space>
+          {liked
+            ? React.createElement(HeartTwoTone, {
+                twoToneColor: "#eb2f96",
+                style: {
+                  marginLeft: 20,
+                  fontSize: 30,
+                },
+                onClick: isLoggedIn
+                  ? () => {
+                      onToggleLike();
+                    }
+                  : null,
+              })
+            : React.createElement(HeartOutlined, {
+                style: {
+                  marginLeft: 20,
+                  fontSize: 30,
+                },
+                onClick: isLoggedIn
+                  ? () => {
+                      onToggleLike();
+                    }
+                  : null,
+              })}
+          {text}
+        </Space>
+      ),
+    [liked, likePostLoading, isLoggedIn]
+  );
   return (
     <>
       <Overlay>
@@ -70,7 +183,19 @@ const UserProfilePostCard = ({ post, onClose }) => {
                 marginRight: "10px",
               }}
             >
-              <List.Item key={post.id}>
+              <List.Item
+                key={post.id}
+                extra={
+                  <>
+                    {me && me.id == user.id ? (
+                      <EllipsisOutlined
+                        style={{ fontSize: "40px" }}
+                        onClick={onClickPostOption}
+                      ></EllipsisOutlined>
+                    ) : null}
+                  </>
+                }
+              >
                 <List.Item.Meta
                   avatar={
                     <Avatar src={"http://localhost:3065/img/" + user.src} />
@@ -83,7 +208,6 @@ const UserProfilePostCard = ({ post, onClose }) => {
                 />
               </List.Item>
             </List>
-
             <List
               style={{
                 marginLeft: "10px",
@@ -115,14 +239,12 @@ const UserProfilePostCard = ({ post, onClose }) => {
                 />
               </List.Item>
             </List>
-
             <div
               style={{
                 height: "1px",
                 background: "#ced4da",
               }}
             ></div>
-
             <div
               id="scrollableDiv"
               style={{
@@ -158,10 +280,40 @@ const UserProfilePostCard = ({ post, onClose }) => {
                 />
               </InfiniteScroll>
             </div>
-            <CommentForm postId={post.id} />
+            <div
+              style={{
+                height: "1px",
+                background: "#ced4da",
+              }}
+            ></div>
+            <div style={{ margin: 5 }}>
+              <RetweetIcon
+                icon={RetweetOutlined}
+                text={post.Retweetings.length}
+                key="list-vertical-retweet-o"
+              />
+              <CommentIcon
+                icon={MessageOutlined}
+                text={post.Comments.length}
+                commentOpened={commentOpened}
+                onToggleComment={onToggleComment}
+                key="list-vertical-comment"
+              />
+              ,
+              <LikeIcon
+                text={post.PostLikers.length}
+                liked={liked}
+                onToggleLike={onToggleLike}
+                key="list-vertical-like-o"
+              />
+            </div>
+            {me && commentOpened ? <CommentForm postId={post.id} /> : null}
           </Col>
         </Row>
       </Overlay>
+      {showPostOption && (
+        <UserProfilePostOption id={post.id} onClose={onClosePostOption} />
+      )}
     </>
   );
 };

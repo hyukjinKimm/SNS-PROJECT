@@ -155,7 +155,7 @@ const UserProfile = () => {
                     <div key="posts">
                       게시물
                       <br />
-                      {user.Posts?.length}
+                      {mainPosts?.length}
                     </div>,
                     <div key="followers" onClick={onClickFollowerList}>
                       팔로워
