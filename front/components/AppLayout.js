@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import {
   UserOutlined,
   SearchOutlined,
   LoginOutlined,
   MessageOutlined,
-  ExclamationOutlined,
   HeartOutlined,
   HomeOutlined,
   LogoutOutlined,
@@ -18,7 +16,7 @@ import {
 import { Layout, Menu, theme, Button, Badge, Avatar } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import * as screenActions from "../reducers/screen";
-import { logOut, getMyInfo } from "../reducers/user";
+import { logOut } from "../reducers/user";
 
 const { Header, Content, Footer, Sider } = Layout;
 const AppLayout = ({ children }) => {

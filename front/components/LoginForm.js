@@ -117,18 +117,6 @@ const LoginForm = () => {
             로그인
           </Button>
 
-          <a id="custom-login-btn" href="http://localhost:3065/auth/kakao">
-            <img src="/kakao-login-btn.png" width="200px" />
-          </a>
-
-          <a id="custom-login-btn" href="http://localhost:3065/auth/naver">
-            <img src="/naver-login-btn.png" width="200px" />
-          </a>
-
-          <a id="custom-login-btn" href="http://localhost:3065/auth/google">
-            <img src="/google-login-btn.png" width="200px" />
-          </a>
-
           <Button
             onClick={() => {
               dispatch(screenActions.changeLogInToSignUp(false));
@@ -137,6 +125,22 @@ const LoginForm = () => {
             회원가입
           </Button>
         </Form.Item>
+        <div>
+          <a id="custom-login-btn" href="http://localhost:3065/auth/kakao">
+            <img src="/kakao-login-btn.png" width="200px" />
+          </a>
+        </div>
+        <div>
+          <a id="custom-login-btn" href="http://localhost:3065/auth/naver">
+            <img src="/naver-login-btn.png" width="200px" />
+          </a>
+        </div>
+        <div>
+          {" "}
+          <a id="custom-login-btn" href="http://localhost:3065/auth/google">
+            <img src="/google-login-btn.png" width="200px" />
+          </a>
+        </div>
       </FormWrapper>
     </>
   );

@@ -36,11 +36,6 @@ export default class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          <script
-            src="https://t1.kakaocdn.net/kakao_js_sdk/2.1.0/kakao.min.js"
-            integrity="sha384-asdjkflaskdasjkhshdhjkhahkshkjdhslfkhasldfhlakshdflkahslkdfhkalsdhfkjahsdklfhalksdf"
-            crossOrigin="anonymous"
-          ></script>
         </body>
       </Html>
     );
