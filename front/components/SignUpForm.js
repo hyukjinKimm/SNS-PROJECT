@@ -50,7 +50,9 @@ const tailFormItemLayout = {
 };
 
 const SignUp = () => {
-  const { signUpLoading, signUpDone } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError } = useSelector(
+    (state) => state.user
+  );
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -59,10 +61,15 @@ const SignUp = () => {
     dispatch(signUp({ email, password, nickname, gender, birth }));
   }, []);
   useEffect(() => {
-    if (signUpDone) {
+    if (signUpError) {
+      alert(signUpError);
+      return;
+    } else if (signUpDone) {
       router.replace("/login");
+      return;
     }
-  }, [signUpDone]);
+  }, [signUpDone, signUpError]);
+
   return (
     <Form
       {...formItemLayout}

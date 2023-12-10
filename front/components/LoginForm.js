@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 
 import * as screenActions from "../reducers/screen";
+import * as userActions from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "../reducers/user";
 import { Button, Checkbox, Form, Input } from "antd";
@@ -35,7 +36,9 @@ const LoginForm = () => {
   }, [logInDone]);
 
   const dispatch = useDispatch();
-
+  useEffect(() => {
+    dispatch(userActions.initializeUserState());
+  }, []);
   const onFinish = useCallback(async (e) => {
     // e.preventDefault 적용 되어있음
     dispatch(logIn({ email: e.email, password: e.password }));

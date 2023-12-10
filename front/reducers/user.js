@@ -66,10 +66,22 @@ export const logOut = createAsyncThunk("user/logOut", async (data) => {
   const response = await axios.get("/auth/logout");
   return response.data;
 });
-export const signUp = createAsyncThunk("user/signUp", async (data) => {
-  const response = await axios.post("/user", data);
-  return response.data;
-});
+
+export const signUp = createAsyncThunk(
+  "user/signUp",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/user", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 export const Follow = createAsyncThunk("user/follow", async (id) => {
   const response = await axios.post(`/user/${id}/follow`);
   return response.data;
@@ -257,8 +269,8 @@ const userSlice = createSlice({
       })
       .addCase(signUp.rejected, (state, action) => {
         state.signUpLoading = false;
-        state.signUpDone = true;
-        state.signUpError = action.error;
+        state.signUpDone = false;
+        state.signUpError = action.payload;
       })
       .addCase(addProfileImage.pending, (state, action) => {
         state.addProfileImageLoading = true;

@@ -31,5 +31,30 @@ const LogIn = () => {
     </>
   );
 };
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req, res }) => {
+      const cookie = req ? req.headers.cookie : "";
+      axios.defaults.headers.Cookie = "";
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+
+      const data = await store.dispatch(getMyInfo());
+
+      if (data.payload) {
+        res.writeHead(301, { Location: "/" });
+        res.end();
+
+        return true;
+      } else {
+        store.dispatch(screenActions.changeMenu("LOGIN"));
+        return {
+          props: {},
+        };
+      }
+    }
+);
 
 export default LogIn;
