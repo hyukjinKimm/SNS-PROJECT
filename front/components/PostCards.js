@@ -6,7 +6,7 @@ import PostCard from "./PostCard";
 
 import { loadPosts } from "../reducers/post";
 
-const PostCards = ({ posts }) => {
+const PostCards = ({ mainPosts }) => {
   const { hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
   const dispatch = useDispatch();
 
@@ -18,7 +18,7 @@ const PostCards = ({ posts }) => {
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMorePosts && !loadPostsLoading) {
-          const lastId = posts[posts.length - 1]?.id;
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch(loadPosts({ lastId }));
         }
       }
@@ -34,7 +34,7 @@ const PostCards = ({ posts }) => {
         itemLayout="vertical"
         size="large"
         loading={loadPostsLoading}
-        dataSource={posts}
+        dataSource={mainPosts}
         footer={
           <div>
             <b>ant design</b> footer part

@@ -13,7 +13,9 @@ const LogIn = () => {
   const dispatch = useDispatch();
   const { signUpDone } = useSelector((state) => state.user);
   const { logInOrSignUp } = useSelector((state) => state.screen);
-
+  useEffect(() => {
+    dispatch(screenActions.changeMenu("LOGIN"));
+  }, []);
   useEffect(() => {
     if (signUpDone) {
       dispatch(screenActions.changeLogInToSignUp(true));
@@ -30,19 +32,4 @@ const LogIn = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req, res }) => {
-      const { me } = store.getState().user;
-      if (me) {
-        res.writeHead(301, { Location: "/" });
-        res.end();
-        return true;
-      }
-
-      store.dispatch(screenActions.changeMenu("LOGIN"));
-
-      return { props: {} };
-    }
-);
 export default LogIn;

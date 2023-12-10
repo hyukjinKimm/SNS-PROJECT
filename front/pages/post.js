@@ -32,20 +32,4 @@ const Post = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ req }) => {
-      const cookie = req ? req.headers.cookie : "";
-      axios.defaults.headers.Cookie = "";
-
-      if (req && cookie) {
-        axios.defaults.headers.Cookie = cookie;
-      }
-      await store.dispatch(getMyInfo());
-
-      return {
-        props: {},
-      };
-    }
-);
 export default Post;

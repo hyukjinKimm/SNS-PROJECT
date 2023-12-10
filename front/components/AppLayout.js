@@ -44,7 +44,7 @@ const AppLayout = ({ children }) => {
             fontSize: "20px",
           },
         }),
-        label: <a href="http://localhost:3060">홈</a>,
+        label: <Link href="/">홈</Link>,
       },
       {
         key: "SEARCH",
@@ -64,7 +64,7 @@ const AppLayout = ({ children }) => {
                 fontSize: "20px",
               },
             }),
-            label: <Link href="http://localhost:3060/login">로그인</Link>,
+            label: <Link href="/login">로그인</Link>,
           },
 
       isLoggedIn

@@ -15,10 +15,11 @@ import AppLayout from "../components/AppLayout";
 import PostCards from "../components/PostCards";
 
 function Home(props) {
+  const { mainPosts } = useSelector((state) => state.post);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const { mainPosts } = useSelector((state) => state.post);
+
   return (
     <>
       <Head>
@@ -36,7 +37,7 @@ function Home(props) {
             background: colorBgContainer,
           }}
         >
-          <PostCards posts={mainPosts} />
+          <PostCards mainPosts={mainPosts} />
         </div>
       </Content>
     </>
@@ -56,6 +57,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       store.dispatch(userActions.initializeUserState());
       await store.dispatch(getMyInfo());
       await store.dispatch(loadPosts({}));
+
       return {
         props: {},
       };

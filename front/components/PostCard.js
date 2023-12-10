@@ -35,9 +35,10 @@ const PostCard = ({ post }) => {
   const id = useSelector((state) => state.user.me?.id);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const hide = () => {
+  const hide = useCallback(() => {
     setOpen(false);
-  };
+  }, []);
+
   const handleOpenChange = useCallback((newOpen) => {
     setOpen(newOpen);
   }, []);
