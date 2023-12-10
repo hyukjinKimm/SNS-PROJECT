@@ -100,7 +100,7 @@ exports.joinUser = async (req, res, next) => {
       password: hashPassword,
       nickname,
       gender,
-      src: gender == "male" ? "default_male.png" : "default_female.jpg",
+      src: gender == "female" ? "default_female.jpg" : "default_male.png",
       birth: birth ? birth : null,
     });
     res.status(200).json(newUser);

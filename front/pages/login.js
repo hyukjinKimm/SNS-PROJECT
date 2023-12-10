@@ -10,9 +10,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 
 const LogIn = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
-  const { signUpDone, me } = useSelector((state) => state.user);
+  const { signUpDone } = useSelector((state) => state.user);
   const { logInOrSignUp } = useSelector((state) => state.screen);
 
   useEffect(() => {
@@ -34,21 +33,15 @@ const LogIn = () => {
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res }) => {
-      const cookie = req ? req.headers.cookie : "";
-      axios.defaults.headers.Cookie = "";
-
-      if (req && cookie) {
-        axios.defaults.headers.Cookie = cookie;
+      const { me } = store.getState().user;
+      if (me) {
+        res.writeHead(301, { Location: "/" });
+        res.end();
+        return true;
       }
 
       store.dispatch(screenActions.changeMenu("LOGIN"));
-      const data = await store.dispatch(getMyInfo());
-      if (data.payload) {
-        res.writeHead(301, { Location: "/" });
-        res.end();
 
-        return true;
-      }
       return { props: {} };
     }
 );

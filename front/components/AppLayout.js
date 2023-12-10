@@ -101,7 +101,7 @@ const AppLayout = ({ children }) => {
           },
       isLoggedIn
         ? {
-            key: "NOTICE",
+            key: "ALARM",
             icon: (
               <Badge
                 style={{
@@ -124,7 +124,7 @@ const AppLayout = ({ children }) => {
             label: "알림",
           }
         : {
-            key: "NOTICE",
+            key: "ALARM",
             icon: React.createElement(HeartOutlined, {
               style: {
                 fontSize: "20px",

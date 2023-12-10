@@ -136,7 +136,6 @@ const LoginForm = () => {
           </a>
         </div>
         <div>
-          {" "}
           <a id="custom-login-btn" href="http://localhost:3065/auth/google">
             <img src="/google-login-btn.png" width="200px" />
           </a>
