@@ -1,4 +1,5 @@
 const dotenv = require("dotenv");
+const nodemailer = require("nodemailer");
 dotenv.config();
 module.exports = {
   development: {

@@ -2,7 +2,7 @@ const express = require("express");
 const passport = require("passport");
 
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
-const { logIn, logOut } = require("../controllers/auth");
+const { logIn, logOut, emailAuth } = require("../controllers/auth");
 const router = express.Router();
 
 router.post("/login", isNotLoggedIn, logIn);
@@ -44,7 +44,7 @@ router.get(
     res.redirect("http://localhost:3060/");
   }
 );
-
+router.post("/emailCheck", emailAuth);
 router.get("/logout", isLoggedIn, logOut);
 
 module.exports = router;
