@@ -82,6 +82,7 @@ export const signUp = createAsyncThunk(
     }
   }
 );
+
 export const Follow = createAsyncThunk("user/follow", async (id) => {
   const response = await axios.post(`/user/${id}/follow`);
   return response.data;

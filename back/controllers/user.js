@@ -7,6 +7,24 @@ const Comment = require("../models/comment");
 const { sequelize } = require("../models");
 const sharp = require("sharp");
 const fs = require("fs");
+exports.emailExistCheck = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const exUser = await User.findOne({
+      where: { email },
+    });
+    if (exUser) {
+      return res.status(403).send("이미 사용중인 email 입니다.");
+    }
+    res.status(200).json({
+      code: 200,
+      message: "사용가능한 email 입니다.",
+    });
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
 exports.getMyInfo = async (req, res, next) => {
   try {
     if (req.user) {
