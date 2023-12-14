@@ -12,6 +12,7 @@ const {
   profileEdit,
   signOut,
   emailExistCheck,
+  nicknameExistCheck,
 } = require("../controllers/user");
 const { likeComment, unLikeComment } = require("../controllers/comment");
 const router = express.Router();
@@ -30,6 +31,7 @@ const upload = multer({
 });
 router.get("/", getMyInfo);
 router.post("/emailExistCheck", isNotLoggedIn, emailExistCheck);
+router.post("/nicknameExistCheck", isNotLoggedIn, nicknameExistCheck);
 router.post("/image", isLoggedIn, upload.single("image"), uploadImage);
 router.post("/edit", isLoggedIn, profileEdit);
 router.post("/signout", isLoggedIn, signOut);

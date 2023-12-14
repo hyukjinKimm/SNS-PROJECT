@@ -25,6 +25,24 @@ exports.emailExistCheck = async (req, res, next) => {
     next(e); // status(500)
   }
 };
+exports.nicknameExistCheck = async (req, res, next) => {
+  try {
+    const { nickname } = req.body;
+    const exUser = await User.findOne({
+      where: { nickname },
+    });
+    if (exUser) {
+      return res.status(403).send("이미 사용중인 nickname 입니다.");
+    }
+    res.status(200).json({
+      code: 200,
+      message: "사용가능한 nickname 입니다.",
+    });
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
 exports.getMyInfo = async (req, res, next) => {
   try {
     if (req.user) {

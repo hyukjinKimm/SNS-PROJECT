@@ -97,7 +97,29 @@ const SignUp = () => {
         setMessageColor("red");
       });
   }, []);
-
+  const [nickname, setNickname] = useState("");
+  const [nicknameExistMessage, setNicknameExistMessage] = useState("");
+  const onChangeNickname = useCallback((e) => {
+    setNickname(e.target.value);
+    setNicknameExistMessage("");
+  }, []);
+  const onClickNicknameExist = useCallback(async (nickname, error) => {
+    if (error.length > 0) return;
+    const data = await axios
+      .post(
+        "http://localhost:3065/user/nicknameExistCheck",
+        { nickname },
+        { withCredentials: true }
+      )
+      .then((response) => {
+        setNicknameExistMessage(response.data.message);
+        setMessageColor("blue");
+      })
+      .catch((err) => {
+        setNicknameExistMessage(err.response.data);
+        setMessageColor("red");
+      });
+  }, []);
   return (
     <Form
       {...formItemLayout}
@@ -208,7 +230,31 @@ const SignUp = () => {
                 },
               ]}
             >
-              <Input />
+              <div>
+                <Input value={nickname} onChange={onChangeNickname} />
+                <Button
+                  onClick={() => {
+                    onClickNicknameExist(
+                      nickname,
+                      formInstance.getFieldError("nickname")
+                    );
+                  }}
+                >
+                  중복확인
+                </Button>
+                {
+                  <div
+                    style={{
+                      display: "inline",
+                      fontSize: 11,
+                      color: messageColor,
+                      marginLeft: 10,
+                    }}
+                  >
+                    {nicknameExistMessage}
+                  </div>
+                }
+              </div>
             </Form.Item>
             <Form.Item
               name="gender"
