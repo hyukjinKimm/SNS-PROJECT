@@ -77,10 +77,21 @@ export const getUserInfo = createAsyncThunk(
   }
 );
 
-export const logIn = createAsyncThunk("user/logIn", async (data) => {
-  const response = await axios.post("/auth/login", data);
-  return response.data;
-});
+export const logIn = createAsyncThunk(
+  "user/logIn",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/auth/login", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 export const logOut = createAsyncThunk("user/logOut", async (data) => {
   const response = await axios.get("/auth/logout");
   return response.data;
@@ -300,8 +311,8 @@ const userSlice = createSlice({
       .addCase(logIn.rejected, (state, action) => {
         state.isLoggedIn = false;
         state.logInLoading = false;
-        state.logInDone = true;
-        state.logInError = action.error;
+        state.logInDone = false;
+        state.logInError = action.payload;
       })
       .addCase(logOut.pending, (state, action) => {
         state.logOutLoading = true;
