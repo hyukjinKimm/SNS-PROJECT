@@ -1,8 +1,13 @@
 const express = require("express");
 const passport = require("passport");
 
-const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
-const { logIn, logOut, emailAuth } = require("../controllers/auth");
+const { isLoggedIn, isNotLoggedIn, verifyToken } = require("../middlewares");
+const {
+  logIn,
+  logOut,
+  emailAuth,
+  emailVarification,
+} = require("../controllers/auth");
 const router = express.Router();
 
 router.post("/login", isNotLoggedIn, logIn);
@@ -45,6 +50,7 @@ router.get(
   }
 );
 router.post("/emailCheck", emailAuth);
+router.post("/emailVarification", verifyToken, emailVarification);
 router.get("/logout", isLoggedIn, logOut);
 
 module.exports = router;

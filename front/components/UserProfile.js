@@ -141,7 +141,9 @@ const UserProfile = () => {
                   actions={[
                     me && me.id == user.id ? (
                       <div key="edit">
-                        <Link href="/profile/edit"> 프로필 수정</Link>
+                        <a href="http://localhost:3060/profile/edit">
+                          프로필 수정
+                        </a>
                         <br />
                         <SettingOutlined key="edit_icon" />
                       </div>

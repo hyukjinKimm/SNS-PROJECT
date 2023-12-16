@@ -1,5 +1,6 @@
 const express = require("express");
 const bcypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const User = require("../models/user");
 const Post = require("../models/post");
@@ -77,6 +78,20 @@ exports.emailAuth = async (req, res) => {
       smtpTransport.close(); //전송종료
       return;
     } else {
+      const token = jwt.sign(
+        {
+          email,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1m", // 30분
+          issuer: "hyukjin",
+          algorithm: "HS256",
+        }
+      );
+
+      req.session.number = number;
+      res.cookie("signupToken", token, { maxAge: 60 * 1000, httpOnly: true });
       res.json({
         ok: true,
         msg: " 메일 전송에 성공하였습니다. ",
@@ -85,4 +100,20 @@ exports.emailAuth = async (req, res) => {
       return;
     }
   });
+};
+exports.emailVarification = async (req, res) => {
+  const { number } = req.body; //사용자가 입력한 이메일
+  if (number == req.session.number) {
+    req.session.destroy();
+    res.clearCookie("signupToken");
+    res.status(200).json({
+      code: 200,
+      message: "이메일인증 완료.",
+    });
+  } else {
+    res.status(400).json({
+      code: 400,
+      message: "이메일 인증실패",
+    });
+  }
 };

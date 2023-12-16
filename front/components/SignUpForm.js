@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Checkbox, Form, Input, Select, DatePicker } from "antd";
-import { signUp } from "../reducers/user";
+import { signUp, emailCheck, emailVarification } from "../reducers/user";
 import useSWR from "swr";
 import axios from "axios";
 
@@ -52,51 +52,93 @@ const tailFormItemLayout = {
 };
 
 const SignUp = () => {
-  const { signUpLoading, signUpDone, signUpError } = useSelector(
-    (state) => state.user
-  );
+  const {
+    signUpLoading,
+    signUpDone,
+    signUpError,
+    emailCheckLoading,
+    emailCheckDone,
+    emailVarificationLoading,
+    emailVarificationDone,
+    emailVarificationError,
+  } = useSelector((state) => state.user);
 
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const onFinish = useCallback((e) => {
-    const { email, password, nickname, gender, birth } = e;
-    dispatch(signUp({ email, password, nickname, gender, birth }));
-  }, []);
+  const [emailExistChecked, setEmailExistChecked] = useState(false);
+  const [nicknameExistChecked, setNicknameExistChecked] = useState(false);
+  const onFinish = useCallback(
+    (e) => {
+      console.log(emailExistChecked);
+      if (!emailExistChecked) {
+        alert("이메일 중복확인을 해주세요");
+        return;
+      }
+      if (!nicknameExistChecked) {
+        alert("닉네임 중복확인을 해주세요");
+        return;
+      }
+      if (!emailVarificationDone) {
+        alert("이메일 인증을 완료해 주세요");
+        return;
+      }
+      const { email, password, nickname, gender, birth } = e;
+      dispatch(signUp({ email, password, nickname, gender, birth }));
+    },
+    [emailExistChecked, nicknameExistChecked, emailVarificationDone]
+  );
   useEffect(() => {
     if (signUpError) {
       alert(signUpError);
       return;
     } else if (signUpDone) {
-      router.replace("/login");
+      router.push("/login");
       return;
     }
   }, [signUpDone, signUpError]);
+  const [number, setNumber] = useState("");
+  const onChangeNumber = useCallback((e) => {
+    setNumber(e.target.value);
+  }, []);
+  const [emailExistCheckedLoading, setEmailExistCheckedLoading] =
+    useState(false);
+
   const [emailExistMessage, setEmailExistMessage] = useState("");
   const [messageColor, setMessageColor] = useState("blue");
+
+  const [NicknameMessageColor, setNicknameMessageColor] = useState("blue");
   const [email, setEmail] = useState("");
   const onChangeEmail = useCallback((e) => {
     setEmail(e.target.value);
     setEmailExistMessage("");
   }, []);
-  const onClickEmailExist = useCallback(async (email, error) => {
-    if (error.length > 0) return;
-    const data = await axios
-      .post(
-        "http://localhost:3065/user/emailExistCheck",
-        { email },
-        { withCredentials: true }
-      )
-      .then((response) => {
-        setEmailExistMessage(response.data.message);
-
-        setMessageColor("blue");
-      })
-      .catch((err) => {
-        setEmailExistMessage(err.response.data);
-        setMessageColor("red");
-      });
-  }, []);
+  const onClickEmailExist = useCallback(
+    async (email, error) => {
+      if (error.length > 0 || email.length == 0) return;
+      setEmailExistCheckedLoading(true);
+      const data = await axios
+        .post(
+          "http://localhost:3065/user/emailExistCheck",
+          { email },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          console.log("ye");
+          setEmailExistMessage(response.data.message);
+          setMessageColor("blue");
+          setEmailExistChecked(true);
+          console.log(emailExistChecked);
+          setEmailExistCheckedLoading(false);
+        })
+        .catch((err) => {
+          setEmailExistMessage(err.response.data);
+          setMessageColor("red");
+          setEmailExistCheckedLoading(false);
+        });
+    },
+    [emailExistChecked]
+  );
   const [nickname, setNickname] = useState("");
   const [nicknameExistMessage, setNicknameExistMessage] = useState("");
   const onChangeNickname = useCallback((e) => {
@@ -104,7 +146,7 @@ const SignUp = () => {
     setNicknameExistMessage("");
   }, []);
   const onClickNicknameExist = useCallback(async (nickname, error) => {
-    if (error.length > 0) return;
+    if (error.length > 0 || nickname.length == 0) return;
     const data = await axios
       .post(
         "http://localhost:3065/user/nicknameExistCheck",
@@ -113,11 +155,13 @@ const SignUp = () => {
       )
       .then((response) => {
         setNicknameExistMessage(response.data.message);
-        setMessageColor("blue");
+        setNicknameMessageColor("blue");
+        setNicknameExistChecked(true);
       })
       .catch((err) => {
         setNicknameExistMessage(err.response.data);
-        setMessageColor("red");
+        setNicknameMessageColor("red");
+        setNicknameExistChecked(false);
       });
   }, []);
   return (
@@ -156,17 +200,25 @@ const SignUp = () => {
               ]}
             >
               <div>
-                <Input value={email} onChange={onChangeEmail} />
+                <Input
+                  value={email}
+                  onChange={onChangeEmail}
+                  disabled={emailExistChecked}
+                />
                 <Button
+                  style={{ marginTop: 10 }}
                   onClick={() => {
                     onClickEmailExist(
                       email,
                       formInstance.getFieldError("email")
                     );
                   }}
+                  loading={emailExistCheckedLoading}
+                  disabled={emailExistChecked}
                 >
                   중복확인
                 </Button>
+
                 {
                   <div
                     style={{
@@ -181,6 +233,66 @@ const SignUp = () => {
                 }
               </div>
             </Form.Item>
+            {emailExistChecked && (
+              <Button
+                onClick={() => {
+                  dispatch(emailCheck({ email }));
+                }}
+                style={{
+                  marginTop: 10,
+                  marginBottom: 10,
+                  marginLeft: 200,
+                }}
+                loading={emailCheckLoading}
+                disabled={emailVarificationDone}
+              >
+                인증 번호 전송
+              </Button>
+            )}
+            {emailCheckDone && (
+              <div style={{ marginLeft: 200 }}>
+                <Input
+                  type="number"
+                  placeholder="인증번호를 입력해주세요(제한시간 1분)"
+                  value={number}
+                  onChange={onChangeNumber}
+                  disabled={emailVarificationDone}
+                ></Input>
+                <Button
+                  style={{ marginTop: 10 }}
+                  onClick={() => {
+                    dispatch(emailVarification({ number }));
+                  }}
+                  disabled={emailVarificationDone}
+                >
+                  인증하기
+                </Button>
+                {emailVarificationDone ? (
+                  <div
+                    style={{
+                      display: "inline",
+                      fontSize: 11,
+                      color: "blue",
+                      marginLeft: 10,
+                    }}
+                  >
+                    이메일 인증 완료
+                  </div>
+                ) : null}
+                {emailVarificationError ? (
+                  <div
+                    style={{
+                      display: "inline",
+                      fontSize: 11,
+                      color: "red",
+                      marginLeft: 10,
+                    }}
+                  >
+                    이메일 인증 실패
+                  </div>
+                ) : null}
+              </div>
+            )}
             <Form.Item
               name="password"
               label="비밀번호"
@@ -247,7 +359,7 @@ const SignUp = () => {
                     style={{
                       display: "inline",
                       fontSize: 11,
-                      color: messageColor,
+                      color: NicknameMessageColor,
                       marginLeft: 10,
                     }}
                   >

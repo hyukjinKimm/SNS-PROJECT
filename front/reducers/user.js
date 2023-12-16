@@ -40,12 +40,31 @@ const initialState = {
   signOutDone: false,
   signOutError: null,
 
+  emailCheckLoading: false,
+  emailCheckDone: false,
+  emailCheckError: null,
+
+  emailVarificationLoading: false,
+  emailVarificationDone: false,
+  emailVarificationError: null,
+
   isLoggedIn: false,
   me: null,
   profileImagePath: "",
   user: null,
 }; // 초기 상태 정의
 
+export const emailVarification = createAsyncThunk(
+  "user/emailVarification",
+  async (data) => {
+    const response = await axios.post("/auth/emailVarification", data);
+    return response.data;
+  }
+);
+export const emailCheck = createAsyncThunk("user/emailCheck", async (data) => {
+  const response = await axios.post("/auth/emailCheck", data);
+  return response.data;
+});
 export const getMyInfo = createAsyncThunk("user/getMyInfo", async (data) => {
   const response = await axios.get("/user");
   return response.data;
@@ -83,6 +102,21 @@ export const signUp = createAsyncThunk(
   }
 );
 
+export const signOut = createAsyncThunk(
+  "user/signOut",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/user/signout", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const Follow = createAsyncThunk("user/follow", async (id) => {
   const response = await axios.post(`/user/${id}/follow`);
   return response.data;
@@ -106,10 +140,6 @@ export const profileEdit = createAsyncThunk(
     return response.data;
   }
 );
-export const signOut = createAsyncThunk("user/signOut", async (data) => {
-  const response = await axios.post("/user/signout", data);
-  return response.data;
-});
 
 const userSlice = createSlice({
   name: "user",
@@ -150,6 +180,14 @@ const userSlice = createSlice({
       state.signOutDone = false;
       state.signOutError = null;
 
+      state.emailCheckLoading = false;
+      state.emailCheckDone = false;
+      state.emailCheckError = null;
+
+      state.emailVarificationLoading = false;
+      state.emailVarificationDone = false;
+      state.emailVarificationError = null;
+
       state.isLoggedIn = false;
       state.me = null;
       state.user = null;
@@ -161,6 +199,32 @@ const userSlice = createSlice({
         ...state,
         ...action.payload.user,
       }))
+      .addCase(emailVarification.pending, (state, action) => {
+        state.emailVarificationLoading = true;
+        state.emailVarificationDone = false;
+        state.emailVarificationError = null;
+      })
+      .addCase(emailVarification.fulfilled, (state, action) => {
+        state.emailVarificationLoading = false;
+        state.emailVarificationDone = true;
+        state.emailVarificationError = null;
+      })
+      .addCase(emailVarification.rejected, (state, action) => {
+        state.emailVarificationError = action.error;
+      })
+      .addCase(emailCheck.pending, (state, action) => {
+        state.emailCheckLoading = true;
+        state.emailCheckDone = false;
+        state.emailCheckError = null;
+      })
+      .addCase(emailCheck.fulfilled, (state, action) => {
+        state.emailCheckLoading = false;
+        state.emailCheckDone = true;
+        state.emailCheckError = null;
+      })
+      .addCase(emailCheck.rejected, (state, action) => {
+        state.emailCheckError = action.error;
+      })
       .addCase(getMyInfo.pending, (state, action) => {
         state.getMyInfoLoading = true;
         state.getMyInfoDone = false;
@@ -316,7 +380,7 @@ const userSlice = createSlice({
       })
       .addCase(signOut.rejected, (state, action) => {
         state.signOutLoading = false;
-        state.signOutError = action.error;
+        state.signOutError = action.payload;
       }),
 });
 export const { initializeUserState } = userSlice.actions; // 액션 생성함수

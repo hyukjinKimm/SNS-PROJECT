@@ -1,5 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Cascader,
@@ -20,6 +20,7 @@ import {
 } from "antd";
 import { signOut } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const normFile = (e) => {
@@ -46,7 +47,10 @@ const tailFormItemLayout = {
 };
 
 const AccountSetting = () => {
-  const { me } = useSelector((state) => state.user);
+  const { me, signOutLoading, signOutDone, signOutError } = useSelector(
+    (state) => state.user
+  );
+  const route = useRouter();
   const [withdraw, setWithdraw] = useState(false);
   const dispatch = useDispatch();
   const onClick = useCallback(() => {
@@ -58,6 +62,19 @@ const AccountSetting = () => {
     const { email, password } = e;
     dispatch(signOut({ email, password }));
   }, []);
+  useEffect(() => {
+    if (signOutError) {
+      alert(signOutError);
+      return;
+    }
+    if (signOutDone) {
+      alert("저희 서비스를 이용해 주셔서 감사합니다.");
+      route.push("/");
+      return;
+    }
+    return;
+  }, [signOutDone, signOutError]);
+
   return (
     <>
       {withdraw ? null : (
@@ -121,7 +138,7 @@ const AccountSetting = () => {
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>
-            <Button type="primary" htmlType="submit" loading={false}>
+            <Button type="primary" htmlType="submit" loading={signOutLoading}>
               제출
             </Button>
           </Form.Item>

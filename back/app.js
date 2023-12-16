@@ -39,12 +39,11 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" })); // form 을 subm
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
-    saveUninitialized: false,
-    resave: false,
+    saveUninitialized: true,
+    resave: true,
     secret: process.env.SESSION_SECRET,
   })
 );
-
 
 app.use(passport.initialize());
 app.use(passport.session());

@@ -47,15 +47,12 @@ const tailFormItemLayout = {
   },
 };
 const ProfileEdit = () => {
-  const [componentDisabled, setComponentDisabled] = useState(true);
   const dispatch = useDispatch();
   const route = useRouter();
   const { me, profileImagePath, profileEditDone, profileEditLoading } =
     useSelector((state) => state.user);
   const onFinish = useCallback(
     (e) => {
-      console.log(profileImagePath);
-      console.log(e);
       const { nickname, description } = e;
       const data = {
         nickname,
@@ -66,14 +63,9 @@ const ProfileEdit = () => {
     },
     [profileImagePath]
   );
-  useEffect(() => {
-    if (profileEditDone) {
-      route.replace("/");
-    }
-  }, [profileEditDone]);
+
   const imageInput = useRef();
   const onChangeImages = useCallback((e) => {
-    console.log(e);
     const imageData = new FormData();
     imageData.append("image", e.target.files[0]);
     dispatch(addProfileImage(imageData));
@@ -81,6 +73,12 @@ const ProfileEdit = () => {
   const onChangeImage = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
+  useEffect(() => {
+    if (profileEditDone) {
+      route.push("/");
+      return;
+    }
+  }, [profileEditDone]);
   return (
     <>
       <Form
