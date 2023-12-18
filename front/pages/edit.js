@@ -1,12 +1,12 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getMyInfo } from "../../reducers/user";
-import * as screenActions from "../../reducers/screen";
+import { getMyInfo } from "../reducers/user";
+import * as screenActions from "../reducers/screen";
 import axios from "axios";
-import { wrapper } from "../../store/configureStore";
+import { wrapper } from "../store/configureStore";
 import { SettingOutlined, GlobalOutlined } from "@ant-design/icons";
-import ProfileEdit from "../../components/ProfileEdit";
-import AccountSetting from "../../components/AccountSetting";
+import ProfileEdit from "../components/ProfileEdit";
+import AccountSetting from "../components/AccountSetting";
 import { Menu } from "antd";
 import { useRouter } from "next/router";
 
@@ -29,20 +29,13 @@ const items = [
 ];
 const Edit = () => {
   const router = useRouter();
+
   const [current, setCurrent] = useState("profileEdit");
 
-  const onClick = (e) => {
+  const onClick = useCallback((e) => {
     setCurrent(e.key);
-  };
-  const { me } = useSelector((state) => state.user);
-  useEffect(() => {
-    if (!me) {
-      if (typeof window !== "undefined") {
-        alert("로그인 해주세요.");
-        router.push("/");
-      }
-    }
   }, []);
+
   const whichComponent = useCallback(() => {
     switch (current) {
       case "profileEdit":

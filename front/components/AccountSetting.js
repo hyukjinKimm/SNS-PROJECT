@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Cascader,
-  Checkbox,
   DatePicker,
   Form,
   Input,
@@ -17,6 +16,7 @@ import {
   Image,
   Row,
   Col,
+  Checkbox,
 } from "antd";
 import { signOut } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,6 +50,7 @@ const AccountSetting = () => {
   const { me, signOutLoading, signOutDone, signOutError } = useSelector(
     (state) => state.user
   );
+  const [disable, setDisable] = useState(false);
   const route = useRouter();
   const [withdraw, setWithdraw] = useState(false);
   const dispatch = useDispatch();
@@ -59,8 +60,9 @@ const AccountSetting = () => {
     }
   }, [withdraw]);
   const onFinish = useCallback((e) => {
-    const { email, password } = e;
-    dispatch(signOut({ email, password }));
+    console.log(e);
+    console.log("hi");
+    dispatch(signOut(e));
   }, []);
   useEffect(() => {
     if (signOutError) {
@@ -74,6 +76,18 @@ const AccountSetting = () => {
     }
     return;
   }, [signOutDone, signOutError]);
+  const onChange = useCallback((e) => {
+    if (e.target.checked) {
+      setPassowrd("");
+      setDisable(true);
+    } else {
+      setDisable(false);
+    }
+  }, []);
+  const [password, setPassowrd] = useState("");
+  const onChangePassword = useCallback((e) => {
+    setPassowrd(e.target.value);
+  }, []);
 
   return (
     <>
@@ -129,12 +143,25 @@ const AccountSetting = () => {
             label="비밀번호"
             rules={[
               {
-                required: true,
+                required: !disable,
                 message: "비밀번호를 입력해 주세요",
               },
             ]}
+            disabled={disable}
           >
-            <Input.Password />
+            <Input.Password
+              onChange={onChangePassword}
+              value={password}
+              disabled={disable}
+            />
+          </Form.Item>
+          <Form.Item name="social" valuePropName="checked">
+            <Checkbox
+              onChange={onChange}
+              style={{ marginBottom: 10, fontSize: 10 }}
+            >
+              소셜로그인 연동 아이디라면 체크해 주세요.
+            </Checkbox>
           </Form.Item>
 
           <Form.Item {...tailFormItemLayout}>

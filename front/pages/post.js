@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 
 const Post = () => {
   const route = useRouter();
-  const { addPostDone } = useState(() => {
+  const { addPostDone } = useEffect(() => {
     if (addPostDone) {
       route.push("/");
     }

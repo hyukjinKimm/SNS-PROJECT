@@ -49,8 +49,13 @@ const tailFormItemLayout = {
 const ProfileEdit = () => {
   const dispatch = useDispatch();
   const route = useRouter();
-  const { me, profileImagePath, profileEditDone, profileEditLoading } =
-    useSelector((state) => state.user);
+  const {
+    me,
+    profileImagePath,
+    profileEditDone,
+    profileEditLoading,
+    profileEditError,
+  } = useSelector((state) => state.user);
   const onFinish = useCallback(
     (e) => {
       const { nickname, description } = e;
@@ -79,6 +84,12 @@ const ProfileEdit = () => {
       return;
     }
   }, [profileEditDone]);
+  useEffect(() => {
+    if (profileEditError) {
+      alert(profileEditError);
+      return;
+    }
+  }, [profileEditError]);
   return (
     <>
       <Form

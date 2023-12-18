@@ -71,7 +71,7 @@ exports.getMyInfo = async (req, res, next) => {
       if (!user) {
         return res.status(403).send("존재하지 않는 유저 입니다.");
       }
-
+      console.log(user);
       res.status(200).json(user);
     } else {
       res.status(200).json(null);
@@ -211,6 +211,12 @@ exports.profileEdit = async (req, res, next) => {
     if (req.user) {
       const updataData = {};
       if (req.body.nickname) {
+        const user = await User.findOne({
+          where: { nickname: req.body.nickname },
+        });
+        if (user) {
+          return res.status(403).send("이미 존재하는 닉네임 입니다");
+        }
         updataData.nickname = req.body.nickname;
       }
       if (req.body.description) {
@@ -236,20 +242,34 @@ exports.profileEdit = async (req, res, next) => {
 
 exports.signOut = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, social } = req.body;
+    console.log(email, password, social);
     const exUser = await User.findOne({
       where: { email },
     });
-    if (!exUser) {
+    if (!exUser || exUser.email != req.user.email) {
       return res.status(403).send("유효하지 않은 이메일 입니다.");
     }
+    if (exUser.provider != "local" && !social) {
+      return res.status(403).send("체크박스를 선택해 주세요");
+    }
+    if (exUser.provider == "local" && social) {
+      return res
+        .status(403)
+        .send("체크박스를 해제하고 비밀번호를 제대로 입력해 주세요");
+    }
 
-    const result = await bcrypt.compare(password, exUser.password);
-    if (result) {
+    if (!social) {
+      const result = await bcrypt.compare(password, exUser.password);
+      if (result) {
+        await User.destroy({ where: { id: req.user.id }, force: true });
+        return res.status(200).send("회원탈퇴 완료.");
+      } else {
+        return res.status(403).send("비밀번호가 틀립니다.");
+      }
+    } else {
       await User.destroy({ where: { id: req.user.id }, force: true });
       return res.status(200).send("회원탈퇴 완료.");
-    } else {
-      return res.status(403).send("비밀번호가 틀립니다.");
     }
   } catch (e) {
     console.error(e);
