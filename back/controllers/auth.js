@@ -74,6 +74,7 @@ exports.emailAuth = async (req, res) => {
   smtpTransport.sendMail(mailOptions, (err, response) => {
     //첫번째 인자는 위에서 설정한 mailOption을 넣어주고 두번째 인자로는 콜백함수.
     if (err) {
+      console.log(err);
       res.json({ ok: false, msg: " 메일 전송에 실패하였습니다. " });
       smtpTransport.close(); //전송종료
       return;

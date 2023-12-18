@@ -144,6 +144,7 @@ const SignUp = () => {
   const onChangeNickname = useCallback((e) => {
     setNickname(e.target.value);
     setNicknameExistMessage("");
+    setNicknameExistChecked(false);
   }, []);
   const onClickNicknameExist = useCallback(async (nickname, error) => {
     if (error.length > 0 || nickname.length == 0) return;
@@ -236,6 +237,7 @@ const SignUp = () => {
             {emailExistChecked && (
               <Button
                 onClick={() => {
+                  setNumber("");
                   dispatch(emailCheck({ email }));
                 }}
                 style={{
@@ -288,7 +290,7 @@ const SignUp = () => {
                       marginLeft: 10,
                     }}
                   >
-                    이메일 인증 실패
+                    {emailVarificationError}
                   </div>
                 ) : null}
               </div>

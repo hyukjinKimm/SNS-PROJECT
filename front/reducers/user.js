@@ -56,24 +56,65 @@ const initialState = {
 
 export const emailVarification = createAsyncThunk(
   "user/emailVarification",
-  async (data) => {
-    const response = await axios.post("/auth/emailVarification", data);
-    return response.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/auth/emailVarification", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
   }
 );
-export const emailCheck = createAsyncThunk("user/emailCheck", async (data) => {
-  const response = await axios.post("/auth/emailCheck", data);
-  return response.data;
-});
-export const getMyInfo = createAsyncThunk("user/getMyInfo", async (data) => {
-  const response = await axios.get("/user");
-  return response.data;
-});
+
+export const emailCheck = createAsyncThunk(
+  "user/emailCheck",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/auth/emailCheck", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const getMyInfo = createAsyncThunk(
+  "user/getMyInfo",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/user");
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const getUserInfo = createAsyncThunk(
   "user/getUserInfo",
-  async (nickname) => {
-    const response = await axios.get(`/user/${encodeURIComponent(nickname)}`);
-    return response.data;
+  async (nickname, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/user/${encodeURIComponent(nickname)}`);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
   }
 );
 
@@ -92,10 +133,22 @@ export const logIn = createAsyncThunk(
     }
   }
 );
-export const logOut = createAsyncThunk("user/logOut", async (data) => {
-  const response = await axios.get("/auth/logout");
-  return response.data;
-});
+
+export const logOut = createAsyncThunk(
+  "user/logOut",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/auth/logout");
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 
 export const signUp = createAsyncThunk(
   "user/signUp",
@@ -128,27 +181,63 @@ export const signOut = createAsyncThunk(
   }
 );
 
-export const Follow = createAsyncThunk("user/follow", async (id) => {
-  const response = await axios.post(`/user/${id}/follow`);
-  return response.data;
-});
-export const unFollow = createAsyncThunk("user/unfollow", async (id) => {
-  const response = await axios.post(`/user/${id}/unfollow`);
-  return response.data;
-});
+export const Follow = createAsyncThunk(
+  "user/follow",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/user/${id}/follow`);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const unFollow = createAsyncThunk(
+  "user/unfollow",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/user/${id}/unfollow`);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 
 export const addProfileImage = createAsyncThunk(
   "user/addProfileImage",
-  async (data) => {
-    const response = await axios.post("/user/image", data);
-    return response.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/user/image", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
   }
 );
+
 export const profileEdit = createAsyncThunk(
   "user/profileEdit",
-  async (data) => {
-    const response = await axios.post("/user/edit", data);
-    return response.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/user/edit", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
   }
 );
 
@@ -221,12 +310,16 @@ const userSlice = createSlice({
         state.emailVarificationError = null;
       })
       .addCase(emailVarification.rejected, (state, action) => {
-        state.emailVarificationError = action.error;
+        state.emailVarificationError =
+          action.payload.code == 401
+            ? "인증번호를 새로 받아주세요"
+            : "인증번호가 일치하지 않습니다.";
       })
       .addCase(emailCheck.pending, (state, action) => {
         state.emailCheckLoading = true;
         state.emailCheckDone = false;
         state.emailCheckError = null;
+        state.emailVarificationError = null;
       })
       .addCase(emailCheck.fulfilled, (state, action) => {
         state.emailCheckLoading = false;
@@ -234,7 +327,7 @@ const userSlice = createSlice({
         state.emailCheckError = null;
       })
       .addCase(emailCheck.rejected, (state, action) => {
-        state.emailCheckError = action.error;
+        state.emailCheckError = action.payload;
       })
       .addCase(getMyInfo.pending, (state, action) => {
         state.getMyInfoLoading = true;
@@ -250,7 +343,7 @@ const userSlice = createSlice({
       })
       .addCase(getMyInfo.rejected, (state, action) => {
         state.isLoggedIn = false;
-        state.getMyInfoError = action.error;
+        state.getMyInfoError = action.payload;
       })
       .addCase(Follow.pending, (state, action) => {
         state.followLoading = true;
@@ -264,7 +357,7 @@ const userSlice = createSlice({
         state.me.Followings.push({ id: action.payload.id });
       })
       .addCase(Follow.rejected, (state, action) => {
-        state.followError = action.error;
+        state.followError = action.payload;
       })
       .addCase(unFollow.pending, (state, action) => {
         state.followLoading = true;
@@ -280,7 +373,7 @@ const userSlice = createSlice({
         });
       })
       .addCase(unFollow.rejected, (state, action) => {
-        state.followError = action.error;
+        state.followError = action.payload;
       })
       .addCase(getUserInfo.pending, (state, action) => {
         state.getUserInfoLoading = true;
@@ -294,7 +387,7 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(getUserInfo.rejected, (state, action) => {
-        state.getUserInfoError = action.error;
+        state.getUserInfoError = action.payload;
       })
       .addCase(logIn.pending, (state, action) => {
         state.logInLoading = true;
@@ -329,7 +422,7 @@ const userSlice = createSlice({
       .addCase(logOut.rejected, (state, action) => {
         state.logOutLoading = false;
         state.logOutDone = true;
-        state.logOutError = action.error;
+        state.logOutError = action.payload;
       })
       .addCase(signUp.pending, (state, action) => {
         state.signUpLoading = true;
@@ -362,7 +455,7 @@ const userSlice = createSlice({
       })
       .addCase(addProfileImage.rejected, (state, action) => {
         state.addProfileImageLoading = false;
-        state.addProfileImageError = action.error;
+        state.addProfileImageError = action.payload;
       })
       .addCase(profileEdit.pending, (state, action) => {
         state.profileEditLoading = true;
@@ -377,7 +470,7 @@ const userSlice = createSlice({
       })
       .addCase(profileEdit.rejected, (state, action) => {
         state.profileEditLoading = false;
-        state.profileEditError = action.error;
+        state.profileEditError = action.payload;
       })
       .addCase(signOut.pending, (state, action) => {
         state.signOutLoading = true;
