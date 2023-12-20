@@ -37,6 +37,9 @@ const FollowingList = ({ followings, onClose }) => {
   const onClickunFollow = useCallback((id) => {
     dispatch(unFollow(id));
   }, []);
+  const onClickFollow = useCallback((id) => {
+    dispatch(Follow(id));
+  }, []);
   useEffect(() => {
     if (followDone) {
       dispatch(getUserInfo(user.nickname));
@@ -122,16 +125,32 @@ const FollowingList = ({ followings, onClose }) => {
                       key={following.id}
                       actions={[
                         isLoggedIn ? (
-                          <Button
-                            type="primary"
-                            key="list-loadmore-edit"
-                            onClick={() => {
-                              onClickunFollow(following.id);
-                            }}
-                            loading={false}
-                          >
-                            언팔로우
-                          </Button>
+                          me.id ==
+                          following.id ? null : me.Followings?.findIndex(
+                              (f) => f.id == following.id
+                            ) > -1 ? (
+                            <Button
+                              type="primary"
+                              key="list-loadmore-edit"
+                              onClick={() => {
+                                onClickunFollow(following.id);
+                              }}
+                              loading={false}
+                            >
+                              언팔로우
+                            </Button>
+                          ) : (
+                            <Button
+                              type="primary"
+                              key="list-loadmore-edit"
+                              onClick={() => {
+                                onClickFollow(following.id);
+                              }}
+                              loading={false}
+                            >
+                              팔로우
+                            </Button>
+                          )
                         ) : null,
                       ]}
                     >

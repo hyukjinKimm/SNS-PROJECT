@@ -194,6 +194,7 @@ const Post = () => {
             <div>
               <PlusOutlined />
               <div style={{ marginTop: 8 }}>Upload</div>
+              최대5장
             </div>
           </Upload>
         </ImgCrop>

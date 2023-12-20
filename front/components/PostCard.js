@@ -175,7 +175,12 @@ const PostCard = ({ post }) => {
                       placement="left"
                       content={
                         <Space>
-                          <Button type="primary" onClick={hide}>
+                          <Button
+                            type="primary"
+                            onClick={useCallback(() => {
+                              alert("기능 개발 중입니다.");
+                            }, [])}
+                          >
                             수정
                           </Button>
                           <Button
@@ -185,7 +190,13 @@ const PostCard = ({ post }) => {
                           >
                             삭제
                           </Button>
-                          <Button onClick={hide}>신고</Button>
+                          <Button
+                            onClick={useCallback(() => {
+                              alert("기능 개발 중입니다.");
+                            }, [])}
+                          >
+                            신고
+                          </Button>
                           <Button onClick={hide}>닫기</Button>
                         </Space>
                       }

@@ -100,17 +100,6 @@ const LoginForm = () => {
         </Form.Item>
 
         <Form.Item
-          name="remember"
-          valuePropName="checked"
-          wrapperCol={{
-            offset: 1,
-            span: 10,
-          }}
-        >
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
-
-        <Form.Item
           wrapperCol={{
             offset: 1,
             span: 16,
@@ -127,7 +116,9 @@ const LoginForm = () => {
           >
             회원가입
           </Button>
+          <a href="http://localhost:3060/findPassword">비밀번호 찾기</a>
         </Form.Item>
+
         <div>
           <a id="custom-login-btn" href="http://localhost:3065/auth/kakao">
             <img src="/kakao-login-btn.png" width="200px" />
@@ -139,9 +130,14 @@ const LoginForm = () => {
           </a>
         </div>
         <div>
-          <a id="custom-login-btn" href="http://localhost:3065/auth/google">
+          <div
+            id="custom-login-btn"
+            onClick={useCallback(() => {
+              alert("기능 점검 중입니다.");
+            }, [])}
+          >
             <img src="/google-login-btn.png" width="200px" />
-          </a>
+          </div>
         </div>
       </FormWrapper>
     </>

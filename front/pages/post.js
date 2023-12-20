@@ -11,15 +11,12 @@ import { useRouter } from "next/router";
 
 const Post = () => {
   const route = useRouter();
-  const { addPostDone } = useEffect(() => {
+  const { addPostDone } = useSelector((state) => state.post);
+  useEffect(() => {
     if (addPostDone) {
       route.push("/");
     }
-  }, []);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(screenActions.changeMenu("POST"));
-  }, []);
+  }, [addPostDone]);
 
   return (
     <>
@@ -31,5 +28,28 @@ const Post = () => {
     </>
   );
 };
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req, res }) => {
+      const cookie = req ? req.headers.cookie : "";
+      axios.defaults.headers.Cookie = "";
+
+      if (req && cookie) {
+        axios.defaults.headers.Cookie = cookie;
+      }
+
+      const data = await store.dispatch(getMyInfo());
+      if (!data.payload) {
+        res.writeHead(301, { Location: "/" });
+        res.end();
+        return true;
+      } else {
+        store.dispatch(screenActions.changeMenu("POST"));
+        return {
+          props: {},
+        };
+      }
+    }
+);
 
 export default Post;

@@ -100,9 +100,23 @@ const Comment = ({ comment, postId }) => {
         }}
         actions={[
           <div>좋아요 {comment?.CommentLikers?.length}개</div>,
-          <div>답글달기</div>,
+          <div
+            onClick={useCallback(() => {
+              alert("기능 개발 중입니다.");
+            }, [])}
+            style={{ cursor: "pointer" }}
+          >
+            답글달기
+          </div>,
           comment.UserId === me?.id && (
-            <div style={{ color: "blue", fontSize: "10px" }}>수정하기</div>
+            <div
+              onClick={useCallback(() => {
+                alert("기능 개발 중입니다.");
+              }, [])}
+              style={{ color: "blue", fontSize: "10px", cursor: "pointer" }}
+            >
+              수정하기
+            </div>
           ),
           comment.UserId === me?.id && (
             <div

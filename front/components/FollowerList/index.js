@@ -124,8 +124,10 @@ const FollowerList = ({ followers, onClose }) => {
                       key={follower.id}
                       actions={[
                         isLoggedIn ? (
-                          me.Followings?.findIndex((f) => f.id == follower.id) >
-                          -1 ? (
+                          me.id ==
+                          follower.id ? null : me.Followings?.findIndex(
+                              (f) => f.id == follower.id
+                            ) > -1 ? (
                             <Button
                               type="primary"
                               key="list-loadmore-edit"

@@ -88,6 +88,9 @@ const AppLayout = ({ children }) => {
               </Badge>
             ),
             label: "메시지",
+            onClick: () => {
+              alert("기능 개발 중입니다.");
+            },
           }
         : {
             key: "MESSAGE",
@@ -122,6 +125,9 @@ const AppLayout = ({ children }) => {
               </Badge>
             ),
             label: "알림",
+            onClick: () => {
+              alert("기능 개발 중입니다.");
+            },
           }
         : {
             key: "ALARM",
@@ -161,7 +167,7 @@ const AppLayout = ({ children }) => {
                 fontSize: "20px",
               },
             }),
-            label: <a href={`/profile/${me.nickname}`}>프로필</a>,
+            label: <Link href={`/profile/${me.nickname}`}>프로필</Link>,
           }
         : {
             key: "PROFILE",
@@ -209,7 +215,10 @@ const AppLayout = ({ children }) => {
             />
           </Badge>
         ),
-        label: <a href="http://localhost:3060">공지사항</a>,
+        label: "공지사항",
+        onClick: () => {
+          alert("기능 개발 중입니다.");
+        },
       },
       {
         key: "TEST",
