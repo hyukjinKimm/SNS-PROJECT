@@ -63,8 +63,14 @@ exports.logOut = (req, res) => {
 };
 exports.emailAuth = async (req, res) => {
   const number = Math.floor(Math.random() * 888888) + 111111;
-
+  
   const { email } = req.body; //사용자가 입력한 이메일
+  const exUser = await User.findOne({
+    where: { email },
+  });
+  if (!exUser) {
+    return res.status(403).send("존재하지 않는 email 입니다.");
+  }
   const mailOptions = {
     from: process.env.SMTP_USER, // 발신자 이메일 주소.
     to: email, //사용자가 입력한 이메일 -> 목적지 주소 이메일

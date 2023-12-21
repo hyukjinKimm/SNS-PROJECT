@@ -20,6 +20,9 @@ const items = [
     label: "언어 기본 설정",
     key: "languageSetting",
     icon: <GlobalOutlined />,
+    onClick: () => {
+      alert("개발 중 입니다.");
+    },
   },
   {
     label: "계정 설정",

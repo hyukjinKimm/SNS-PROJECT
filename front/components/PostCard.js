@@ -80,7 +80,13 @@ const PostCard = ({ post }) => {
 
   const RetweetIcon = useCallback(({ icon, text }) => (
     <Space>
-      {React.createElement(icon)}
+      {React.createElement(icon, {
+        onClick: isLoggedIn
+          ? () => {
+              alert("기능 개발 중..");
+            }
+          : null,
+      })}
       {text}
     </Space>
   ));

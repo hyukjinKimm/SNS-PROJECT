@@ -13,6 +13,7 @@ const {
   signOut,
   emailExistCheck,
   nicknameExistCheck,
+  passwordReset,
 } = require("../controllers/user");
 const { likeComment, unLikeComment } = require("../controllers/comment");
 const router = express.Router();
@@ -34,6 +35,7 @@ router.post("/emailExistCheck", isNotLoggedIn, emailExistCheck);
 router.post("/nicknameExistCheck", isNotLoggedIn, nicknameExistCheck);
 router.post("/image", isLoggedIn, upload.single("image"), uploadImage);
 router.post("/edit", isLoggedIn, profileEdit);
+router.post("/passwordReset", passwordReset);
 router.post("/signout", isLoggedIn, signOut);
 router.get("/:nickname", getUser);
 router.post("/", isNotLoggedIn, joinUser);

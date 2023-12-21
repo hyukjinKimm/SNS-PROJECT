@@ -239,6 +239,30 @@ exports.profileEdit = async (req, res, next) => {
     next(e); // status(500)
   }
 };
+exports.passwordReset = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const exUser = await User.findOne({
+      where: { email },
+    });
+    if (!exUser) {
+      return res.status(403).send("존재하지 않는 email 입니다.");
+    }
+    const hashPassword = await bcrypt.hash(password, 12);
+    const updataData = {};
+    updataData.password = hashPassword;
+    if (exUser.provider != "local") {
+      updataData.provider = "local";
+    }
+    const newUser = await User.update(updataData, {
+      where: { email: email },
+    });
+    res.status(200).send("업데이트 완료");
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
 
 exports.signOut = async (req, res, next) => {
   try {

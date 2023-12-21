@@ -48,11 +48,30 @@ const initialState = {
   emailVarificationDone: false,
   emailVarificationError: null,
 
+  passwordResetLoading: false,
+  passwordResetDone: false,
+  passwordResetError: null,
+
   isLoggedIn: false,
   me: null,
   profileImagePath: "",
   user: null,
 }; // 초기 상태 정의
+export const passwordReset = createAsyncThunk(
+  "user/passwordReset",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/user/passwordReset", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 
 export const emailVarification = createAsyncThunk(
   "user/emailVarification",
@@ -288,6 +307,10 @@ const userSlice = createSlice({
       state.emailVarificationDone = false;
       state.emailVarificationError = null;
 
+      state.passwordResetLoading = false;
+      state.passwordResetDone = false;
+      state.passwordResetError = null;
+
       state.isLoggedIn = false;
       state.me = null;
       state.user = null;
@@ -299,6 +322,22 @@ const userSlice = createSlice({
         ...state,
         ...action.payload.user,
       }))
+      .addCase(passwordReset.pending, (state, action) => {
+        state.passwordResetLoading = true;
+        state.passwordResetDone = false;
+        state.passwordResetError = null;
+      })
+      .addCase(passwordReset.fulfilled, (state, action) => {
+        state.passwordResetLoading = false;
+        state.passwordResetDone = true;
+        state.passwordResetError = null;
+      })
+      .addCase(passwordReset.rejected, (state, action) => {
+        state.passwordResetError =
+          action.payload.code == 401
+            ? "인증번호를 새로 받아주세요"
+            : "인증번호가 일치하지 않습니다.";
+      })
       .addCase(emailVarification.pending, (state, action) => {
         state.emailVarificationLoading = true;
         state.emailVarificationDone = false;
@@ -310,10 +349,7 @@ const userSlice = createSlice({
         state.emailVarificationError = null;
       })
       .addCase(emailVarification.rejected, (state, action) => {
-        state.emailVarificationError =
-          action.payload.code == 401
-            ? "인증번호를 새로 받아주세요"
-            : "인증번호가 일치하지 않습니다.";
+        state.emailVarificationError = action.payload;
       })
       .addCase(emailCheck.pending, (state, action) => {
         state.emailCheckLoading = true;
@@ -328,6 +364,7 @@ const userSlice = createSlice({
       })
       .addCase(emailCheck.rejected, (state, action) => {
         state.emailCheckError = action.payload;
+        state.emailCheckLoading = false;
       })
       .addCase(getMyInfo.pending, (state, action) => {
         state.getMyInfoLoading = true;

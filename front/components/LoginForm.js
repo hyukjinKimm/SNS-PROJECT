@@ -125,19 +125,20 @@ const LoginForm = () => {
           </a>
         </div>
         <div>
-          <a id="custom-login-btn" href="http://localhost:3065/auth/naver">
-            <img src="/naver-login-btn.png" width="200px" />
-          </a>
-        </div>
-        <div>
           <div
             id="custom-login-btn"
             onClick={useCallback(() => {
               alert("기능 점검 중입니다.");
             }, [])}
+            style={{ cursor: "pointer" }}
           >
-            <img src="/google-login-btn.png" width="200px" />
+            <img src="/naver-login-btn.png" width="200px" />
           </div>
+        </div>
+        <div>
+          <a id="custom-login-btn" href="http://localhost:3065/auth/google">
+            <img src="/google-login-btn.png" width="200px" />
+          </a>
         </div>
       </FormWrapper>
     </>
