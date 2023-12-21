@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Checkbox, Form, Input, Select, DatePicker } from "antd";
 import { signUp, emailCheck, emailVarification } from "../reducers/user";
-import useSWR from "swr";
 import axios from "axios";
 
 const { Option } = Select;
@@ -417,4 +416,5 @@ const SignUp = () => {
     </Form>
   );
 };
+
 export default SignUp;

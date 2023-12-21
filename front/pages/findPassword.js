@@ -11,7 +11,7 @@ import {
 import { wrapper } from "../store/configureStore";
 import { getMyInfo } from "../reducers/user";
 import * as screenActions from "../reducers/screen";
-import useSWR from "swr";
+
 import axios from "axios";
 
 const { Option } = Select;

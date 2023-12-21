@@ -220,15 +220,6 @@ const AppLayout = ({ children }) => {
           alert("기능 개발 중입니다.");
         },
       },
-      {
-        key: "TEST",
-        icon: React.createElement(LoginOutlined, {
-          style: {
-            fontSize: "20px",
-          },
-        }),
-        label: <Link href="/test">테스트</Link>,
-      },
     ];
   }, [isLoggedIn, logOutLoading, me]);
 

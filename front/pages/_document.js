@@ -1,37 +1,39 @@
-import React from "react";
-import Document, { Html, Head, Main, NextScript } from "next/document";
-import { ServerStyleSheet } from "styled-components";
+// _document.tsx
+import { createCache, StyleProvider } from "@ant-design/cssinjs";
+
+import Document, { Head, Html, Main, NextScript } from "next/document";
 
 export default class MyDocument extends Document {
-  static async getInitalProps(ctx) {
-    const sheet = new ServerStyleSheet();
+  static async getInitialProps(ctx) {
+    const cache = createCache();
     const originalRenderPage = ctx.renderPage;
-    try {
-      ctx.renderPage = () =>
-        originalRenderPage({
-          enhanceApp: (App) => (props) =>
-            sheet.collectStyles(<App {...props} />),
-        });
-      const initialProps = await Document.getInitialProps(ctx);
-      return {
-        ...initialProps,
-        styles: (
-          <>
-            {initialProps.styles}
-            {sheet.getStyleElement()}
-          </>
-        ),
-      };
-    } catch (error) {
-      console.error(error);
-    } finally {
-      sheet.seal();
-    }
+    ctx.renderPage = () =>
+      originalRenderPage({
+        enhanceApp: (App) => (props) =>
+          (
+            <StyleProvider cache={cache}>
+              <App {...props} />
+            </StyleProvider>
+          ),
+      });
+
+    const initialProps = await Document.getInitialProps(ctx);
+    // 1.1 extract style which had been used
+
+    return {
+      ...initialProps,
+      styles: (
+        <>
+          {initialProps.styles}
+          {/* 1.2 inject css */}
+        </>
+      ),
+    };
   }
 
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head />
         <body>
           <Main />
