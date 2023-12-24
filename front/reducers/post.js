@@ -36,8 +36,16 @@ const initialState = {
   deleteCommentLoading: false,
   deleteCommentDone: false,
   deleteCommentError: null,
+
+  editPostLoading: false,
+  editPostDone: false,
+  editPostError: null,
 }; // 초기 상태 정의
 
+export const editPost = createAsyncThunk("post/editPost", async (data) => {
+  const response = await axios.post(`post/editPost/${data.id}`, data);
+  return response.data;
+});
 export const loadPost = createAsyncThunk("post/loadPost", async (postId) => {
   const response = await axios.get(`post/${postId}`);
   return response.data;
@@ -149,6 +157,15 @@ const postSlice = createSlice({
       state.deleteCommentLoading = false;
       state.deleteCommentDone = false;
       state.deleteCommentError = null;
+
+      state.editPostLoading = false;
+      state.editPostDone = false;
+      state.editPostError = null;
+    },
+    editPostReset: (state, action) => {
+      (state.editPostLoading = false),
+        (state.editPostDone = false),
+        (state.editPostError = null);
     },
   },
   extraReducers: (builder) =>
@@ -189,6 +206,26 @@ const postSlice = createSlice({
       .addCase(loadPosts.rejected, (state, action) => {
         state.loadPostsLoading = false;
         state.loadPostsError = action.error;
+      })
+      .addCase(editPost.pending, (state, action) => {
+        state.editPostLoading = true;
+        state.editPostDone = false;
+        state.editPostError = null;
+      })
+      .addCase(editPost.fulfilled, (state, action) => {
+        state.editPostLoading = false;
+        state.editPostDone = true;
+        state.editPostError = null;
+        if (state.mainPosts.length > 0) {
+          let index = state.mainPosts.findIndex(
+            (post) => post.id == action.payload.id
+          );
+          state.mainPosts[index].content = action.payload.content;
+        }
+      })
+      .addCase(editPost.rejected, (state, action) => {
+        state.editPostLoading = false;
+        state.editPostError = action.error;
       })
       .addCase(addPost.pending, (state, action) => {
         state.addPostLoading = true;
@@ -365,5 +402,6 @@ const postSlice = createSlice({
         state.likeCommentLoading = false;
       }),
 });
-export const { initializePostState, removeImage } = postSlice.actions; // 액션 생성함수
+export const { initializePostState, removeImage, editPostReset } =
+  postSlice.actions; // 액션 생성함수
 export default postSlice.reducer; // 리듀서

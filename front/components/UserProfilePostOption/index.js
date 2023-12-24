@@ -29,7 +29,7 @@ import CommentForm from "../CommentForm";
 import Comment from "../Comment";
 import { deletePost, likePost, unlikePost } from "../../reducers/post";
 import { getUserInfo } from "../../reducers/user";
-const UserProfilePostOption = ({ id, onClose }) => {
+const UserProfilePostOption = ({ id, onClosePostOption, onClickPostEdit }) => {
   const { me, user } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
   const { deletePostDone } = useSelector((state) => state.post);
@@ -48,6 +48,10 @@ const UserProfilePostOption = ({ id, onClose }) => {
     }
     return;
   }, [deletePostDone]);
+  const onClickEdit = useCallback(() => {
+    onClosePostOption();
+    onClickPostEdit();
+  }, []);
   return (
     <>
       <Overlay>
@@ -62,8 +66,14 @@ const UserProfilePostOption = ({ id, onClose }) => {
               >
                 삭제
               </Button>
-              <Button size="large">삭제</Button>
-              <Button size="large" style={{ color: "blue" }} onClick={onClose}>
+              <Button size="large" onClick={onClickEdit}>
+                수정
+              </Button>
+              <Button
+                size="large"
+                style={{ color: "blue" }}
+                onClick={onClosePostOption}
+              >
                 닫기
               </Button>
             </Space.Compact>

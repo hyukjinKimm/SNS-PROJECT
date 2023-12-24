@@ -13,6 +13,7 @@ import { Avatar, List, Space, Button, Skeleton, Popover, Divider } from "antd";
 import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
+import EditPost from "./editPost";
 import { deletePost, likePost, unlikePost } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 const PostCard = ({ post }) => {
@@ -138,7 +139,14 @@ const PostCard = ({ post }) => {
     setCommentOpened(false);
   }, [me, isLoggedIn]);
   const date = dayjs(post.createdAt);
+  const [showPostEdit, setShowPostEdit] = useState(false);
+  const onClickPostEdit = useCallback(() => {
+    setShowPostEdit(true);
+  }, []);
 
+  const onClosePostEdit = useCallback(() => {
+    setShowPostEdit(false);
+  }, []);
   return (
     <>
       {post.loading ? (
@@ -184,7 +192,7 @@ const PostCard = ({ post }) => {
                           <Button
                             type="primary"
                             onClick={useCallback(() => {
-                              alert("기능 개발 중입니다.");
+                              onClickPostEdit();
                             }, [])}
                           >
                             수정
@@ -295,6 +303,9 @@ const PostCard = ({ post }) => {
             </List.Item>
           ) : null}
         </>
+      )}
+      {showPostEdit && (
+        <EditPost post={post} onClosePostEdit={onClosePostEdit}></EditPost>
       )}
     </>
   );

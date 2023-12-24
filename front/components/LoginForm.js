@@ -46,7 +46,7 @@ const LoginForm = () => {
 
   return (
     <>
-      <FormWrapper
+      <Form
         labelCol={{
           span: 4,
         }}
@@ -56,6 +56,10 @@ const LoginForm = () => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
+        style={{
+          maxWidth: "600px",
+          padding: "10px",
+        }}
       >
         <Form.Item
           name="email"
@@ -140,7 +144,7 @@ const LoginForm = () => {
             <img src="/google-login-btn.png" width="200px" />
           </a>
         </div>
-      </FormWrapper>
+      </Form>
     </>
   );
 };

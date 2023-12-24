@@ -36,6 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CommentForm from "../CommentForm";
 import Comment from "../Comment";
 import UserProfilePostOption from "../UserProfilePostOption";
+import EditPost from "../editPost";
 
 const UserProfilePostCard = ({ post, onClose }) => {
   const { user, me, isLoggedIn } = useSelector((state) => state.user);
@@ -47,6 +48,15 @@ const UserProfilePostCard = ({ post, onClose }) => {
   }, []);
   const onClosePostOption = useCallback(() => {
     setShowPostOption(false);
+  }, []);
+
+  const [showPostEdit, setShowPostEdit] = useState(false);
+  const onClickPostEdit = useCallback(() => {
+    setShowPostEdit(true);
+  }, []);
+
+  const onClosePostEdit = useCallback(() => {
+    setShowPostEdit(false);
   }, []);
   const data = dayjs(post.createdAt);
   const [liked, setLiked] = useState(false);
@@ -312,7 +322,14 @@ const UserProfilePostCard = ({ post, onClose }) => {
         </Row>
       </Overlay>
       {showPostOption && (
-        <UserProfilePostOption id={post.id} onClose={onClosePostOption} />
+        <UserProfilePostOption
+          id={post.id}
+          onClosePostOption={onClosePostOption}
+          onClickPostEdit={onClickPostEdit}
+        />
+      )}
+      {showPostEdit && (
+        <EditPost post={post} onClosePostEdit={onClosePostEdit}></EditPost>
       )}
     </>
   );
