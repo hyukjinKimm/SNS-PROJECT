@@ -339,3 +339,35 @@ exports.deleteComment = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.editPost = async (req, res, next) => {
+  try {
+    console.log("hi");
+    if (req.user) {
+      const post = await Post.findOne({ where: { id: req.params.postId } });
+      if (!post) {
+        return res.status(400).send("존재하지 않는 포스트 입니다.");
+      }
+      if (req.user.id != post.UserId) {
+        return res.status(400).send("당신이 작성한 포스트가 아닙니다..");
+      }
+      const newPost = await Post.update(
+        { content: req.body.content },
+        {
+          where: { id: req.params.postId },
+        }
+      );
+
+      return res.status(200).json({
+        code: 200,
+        content: req.body.content,
+        id: req.params.postId,
+      });
+    } else {
+      return res.status(402).send("로그인 필요");
+    }
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
