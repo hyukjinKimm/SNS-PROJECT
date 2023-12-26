@@ -5,6 +5,7 @@ const Post = require("../models/post");
 const Image = require("../models/image");
 const Comment = require("../models/comment");
 const { sequelize } = require("../models");
+const { Op } = require("sequelize");
 const sharp = require("sharp");
 const fs = require("fs");
 exports.emailExistCheck = async (req, res, next) => {
@@ -295,6 +296,22 @@ exports.signOut = async (req, res, next) => {
       await User.destroy({ where: { id: req.user.id }, force: true });
       return res.status(200).send("회원탈퇴 완료.");
     }
+  } catch (e) {
+    console.error(e);
+    next(e); // status(500)
+  }
+};
+
+exports.searchUser = async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: { nickname: decodeURIComponent(req.body.nickname) },
+      attributes: { exclude: ["password"] },
+    });
+    if (!user) {
+      return res.status(403).send("존재하지 않는 유저 입니다.");
+    }
+    res.status(200).json(user);
   } catch (e) {
     console.error(e);
     next(e); // status(500)

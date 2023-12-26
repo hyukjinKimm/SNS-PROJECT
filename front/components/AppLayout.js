@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   UserOutlined,
@@ -13,22 +13,42 @@ import {
   LoadingOutlined,
   FileAddOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme, Button, Badge, Avatar } from "antd";
+import {
+  Layout,
+  Menu,
+  theme,
+  Button,
+  Badge,
+  Avatar,
+  Popover,
+  Input,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import * as screenActions from "../reducers/screen";
-import { logOut } from "../reducers/user";
-
+import { logOut, searchUser } from "../reducers/user";
+import Search from "./Search/search";
 const { Header, Content, Footer, Sider } = Layout;
 const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
 
   const { collapsed } = useSelector((state) => state.screen);
-  const { isLoggedIn, logOutLoading, me } = useSelector((state) => state.user);
+  const {
+    isLoggedIn,
+    logOutLoading,
+    me,
+    searchingUser,
+    searchUserError,
+    searchUserLoading,
+  } = useSelector((state) => state.user);
 
   const { selectedMenu } = useSelector((state) => state.screen);
 
   const LogOutRequest = useCallback(() => {
     dispatch(logOut());
+  }, []);
+
+  const onSearch = useCallback((value, _e, info) => {
+    dispatch(searchUser({ nickname: value }));
   }, []);
 
   const {
@@ -53,7 +73,27 @@ const AppLayout = ({ children }) => {
             fontSize: "20px",
           },
         }),
-        label: "검색",
+        label: (
+          <Popover
+            placement="rightTop"
+            title={"검색"}
+            content={
+              <div style={{ width: "400px" }}>
+                <Input.Search
+                  onSearch={onSearch}
+                  placeholder="검색"
+                  enterButton
+                  loading={searchUserLoading}
+                  style={{ marginBottom: 10 }}
+                />
+
+                <Search />
+              </div>
+            }
+          >
+            <div style={{ marginLeft: 0 }}>검색</div>
+          </Popover>
+        ),
       },
       isLoggedIn
         ? null

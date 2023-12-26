@@ -52,11 +52,31 @@ const initialState = {
   passwordResetDone: false,
   passwordResetError: null,
 
+  searchUserLoading: false,
+  searchUserDone: false,
+  searchUserError: null,
+
   isLoggedIn: false,
   me: null,
   profileImagePath: "",
+  searchingUser: null,
   user: null,
 }; // 초기 상태 정의
+export const searchUser = createAsyncThunk(
+  "user/searchUser",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/user/searchUser", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 export const passwordReset = createAsyncThunk(
   "user/passwordReset",
   async (data, { rejectWithValue }) => {
@@ -311,9 +331,14 @@ const userSlice = createSlice({
       state.passwordResetDone = false;
       state.passwordResetError = null;
 
+      state.searchUserLoading = false;
+      state.searchUserDone = false;
+      state.searchUserError = null;
+
       state.isLoggedIn = false;
       state.me = null;
       state.user = null;
+      state.searchingUser = null;
     },
   },
   extraReducers: (builder) =>
@@ -322,6 +347,21 @@ const userSlice = createSlice({
         ...state,
         ...action.payload.user,
       }))
+      .addCase(searchUser.pending, (state, action) => {
+        state.searchUserLoading = true;
+        state.searchUserDone = false;
+        state.searchUserError = null;
+      })
+      .addCase(searchUser.fulfilled, (state, action) => {
+        state.searchUserLoading = false;
+        state.searchUserDone = true;
+        state.searchingUser = action.payload;
+        state.searchUserError = null;
+      })
+      .addCase(searchUser.rejected, (state, action) => {
+        state.searchUserError = action.payload;
+        state.searchingUser = null;
+      })
       .addCase(passwordReset.pending, (state, action) => {
         state.passwordResetLoading = true;
         state.passwordResetDone = false;

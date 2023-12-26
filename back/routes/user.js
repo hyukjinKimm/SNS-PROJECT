@@ -14,6 +14,7 @@ const {
   emailExistCheck,
   nicknameExistCheck,
   passwordReset,
+  searchUser,
 } = require("../controllers/user");
 const { likeComment, unLikeComment } = require("../controllers/comment");
 const router = express.Router();
@@ -31,6 +32,7 @@ const upload = multer({
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
 });
 router.get("/", getMyInfo);
+router.post("/searchUser", searchUser);
 router.post("/emailExistCheck", isNotLoggedIn, emailExistCheck);
 router.post("/nicknameExistCheck", isNotLoggedIn, nicknameExistCheck);
 router.post("/image", isLoggedIn, upload.single("image"), uploadImage);
