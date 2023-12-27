@@ -17,6 +17,7 @@ import {
 import { Avatar, List, Space, Tooltip, Input } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "../reducers/user";
+import CommentForm from "./CommentForm";
 const Com = ({ comment, postId }) => {
   const dispatch = useDispatch();
   const { me, isLoggedIn, user } = useSelector((state) => state.user);
@@ -95,8 +96,12 @@ const Com = ({ comment, postId }) => {
   const [showCocoment, setShowCocoment] = useState(false);
   const onToggleComment = useCallback(() => {
     setShowCocoment(!showCocoment);
-    console.log("hi");
   }, [showCocoment]);
+
+  const [commentFormOpened, setCommentFormOpened] = useState(false);
+  const onToggleCommentForm = useCallback(() => {
+    setCommentFormOpened(!commentFormOpened);
+  }, [commentFormOpened]);
 
   const actions = [
     <Tooltip key="comment-basic-like" title="Like">
@@ -115,7 +120,9 @@ const Com = ({ comment, postId }) => {
       </span>
     </Tooltip>,
 
-    <span key="comment-basic-reply-to">답글달기</span>,
+    <span key="comment-basic-reply-to" onClick={onToggleCommentForm}>
+      답글달기
+    </span>,
     isLoggedIn && comment.User.id == me.id ? (
       <span
         style={{ color: "red" }}
@@ -194,6 +201,7 @@ const Com = ({ comment, postId }) => {
             ]
           : null}
       </Comment>
+      {commentFormOpened ? <CommentForm></CommentForm> : null}
     </>
   );
 };
