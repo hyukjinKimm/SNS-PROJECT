@@ -3,7 +3,7 @@ import {
   LoadingOutlined,
   HeartTwoTone,
 } from "@ant-design/icons";
-
+import { Comment } from "@ant-design/compatible";
 import dayjs from "dayjs";
 import React, { useCallback, useState, useEffect } from "react";
 
@@ -14,23 +14,27 @@ import {
   likeComment,
   unlikeComment,
 } from "../reducers/post";
-import { Avatar, List, Space } from "antd";
+import { Avatar, List, Space, Tooltip, Input } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "../reducers/user";
-const Comment = ({ comment, postId }) => {
+const Com = ({ comment, postId }) => {
   const dispatch = useDispatch();
   const { me, isLoggedIn, user } = useSelector((state) => state.user);
   const { likeCommentDone } = useSelector((state) => state.post);
   const [likeCommentLoading, setLikeCommentLoading] = useState(false);
-  const onDeleteComment = useCallback((e, comment) => {
-    if (confirm("댓글을 삭제하시겠습니까?")) {
-      const data = { postId, commentId: comment.id };
-      dispatch(deleteComment(data));
-    }
-  }, []);
+  const onDeleteComment = useCallback(
+    (comment) => {
+      if (confirm("댓글을 삭제하시겠습니까?")) {
+        const data = { postId, commentId: comment.id };
+        dispatch(deleteComment(data));
+      }
+    },
+    [comment]
+  );
 
   const [liked, setLiked] = useState(false);
   const onToggleLike = useCallback(() => {
+    console.log("hi");
     setLiked(!liked);
     setLikeCommentLoading(true);
     const data = { postId, commentId: comment.id };
@@ -66,11 +70,7 @@ const Comment = ({ comment, postId }) => {
       likeCommentLoading ? (
         <LoadingOutlined />
       ) : (
-        <Space
-          style={{
-            height: "8vh",
-          }}
-        >
+        <Space>
           {liked
             ? React.createElement(HeartTwoTone, {
                 twoToneColor: "#eb2f96",
@@ -92,78 +92,110 @@ const Comment = ({ comment, postId }) => {
     [liked, likeCommentLoading, isLoggedIn]
   );
   const date = dayjs(comment.createdAt);
+  const [showCocoment, setShowCocoment] = useState(false);
+  const onToggleComment = useCallback(() => {
+    setShowCocoment(!showCocoment);
+    console.log("hi");
+  }, [showCocoment]);
+
+  const actions = [
+    <Tooltip key="comment-basic-like" title="Like">
+      <span>
+        {<LikeIcon liked={liked} onClick={onToggleLike} />}
+        <span className="comment-action" style={{ marginLeft: 5 }}>
+          {comment?.CommentLikers?.length}
+        </span>
+        <span
+          onClick={onToggleComment}
+          className="cocomment-action"
+          style={{ marginLeft: 5 }}
+        >
+          {showCocoment ? "대댓글닫기" : "대댓글보기"}
+        </span>
+      </span>
+    </Tooltip>,
+
+    <span key="comment-basic-reply-to">답글달기</span>,
+    isLoggedIn && comment.User.id == me.id ? (
+      <span
+        style={{ color: "red" }}
+        key="comment-basic-delete"
+        onClick={useCallback(() => {
+          onDeleteComment(comment);
+        }, [])}
+      >
+        삭제하기
+      </span>
+    ) : null,
+  ];
+
   return (
     <>
-      <List.Item
-        style={{
-          marginLeft: "0",
-        }}
-        actions={[
-          <div>좋아요 {comment?.CommentLikers?.length}개</div>,
-          <div
-            onClick={useCallback(() => {
-              alert("기능 개발 중입니다.");
-            }, [])}
-            style={{ cursor: "pointer" }}
-          >
-            답글달기
-          </div>,
-          comment.UserId === me?.id && (
-            <div
-              onClick={useCallback(() => {
-                alert("기능 개발 중입니다.");
-              }, [])}
-              style={{ color: "blue", fontSize: "10px", cursor: "pointer" }}
-            >
-              수정하기
-            </div>
-          ),
-          comment.UserId === me?.id && (
-            <div
-              onClick={(e) => {
-                onDeleteComment(e, comment);
-              }}
-              style={{
-                color: "red",
-                fontSize: "10px",
-                cursor: "pointer",
-              }}
-            >
-              삭제하기
-            </div>
-          ),
-        ].filter((element) => {
-          if (element) return true;
-        })}
-        extra={[<LikeIcon liked={liked} onClick={onToggleLike} />]}
+      <Comment
+        style={{ marginLeft: 10 }}
+        actions={actions}
+        author={
+          <a href={"/profile/" + comment.User.nickname}>
+            {comment.User.nickname}
+          </a>
+        }
+        avatar={
+          <Avatar src={`http://localhost:3065/img/${comment.User.src}`} />
+        }
+        content={comment.content}
+        datetime={
+          <Tooltip title={date.format("YY-MM-DD")}>
+            <span> {date.format("YY-MM-DD")}</span>
+          </Tooltip>
+        }
       >
-        <List.Item.Meta
-          avatar={
-            <Avatar src={"http://localhost:3065/img/" + comment.User.src} />
-          }
-          description={comment.content}
-          title={
-            <>
-              <a href={"/profile/" + comment.User.nickname}>
-                {comment.User.nickname}
-              </a>
-              <br />
-              <div
-                style={{
-                  fontSize: "10px",
-
-                  display: "inline",
-                  color: "#ced4da",
-                }}
-              >
-                {date.format("YY-MM-DD")}
-              </div>
-            </>
-          }
-        />
-      </List.Item>
+        {showCocoment
+          ? [
+              <Comment
+                style={{ marginLeft: 10 }}
+                actions={actions}
+                author={
+                  <a href={"/profile/" + comment.User.nickname}>
+                    {comment.User.nickname}
+                  </a>
+                }
+                avatar={
+                  <Avatar
+                    src={`http://localhost:3065/img/${comment.User.src}`}
+                  />
+                }
+                content={comment.content}
+                datetime={
+                  <Tooltip title={date.format("YY-MM-DD")}>
+                    <span> {date.format("YY-MM-DD")}</span>
+                  </Tooltip>
+                }
+              />,
+              <Comment
+                style={{ marginLeft: 10 }}
+                actions={actions}
+                author={
+                  <a href={"/profile/" + comment.User.nickname}>
+                    {comment.User.nickname}
+                  </a>
+                }
+                avatar={
+                  <Avatar
+                    src={`http://localhost:3065/img/${comment.User.src}`}
+                  />
+                }
+                content={comment.content}
+                datetime={
+                  <Tooltip title={date.format("YY-MM-DD")}>
+                    <span> {date.format("YY-MM-DD")}</span>
+                  </Tooltip>
+                }
+              />,
+            ]
+          : null}
+      </Comment>
     </>
   );
 };
 
-export default Comment;
+export default Com;

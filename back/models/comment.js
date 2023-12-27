@@ -34,6 +34,16 @@ class Comment extends Sequelize.Model {
       as: "CommentLikers",
       onDelete: "CASCADE",
     });
+    db.Comment.belongsToMany(db.Comment, {
+      through: "CommentToComment",
+      as: "Recommented",
+      foreignKey: "RecommentId",
+    });
+    db.Comment.belongsToMany(db.Comment, {
+      through: "CommentToComment",
+      as: "Recommentings",
+      foreignKey: "RecommentedId",
+    });
   }
 }
 
