@@ -247,7 +247,7 @@ exports.deletePost = async (req, res, next) => {
       if (post) {
         // like 한 post 가 없음
         if (req.user.id == post.UserId) {
-          await post.destroy({
+          await Post.destroy({
             where: { id: parseInt(req.params.postId, 10) },
           });
           res.status(201).json({
@@ -282,7 +282,7 @@ exports.deletePost = async (req, res, next) => {
           await Post.destroy({
             where: { id: parseInt(req.params.postId, 10) },
           });
-          res.status(201).json({
+          return res.status(201).json({
             id: req.params.postId,
             message: "delete success",
           });
@@ -342,7 +342,6 @@ exports.deleteComment = async (req, res, next) => {
 
 exports.editPost = async (req, res, next) => {
   try {
-    console.log("hi");
     if (req.user) {
       const post = await Post.findOne({ where: { id: req.params.postId } });
       if (!post) {
@@ -369,5 +368,70 @@ exports.editPost = async (req, res, next) => {
   } catch (e) {
     console.error(e);
     next(e); // status(500)
+  }
+};
+
+exports.reportPost = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+    if (user) {
+      // req.user.id가 followerId, req.params.id가 followingId
+      const post = await Post.findOne({ where: { id: req.params.postId } });
+      if (post) {
+        const post = await Post.findOne({
+          where: { id: req.params.postId },
+          include: [
+            {
+              model: User,
+              as: "PostReporters",
+              attributes: ["id"],
+            },
+            {
+              model: User,
+              attributes: ["id"],
+            },
+          ],
+        });
+        if (post.User.id == req.user.id) {
+          return res.status(400).json({
+            id: req.params.postId,
+            message: "자신의 게시글은 신고할 수 없습니다.",
+          });
+        }
+
+        if (
+          post.PostReporters.findIndex(
+            (reporter) => reporter.id == req.user.id
+          ) != -1
+        ) {
+          return res.status(400).json({
+            id: req.params.postId,
+            message: "이미 신고한 게시글 입니다.",
+          });
+        }
+
+        if (post.PostReporters.length == 9) {
+          await Post.destroy({
+            where: { id: parseInt(req.params.postId, 10) },
+          });
+          return res.status(201).json({
+            id: req.params.postId,
+            message: "신고 횟수 10회. 게시글 삭제 완료",
+          });
+        }
+        await user.addPostReportings(parseInt(req.params.postId, 10));
+        return res.status(200).json({
+          id: req.params.postId,
+          message: "신고완료",
+        });
+      } else {
+        res.status(404).send("존재하지 않는 포스트 입니다.");
+      }
+    } else {
+      res.status(404).send("존재하지 않는 유저 입니다.");
+    }
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 };

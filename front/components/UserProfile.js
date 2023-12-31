@@ -58,7 +58,8 @@ const UserProfile = () => {
     return newArray;
   }, []);
   const result = mainPosts?.length > 0 ? division(mainPosts, 3) : [];
-  const { hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+  const { hasMorePosts, loadPostsLoading, reportPostError, reportPostDone } =
+    useSelector((state) => state.post);
   useEffect(() => {
     function onScroll() {
       if (
@@ -93,6 +94,17 @@ const UserProfile = () => {
   const onCloseFollowingList = useCallback(() => {
     setShowFollowing(false);
   }, []);
+  useEffect(() => {
+    if (reportPostDone) {
+      alert("신고 완료");
+    }
+  }, [reportPostDone]);
+  useEffect(() => {
+    if (reportPostError) {
+      alert(reportPostError);
+    }
+  }, [reportPostError]);
+
   return (
     <>
       <Content

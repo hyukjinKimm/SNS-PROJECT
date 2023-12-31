@@ -47,6 +47,11 @@ class Post extends Sequelize.Model {
       as: "Retweetings",
       foreignKey: "RetweetedId",
     });
+    db.Post.belongsToMany(db.User, {
+      through: "UserReportPost",
+      as: "PostReporters",
+      onDelete: "CASCADE",
+    });
   }
 }
 

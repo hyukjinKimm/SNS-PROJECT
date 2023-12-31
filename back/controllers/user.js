@@ -64,6 +64,11 @@ exports.getMyInfo = async (req, res, next) => {
             as: "Followers",
             attributes: ["id"],
           },
+          {
+            model: Post,
+            as: "PostReportings",
+            attributes: ["id"],
+          },
         ],
         attributes: { exclude: ["password"] },
         joinTableAttributes: [],

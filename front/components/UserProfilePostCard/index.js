@@ -36,6 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CommentForm from "../CommentForm";
 import Comment from "../Comment";
 import UserProfilePostOption from "../UserProfilePostOption";
+import ReportPostOption from "../reportPostOption";
 import EditPost from "../editPost";
 
 const UserProfilePostCard = ({ post, onClose }) => {
@@ -62,7 +63,8 @@ const UserProfilePostCard = ({ post, onClose }) => {
   const [liked, setLiked] = useState(false);
   const [likePostLoading, setLikePostLoading] = useState(false);
   const onToggleLike = useCallback(() => {
-    if (!me) {
+    if (!isLoggedIn) {
+      return;
     }
     setLiked(!liked);
     setLikePostLoading(true);
@@ -121,8 +123,10 @@ const UserProfilePostCard = ({ post, onClose }) => {
           marginLeft: 5,
           fontSize: 30,
         },
+        onClick: useCallback(() => {
+          alert("기능 개발 중입니다.");
+        }, []),
       })}
-      {text}
     </Space>
   ));
   const LikeIcon = useCallback(
@@ -138,28 +142,39 @@ const UserProfilePostCard = ({ post, onClose }) => {
                   marginLeft: 20,
                   fontSize: 30,
                 },
-                onClick: isLoggedIn
-                  ? () => {
-                      onToggleLike();
-                    }
-                  : null,
+                onClick: useCallback(() => {
+                  if (!isLoggedIn) {
+                    alert("로그인 해주세요!");
+                    return;
+                  }
+                  onToggleLike();
+                }, []),
               })
             : React.createElement(HeartOutlined, {
                 style: {
                   marginLeft: 20,
                   fontSize: 30,
                 },
-                onClick: isLoggedIn
-                  ? () => {
-                      onToggleLike();
-                    }
-                  : null,
+                onClick: useCallback(() => {
+                  if (!isLoggedIn) {
+                    alert("로그인 해주세요!");
+                    return;
+                  }
+                  onToggleLike();
+                }, []),
               })}
           {text}
         </Space>
       ),
     [liked, likePostLoading, isLoggedIn]
   );
+  const [showReportOption, setShowReportOption] = useState(false);
+  const onClickReportPost = useCallback(() => {
+    setShowReportOption(true);
+  }, []);
+  const onCloseReportOption = useCallback(() => {
+    setShowReportOption(false);
+  }, []);
   return (
     <>
       <Overlay>
@@ -197,12 +212,12 @@ const UserProfilePostCard = ({ post, onClose }) => {
                 key={post.id}
                 extra={
                   <>
-                    {me && me.id == user.id ? (
+                    {
                       <EllipsisOutlined
                         style={{ fontSize: "40px" }}
                         onClick={onClickPostOption}
                       ></EllipsisOutlined>
-                    ) : null}
+                    }
                   </>
                 }
               >
@@ -297,11 +312,6 @@ const UserProfilePostCard = ({ post, onClose }) => {
               }}
             ></div>
             <div style={{ margin: 5 }}>
-              <RetweetIcon
-                icon={RetweetOutlined}
-                text={post.Retweetings.length}
-                key="list-vertical-retweet-o"
-              />
               <CommentIcon
                 icon={MessageOutlined}
                 text={post.Comments.length}
@@ -324,12 +334,20 @@ const UserProfilePostCard = ({ post, onClose }) => {
       {showPostOption && (
         <UserProfilePostOption
           id={post.id}
+          userId={post.User.id}
           onClosePostOption={onClosePostOption}
           onClickPostEdit={onClickPostEdit}
+          onClickReportPost={onClickReportPost}
         />
       )}
       {showPostEdit && (
         <EditPost post={post} onClosePostEdit={onClosePostEdit}></EditPost>
+      )}
+      {showReportOption && (
+        <ReportPostOption
+          id={post.id}
+          onCloseReportOption={onCloseReportOption}
+        />
       )}
     </>
   );

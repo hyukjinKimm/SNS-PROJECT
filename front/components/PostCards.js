@@ -7,7 +7,8 @@ import PostCard from "./PostCard";
 import { loadPosts } from "../reducers/post";
 
 const PostCards = ({ mainPosts }) => {
-  const { hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+  const { hasMorePosts, loadPostsLoading, reportPostDone, reportPostError } =
+    useSelector((state) => state.post);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -28,6 +29,16 @@ const PostCards = ({ mainPosts }) => {
       window.removeEventListener("scroll", onScroll);
     };
   }, [hasMorePosts, loadPostsLoading]);
+  useEffect(() => {
+    if (reportPostDone) {
+      alert("신고 완료");
+    }
+  }, [reportPostDone]);
+  useEffect(() => {
+    if (reportPostError) {
+      alert(reportPostError);
+    }
+  }, [reportPostError]);
   return (
     <>
       <List

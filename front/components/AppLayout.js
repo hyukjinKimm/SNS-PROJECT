@@ -81,7 +81,7 @@ const AppLayout = ({ children }) => {
               <div style={{ width: "400px" }}>
                 <Input.Search
                   onSearch={onSearch}
-                  placeholder="검색"
+                  placeholder="유저검색"
                   enterButton
                   loading={searchUserLoading}
                   style={{ marginBottom: 10 }}

@@ -29,8 +29,14 @@ import CommentForm from "../CommentForm";
 import Comment from "../Comment";
 import { deletePost, likePost, unlikePost } from "../../reducers/post";
 import { getUserInfo } from "../../reducers/user";
-const UserProfilePostOption = ({ id, onClosePostOption, onClickPostEdit }) => {
-  const { me, user } = useSelector((state) => state.user);
+const UserProfilePostOption = ({
+  id,
+  onClosePostOption,
+  onClickPostEdit,
+  onClickReportPost,
+  userId,
+}) => {
+  const { me, user, isLoggedIn } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
   const { deletePostDone } = useSelector((state) => state.post);
   const dispatch = useDispatch();
@@ -52,23 +58,40 @@ const UserProfilePostOption = ({ id, onClosePostOption, onClickPostEdit }) => {
     onClosePostOption();
     onClickPostEdit();
   }, []);
+  const onClickReport = useCallback(() => {
+    if (!isLoggedIn) {
+      alert("로그인 해주세요");
+      return;
+    }
+    onClosePostOption();
+    onClickReportPost();
+  }, []);
+
   return (
     <>
       <Overlay>
         <div style={{ fontSize: "200px", marginLeft: "37%" }}>
           <Space style={{ width: "20%" }}>
             <Space.Compact direction="vertical" style={{ width: 300 }}>
-              <Button
-                size="large"
-                style={{ color: "red" }}
-                onClick={onDelete}
-                loading={deletePostLoading}
-              >
-                삭제
+              {userId == me?.id ? (
+                <>
+                  <Button
+                    size="large"
+                    style={{ color: "red" }}
+                    onClick={onDelete}
+                    loading={deletePostLoading}
+                  >
+                    삭제
+                  </Button>
+                  <Button size="large" onClick={onClickEdit}>
+                    수정
+                  </Button>
+                </>
+              ) : null}
+              <Button onClick={onClickReport} style={{ color: "red" }}>
+                신고
               </Button>
-              <Button size="large" onClick={onClickEdit}>
-                수정
-              </Button>
+
               <Button
                 size="large"
                 style={{ color: "blue" }}

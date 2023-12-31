@@ -13,6 +13,7 @@ const {
   uploadImages,
   uploadImage,
   editPost,
+  reportPost,
 } = require("../controllers/post");
 const router = express.Router();
 try {
@@ -39,6 +40,7 @@ router.post("/", isLoggedIn, uploadPost);
 router.post("/editPost/:postId", isLoggedIn, editPost);
 router.post("/:postId/like", isLoggedIn, likePost);
 router.post("/:postId/unlike", isLoggedIn, unlikePost);
+router.post("/:postId/report", isLoggedIn, reportPost);
 router.post("/:postId/comment", isLoggedIn, commentPost);
 router.delete("/:postId", isLoggedIn, deletePost);
 router.delete("/:postId/comment/:commentId", isLoggedIn, deleteComment);

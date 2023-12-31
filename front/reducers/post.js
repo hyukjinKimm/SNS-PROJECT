@@ -13,6 +13,9 @@ const initialState = {
   likePostLoading: false,
   likePostDone: false,
   likePostError: null,
+  reportPostLoading: false,
+  reportPostDone: false,
+  reportPostError: null,
   deletePostLoading: false,
   deletePostDone: false,
   deletePostError: null,
@@ -65,6 +68,22 @@ export const addPost = createAsyncThunk("post/addPost", async (data) => {
   const response = await axios.post("/post", data);
   return response.data;
 });
+
+export const reportPost = createAsyncThunk(
+  "post/reportPost",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/post/${data.postId}/report`);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const likePost = createAsyncThunk("post/likePost", async (data) => {
   const response = await axios.post(`/post/${data.postId}/like`);
   return response.data;
@@ -157,6 +176,9 @@ const postSlice = createSlice({
       state.deleteCommentLoading = false;
       state.deleteCommentDone = false;
       state.deleteCommentError = null;
+      state.reportPostLoading = false;
+      state.reportPostDone = false;
+      state.reportPostError = null;
 
       state.editPostLoading = false;
       state.editPostDone = false;
@@ -226,6 +248,20 @@ const postSlice = createSlice({
       .addCase(editPost.rejected, (state, action) => {
         state.editPostLoading = false;
         state.editPostError = action.error;
+      })
+      .addCase(reportPost.pending, (state, action) => {
+        state.reportPostLoading = true;
+        state.reportPostDone = false;
+        state.reportPostError = null;
+      })
+      .addCase(reportPost.fulfilled, (state, action) => {
+        state.reportPostLoading = false;
+        state.reportPostDone = true;
+        state.reportPostError = null;
+      })
+      .addCase(reportPost.rejected, (state, action) => {
+        state.reportPostLoading = false;
+        state.reportPostError = action.payload.message;
       })
       .addCase(addPost.pending, (state, action) => {
         state.addPostLoading = true;

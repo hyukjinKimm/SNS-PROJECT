@@ -82,6 +82,11 @@ class User extends Sequelize.Model {
       as: "CommentLikings",
       onDelete: "CASCADE",
     });
+    db.User.belongsToMany(db.Post, {
+      through: "UserReportPost",
+      as: "PostReportings",
+      onDelete: "CASCADE",
+    });
   }
 }
 

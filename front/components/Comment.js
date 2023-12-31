@@ -35,7 +35,9 @@ const Com = ({ comment, postId }) => {
 
   const [liked, setLiked] = useState(false);
   const onToggleLike = useCallback(() => {
-    console.log("hi");
+    if (!isLoggedIn) {
+      return;
+    }
     setLiked(!liked);
     setLikeCommentLoading(true);
     const data = { postId, commentId: comment.id };
@@ -75,18 +77,20 @@ const Com = ({ comment, postId }) => {
           {liked
             ? React.createElement(HeartTwoTone, {
                 twoToneColor: "#eb2f96",
-                onClick: isLoggedIn
-                  ? () => {
-                      onClick();
-                    }
-                  : null,
+                onClick: useCallback(() => {
+                  if (!isLoggedIn) {
+                    alert("로그인 해주세요!");
+                  }
+                  onClick();
+                }, []),
               })
             : React.createElement(HeartOutlined, {
-                onClick: isLoggedIn
-                  ? () => {
-                      onClick();
-                    }
-                  : null,
+                onClick: useCallback(() => {
+                  if (!isLoggedIn) {
+                    alert("로그인 해주세요!");
+                  }
+                  onClick();
+                }, []),
               })}
         </Space>
       ),
@@ -95,19 +99,26 @@ const Com = ({ comment, postId }) => {
   const date = dayjs(comment.createdAt);
   const [showCocoment, setShowCocoment] = useState(false);
   const onToggleComment = useCallback(() => {
+    alert("기능 개발 중입니다.");
+    return;
     setShowCocoment(!showCocoment);
   }, [showCocoment]);
 
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const onToggleCommentForm = useCallback(() => {
+    if (!isLoggedIn) {
+      alert("로그인 해주세요!");
+      return;
+    }
+    alert("기능 개발 중입니다.");
     setCommentFormOpened(!commentFormOpened);
   }, [commentFormOpened]);
 
   const actions = [
-    <Tooltip key="comment-basic-like" title="Like">
+    <Tooltip key="comment-basic-like">
       <span>
         {<LikeIcon liked={liked} onClick={onToggleLike} />}
-        <span className="comment-action" style={{ marginLeft: 5 }}>
+        <span className="comment-action" style={{ marginLeft: 3 }}>
           {comment?.CommentLikers?.length}
         </span>
         <span
@@ -121,7 +132,7 @@ const Com = ({ comment, postId }) => {
     </Tooltip>,
 
     <span key="comment-basic-reply-to" onClick={onToggleCommentForm}>
-      답글달기
+      댓글달기
     </span>,
     isLoggedIn && comment.User.id == me.id ? (
       <span
@@ -155,53 +166,7 @@ const Com = ({ comment, postId }) => {
             <span> {date.format("YY-MM-DD")}</span>
           </Tooltip>
         }
-      >
-        {showCocoment
-          ? [
-              <Comment
-                style={{ marginLeft: 10 }}
-                actions={actions}
-                author={
-                  <a href={"/profile/" + comment.User.nickname}>
-                    {comment.User.nickname}
-                  </a>
-                }
-                avatar={
-                  <Avatar
-                    src={`http://localhost:3065/img/${comment.User.src}`}
-                  />
-                }
-                content={comment.content}
-                datetime={
-                  <Tooltip title={date.format("YY-MM-DD")}>
-                    <span> {date.format("YY-MM-DD")}</span>
-                  </Tooltip>
-                }
-              />,
-              <Comment
-                style={{ marginLeft: 10 }}
-                actions={actions}
-                author={
-                  <a href={"/profile/" + comment.User.nickname}>
-                    {comment.User.nickname}
-                  </a>
-                }
-                avatar={
-                  <Avatar
-                    src={`http://localhost:3065/img/${comment.User.src}`}
-                  />
-                }
-                content={comment.content}
-                datetime={
-                  <Tooltip title={date.format("YY-MM-DD")}>
-                    <span> {date.format("YY-MM-DD")}</span>
-                  </Tooltip>
-                }
-              />,
-            ]
-          : null}
-      </Comment>
-      {commentFormOpened ? <CommentForm></CommentForm> : null}
+      ></Comment>
     </>
   );
 };

@@ -14,12 +14,15 @@ import ImageSlider from "./ImageSlider";
 import CommentForm from "./CommentForm";
 import Comment from "./Comment";
 import EditPost from "./editPost";
-import { deletePost, likePost, unlikePost } from "../reducers/post";
+import { deletePost, likePost, reportPost, unlikePost } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
+import ReportPostOption from "./reportPostOption";
 const PostCard = ({ post }) => {
   const { me, isLoggedIn } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
-  const { deletePostDone, likePostDone } = useSelector((state) => state.post);
+  const { deletePostDone, likePostDone, reportPostError } = useSelector(
+    (state) => state.post
+  );
   useEffect(() => {
     if (deletePostDone) {
       setDeletePostLoading(false);
@@ -100,18 +103,22 @@ const PostCard = ({ post }) => {
           {liked
             ? React.createElement(HeartTwoTone, {
                 twoToneColor: "#eb2f96",
-                onClick: isLoggedIn
-                  ? () => {
-                      onToggleLike();
-                    }
-                  : null,
+                onClick: useCallback(() => {
+                  if (!isLoggedIn) {
+                    alert("로그인 해주세요!");
+                    return;
+                  }
+                  onToggleLike();
+                }, []),
               })
             : React.createElement(HeartOutlined, {
-                onClick: isLoggedIn
-                  ? () => {
-                      onToggleLike();
-                    }
-                  : null,
+                onClick: useCallback(() => {
+                  if (!isLoggedIn) {
+                    alert("로그인 해주세요!");
+                    return;
+                  }
+                  onToggleLike();
+                }, []),
               })}
           {text}
         </Space>
@@ -147,6 +154,10 @@ const PostCard = ({ post }) => {
   const onClosePostEdit = useCallback(() => {
     setShowPostEdit(false);
   }, []);
+  const [showReportOption, setShowReportOption] = useState(false);
+  const onCloseReportOption = useCallback(() => {
+    setShowReportOption(false);
+  }, []);
   return (
     <>
       {post.loading ? (
@@ -162,11 +173,6 @@ const PostCard = ({ post }) => {
           <List.Item
             key={post.id}
             actions={[
-              <RetweetIcon
-                icon={RetweetOutlined}
-                text={post.Retweetings.length}
-                key="list-vertical-retweet-o"
-              />,
               <LikeIcon
                 text={post.PostLikers.length}
                 liked={liked}
@@ -182,47 +188,57 @@ const PostCard = ({ post }) => {
               />,
             ]}
             extra={
-              post.User.id === me?.id ? (
-                <>
-                  <div>
-                    <Popover
-                      placement="left"
-                      content={
-                        <Space>
-                          <Button
-                            type="primary"
-                            onClick={useCallback(() => {
-                              onClickPostEdit();
-                            }, [])}
-                          >
-                            수정
-                          </Button>
+              <>
+                <div>
+                  <Popover
+                    placement="left"
+                    content={
+                      <Space>
+                        {post.User.id == me?.id ? (
+                          <>
+                            <Button
+                              type="primary"
+                              onClick={useCallback(() => {
+                                onClickPostEdit();
+                              }, [])}
+                            >
+                              수정
+                            </Button>
+                            <Button
+                              danger
+                              onClick={onDelete}
+                              loading={deletePostLoading}
+                            >
+                              삭제
+                            </Button>
+                          </>
+                        ) : null}
+                        {
                           <Button
                             danger
-                            onClick={onDelete}
-                            loading={deletePostLoading}
-                          >
-                            삭제
-                          </Button>
-                          <Button
                             onClick={useCallback(() => {
-                              alert("기능 개발 중입니다.");
+                              if (!isLoggedIn) {
+                                alert("로그인 해주세요!");
+                                return;
+                              }
+                              setShowReportOption(true);
                             }, [])}
                           >
                             신고
                           </Button>
-                          <Button onClick={hide}>닫기</Button>
-                        </Space>
-                      }
-                      trigger="click"
-                      open={open}
-                      onOpenChange={handleOpenChange}
-                    >
-                      <EllipsisOutlined style={{ fontSize: "40px" }} />
-                    </Popover>
-                  </div>
-                </>
-              ) : null
+                        }
+
+                        <Button onClick={hide}>닫기</Button>
+                      </Space>
+                    }
+                    trigger="click"
+                    open={open}
+                    onOpenChange={handleOpenChange}
+                  >
+                    <EllipsisOutlined style={{ fontSize: "40px" }} />
+                  </Popover>
+                </div>
+              </>
             }
           >
             <List.Item.Meta
@@ -306,6 +322,13 @@ const PostCard = ({ post }) => {
       )}
       {showPostEdit && (
         <EditPost post={post} onClosePostEdit={onClosePostEdit}></EditPost>
+      )}
+
+      {showReportOption && (
+        <ReportPostOption
+          id={post.id}
+          onCloseReportOption={onCloseReportOption}
+        />
       )}
     </>
   );
