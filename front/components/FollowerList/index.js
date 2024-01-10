@@ -75,16 +75,8 @@ const FollowerList = ({ followers, onClose }) => {
                 }}
               >
                 팔로워
+                <CloseBtn onClick={onClose}>X</CloseBtn>
               </div>
-              <Input.Search
-                style={{
-                  margin: "20px",
-
-                  width: "80%",
-                }}
-                size="large"
-              />
-              <CloseBtn onClick={onClose}>X</CloseBtn>
             </div>
 
             <div

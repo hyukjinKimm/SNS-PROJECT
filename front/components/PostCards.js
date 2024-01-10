@@ -46,11 +46,6 @@ const PostCards = ({ mainPosts }) => {
         size="large"
         loading={loadPostsLoading}
         dataSource={mainPosts}
-        footer={
-          <div>
-            <b>ant design</b> footer part
-          </div>
-        }
         renderItem={(post) => <PostCard post={post} key={post.id} />}
       />
     </>

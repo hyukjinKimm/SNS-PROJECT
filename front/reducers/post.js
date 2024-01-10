@@ -45,29 +45,68 @@ const initialState = {
   editPostError: null,
 }; // 초기 상태 정의
 
-export const editPost = createAsyncThunk("post/editPost", async (data) => {
-  const response = await axios.post(`post/editPost/${data.id}`, data);
-  return response.data;
-});
-export const loadPost = createAsyncThunk("post/loadPost", async (postId) => {
-  const response = await axios.get(`post/${postId}`);
-  return response.data;
-});
-export const loadPosts = createAsyncThunk(
-  "post/loadPosts",
-
-  async (data) => {
-    const { lastId, userId } = data;
-    const response = await axios.get(
-      `posts?lastId=${lastId || 0}&userId=${userId || 0}`
-    );
-    return response.data;
+export const editPost = createAsyncThunk(
+  "post/editPost",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`post/editPost/${data.id}`, data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
   }
 );
-export const addPost = createAsyncThunk("post/addPost", async (data) => {
-  const response = await axios.post("/post", data);
-  return response.data;
-});
+
+export const loadPost = createAsyncThunk(
+  "post/loadPost",
+  async (postId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`post/${postId}`);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const loadPosts = createAsyncThunk(
+  "post/loadPosts",
+  async (data, { rejectWithValue }) => {
+    try {
+      const { lastId, userId } = data;
+      const response = await axios.get(
+        `posts?lastId=${lastId || 0}&userId=${userId || 0}`
+      );
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const addPost = createAsyncThunk(
+  "post/addPost",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/post", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
 
 export const reportPost = createAsyncThunk(
   "post/reportPost",
@@ -84,50 +123,125 @@ export const reportPost = createAsyncThunk(
   }
 );
 
-export const likePost = createAsyncThunk("post/likePost", async (data) => {
-  const response = await axios.post(`/post/${data.postId}/like`);
-  return response.data;
-});
-export const unlikePost = createAsyncThunk("post/unlikePost", async (data) => {
-  const response = await axios.post(`/post/${data.postId}/unlike`);
-  return response.data;
-});
-export const addImage = createAsyncThunk("post/addImage", async (data) => {
-  const response = await axios.post("/post/image", data);
-  return response.data;
-});
+export const likePost = createAsyncThunk(
+  "post/likePost",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/post/${data.postId}/like`);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const unlikePost = createAsyncThunk(
+  "post/unlikePost",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/post/${data.postId}/unlike`);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
+export const addImage = createAsyncThunk(
+  "post/addImage",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/post/image", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const deletePost = createAsyncThunk(
   "post/deletePost",
-  async (postId) => {
-    const response = await axios.delete(`/post/${postId}`);
-    return response.data;
+  async (postId, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`/post/${postId}`);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
   }
 );
-export const addComment = createAsyncThunk("post/addComment", async (data) => {
-  const response = await axios.post(`/post/${data.postId}/comment`, data);
-  return response.data;
-});
+
+export const addComment = createAsyncThunk(
+  "post/addComment",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/post/${data.postId}/comment`, data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const likeComment = createAsyncThunk(
   "post/likeComment",
-  async (data) => {
-    const response = await axios.patch("/user/likecomment", data);
-    return response.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch("/user/likecomment", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
   }
 );
+
 export const unlikeComment = createAsyncThunk(
   "post/unlikeComment",
-  async (data) => {
-    const response = await axios.patch("/user/unlikecomment", data);
-    return response.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch("/user/unlikecomment", data);
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
   }
 );
+
 export const deleteComment = createAsyncThunk(
   "post/deleteComment",
-  async (data) => {
-    const response = await axios.delete(
-      `/post/${data.postId}/comment/${data.commentId}`
-    );
-    return response.data;
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `/post/${data.postId}/comment/${data.commentId}`
+      );
+      return response.data;
+    } catch (err) {
+      if (!err.response) {
+        throw err;
+      }
+      return rejectWithValue(err.response.data);
+    }
   }
 );
 

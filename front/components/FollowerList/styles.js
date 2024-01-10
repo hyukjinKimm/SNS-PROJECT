@@ -29,10 +29,10 @@ export const Header = styled.header`
 export const CloseBtn = styled(CloseOutlined)`
   right: 0;
   top: 0;
-  padding: 15px;
-  margin-top: 10px;
+  padding: 10px;
+
   line-height: 15px;
-  font-size: 30px;
+  font-size: 20px;
   cursor: pointer;
 `;
 

@@ -21,6 +21,15 @@ module.exports = () => {
           if (exUser) {
             done(null, exUser);
           } else {
+            const sameUser = await User.findOne({
+              // 구글 플랫폼에서 로그인 했고 & snsId필드에 구글 아이디가 일치할경우
+              where: { email: profile._json?.kakao_account?.email },
+            });
+            if (sameUser) {
+              return done(null, false, {
+                message: " 이미 사용중인 이메일입니다..",
+              });
+            }
             const src = "_" + Date.now() + ".png";
             download(
               profile._json.properties.profile_image,

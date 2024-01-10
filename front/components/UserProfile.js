@@ -160,8 +160,13 @@ const UserProfile = () => {
                         <SettingOutlined key="edit_icon" />
                       </div>
                     ) : (
-                      <div key="message">
-                        <Link href="/profile/edit"> 메세지보내기</Link>
+                      <div
+                        key="message"
+                        onClick={useCallback(() => {
+                          alert("기능 개발 중입니다.");
+                        }, [])}
+                      >
+                        메세지보내기
                         <br />
                         <MessageFilled key="message_icon" />
                       </div>

@@ -207,7 +207,11 @@ const AppLayout = ({ children }) => {
                 fontSize: "20px",
               },
             }),
-            label: <Link href={`/profile/${me.nickname}`}>프로필</Link>,
+            label: (
+              <a href={`http://localhost:3060/profile/${me.nickname}`}>
+                프로필
+              </a>
+            ),
           }
         : {
             key: "PROFILE",

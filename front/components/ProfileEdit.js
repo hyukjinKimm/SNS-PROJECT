@@ -1,4 +1,5 @@
 import { PlusOutlined } from "@ant-design/icons";
+import Head from "next/head";
 import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   Button,
@@ -92,6 +93,9 @@ const ProfileEdit = () => {
   }, [profileEditError]);
   return (
     <>
+      <Head>
+        <title>설정 | SNS-PROJECT</title>
+      </Head>
       <Form
         labelCol={{
           span: 2,

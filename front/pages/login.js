@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 
 const LogIn = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const { signUpDone } = useSelector((state) => state.user);
   const { logInOrSignUp } = useSelector((state) => state.screen);
   useEffect(() => {
@@ -21,6 +23,12 @@ const LogIn = () => {
       dispatch(screenActions.changeLogInToSignUp(true));
     }
   }, [signUpDone]);
+  useEffect(() => {
+    if (typeof window !== "undefined" && router.query.error) {
+      alert("이미 가입된 이메일 입니다.");
+      router.push("/login");
+    }
+  }, []);
 
   return (
     <>
