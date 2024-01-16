@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { List, Space } from "antd";
+import { List } from "antd";
 import PostCard from "./PostCard";
-
 import { loadPosts } from "../reducers/post";
-
 const PostCards = ({ mainPosts }) => {
   const { hasMorePosts, loadPostsLoading, reportPostDone, reportPostError } =
     useSelector((state) => state.post);

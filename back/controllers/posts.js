@@ -1,10 +1,8 @@
-const express = require("express");
 const { Op } = require("sequelize");
 const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const Image = require("../models/image");
-const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
 exports.getPosts = async (req, res, next) => {
   try {

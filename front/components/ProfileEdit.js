@@ -1,36 +1,10 @@
-import { PlusOutlined } from "@ant-design/icons";
 import Head from "next/head";
-import React, { useState, useRef, useCallback, useEffect } from "react";
-import {
-  Button,
-  Cascader,
-  Checkbox,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Select,
-  Slider,
-  Switch,
-  TreeSelect,
-  Upload,
-  Image,
-  Row,
-  Col,
-} from "antd";
+import React, { useRef, useCallback, useEffect } from "react";
+import { Button, Form, Input, Image, Row, Col } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { addProfileImage, profileEdit } from "../reducers/user";
 import { useRouter } from "next/router";
 
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
 const tailFormItemLayout = {
   wrapperCol: {
     xs: {

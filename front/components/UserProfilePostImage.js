@@ -1,9 +1,7 @@
 import React, { useCallback, useState } from "react";
-
 import { HeartFilled, MessageFilled } from "@ant-design/icons";
 import { Col } from "antd";
 import UserProfilePostCard from "./UserProfilePostCard";
-
 const UserProfilePostImage = ({ post }) => {
   const [isSwitched, setIsSwitched] = useState(false);
   const handleMouseOver = useCallback(

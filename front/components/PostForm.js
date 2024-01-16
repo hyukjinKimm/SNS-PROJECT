@@ -1,15 +1,13 @@
-import React, { use, useCallback, useEffect, useRef, useState } from "react";
-import { Button, Form, Select, Upload, Input } from "antd";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Button, Form, Upload, Input } from "antd";
 import ImgCrop from "antd-img-crop";
 import { PlusOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import * as postActions from "../reducers/post";
 import { addPost, addImage } from "../reducers/post";
 
 const normFile = (e) => {
-  console.log("Upload event:", e.fileList);
   if (Array.isArray(e)) {
     return e;
   }
@@ -106,7 +104,6 @@ const Post = () => {
     [imagePaths]
   );
   const onChangeImage = useCallback((e) => {
-    console.log(e);
     if (e.file.status == "done") {
       const data = new FormData();
       data.append("image", e.file.originFileObj);

@@ -1,58 +1,20 @@
 import React, { useEffect, useState, useCallback } from "react";
-import PropTypes from "prop-types";
-import {
-  Row,
-  Col,
-  List,
-  Avatar,
-  Input,
-  Space,
-  Button,
-  Skeleton,
-  Popover,
-  Divider,
-} from "antd";
-import {
-  EllipsisOutlined,
-  RetweetOutlined,
-  LoadingOutlined,
-  HeartTwoTone,
-  MessageOutlined,
-  HeartOutlined,
-} from "@ant-design/icons";
+import { Row, Col, List, Avatar, Input, Button } from "antd";
 import ImageSlider from "../ImageSlider";
 import dayjs from "dayjs";
-import {
-  Overlay,
-  Global,
-  Header,
-  CloseBtn,
-  ImgWrapper,
-  Indicator,
-  SlickWrapper,
-} from "./styles";
-import {
-  deletePost,
-  editPost,
-  likePost,
-  unlikePost,
-} from "../../reducers/post";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { Overlay, Header, CloseBtn } from "./styles";
+import { editPost } from "../../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
-import CommentForm from "../CommentForm";
-import Comment from "../Comment";
-import UserProfilePostOption from "../UserProfilePostOption";
 import * as postActions from "../../reducers/post";
 const EditPost = ({ post, onClosePostEdit }) => {
-  const { user, me, isLoggedIn } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const { likePostDone, editPostLoading, editPostDone, editPostError } =
-    useSelector((state) => state.post);
+  const { editPostLoading, editPostDone, editPostError } = useSelector(
+    (state) => state.post
+  );
   const [text, setText] = useState(post.content);
   const onChangeText = useCallback((e) => {
     setText(e.target.value);
   }, []);
-  const [flag, setFlag] = useState(false);
 
   const onClickBtn = useCallback(() => {
     const data = { content: text, id: post.id };

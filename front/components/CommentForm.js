@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { Button, Form, Input } from "antd";
 import { addComment } from "../reducers/post";
-
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "../reducers/user";
-
 const CommentForm = ({ postId }) => {
   const formRef = useRef(null);
   const [addCommentLoading, setAddCommentLoading] = useState(false);
@@ -38,7 +36,6 @@ const CommentForm = ({ postId }) => {
   }, [addCommentError]);
 
   const onFinish = (values) => {
-    console.log("Received values from form: ", values.comment);
     const data = {
       ...values,
       postId: postId,

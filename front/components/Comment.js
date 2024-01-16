@@ -7,17 +7,10 @@ import { Comment } from "@ant-design/compatible";
 import dayjs from "dayjs";
 import React, { useCallback, useState, useEffect } from "react";
 
-import {
-  deletePost,
-  likePost,
-  deleteComment,
-  likeComment,
-  unlikeComment,
-} from "../reducers/post";
-import { Avatar, List, Space, Tooltip, Input } from "antd";
+import { deleteComment, likeComment, unlikeComment } from "../reducers/post";
+import { Avatar, Space, Tooltip } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "../reducers/user";
-import CommentForm from "./CommentForm";
 const Com = ({ comment, postId }) => {
   const dispatch = useDispatch();
   const { me, isLoggedIn, user } = useSelector((state) => state.user);

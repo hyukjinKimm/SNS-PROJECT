@@ -60,8 +60,6 @@ const AccountSetting = () => {
     }
   }, [withdraw]);
   const onFinish = useCallback((e) => {
-    console.log(e);
-    console.log("hi");
     dispatch(signOut(e));
   }, []);
   useEffect(() => {

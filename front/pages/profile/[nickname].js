@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import Head from "next/head";
-
 import { useSelector } from "react-redux";
 import { wrapper } from "../../store/configureStore";
-import AppLayout from "../../components/AppLayout";
 import UserProfile from "../../components/UserProfile";
 import axios from "axios";
 import { getMyInfo } from "../../reducers/user";
@@ -14,7 +12,7 @@ import { loadPosts } from "../../reducers/post";
 
 const Profile = () => {
   const router = useRouter();
-  const { me, user } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!user) {

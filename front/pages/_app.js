@@ -2,9 +2,7 @@ import Head from "next/head";
 import { wrapper } from "../store/configureStore";
 import "./slide.css";
 import "./styles.css";
-
 import AppLayout from "../components/AppLayout";
-
 function App({ Component, pageProps }) {
   return (
     <>

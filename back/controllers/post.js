@@ -6,7 +6,6 @@ const User = require("../models/user");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
 const Image = require("../models/image");
-const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
 exports.uploadImage = (req, res, next) => {
   try {

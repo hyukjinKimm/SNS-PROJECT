@@ -1,19 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import PropTypes from "prop-types";
-import {
-  Row,
-  Col,
-  List,
-  Avatar,
-  Space,
-  Button,
-  Skeleton,
-  Popover,
-  Divider,
-} from "antd";
+import { Row, Col, List, Avatar, Space, Skeleton, Divider } from "antd";
 import {
   EllipsisOutlined,
-  RetweetOutlined,
   LoadingOutlined,
   HeartTwoTone,
   MessageOutlined,
@@ -21,16 +9,8 @@ import {
 } from "@ant-design/icons";
 import ImageSlider from "../ImageSlider";
 import dayjs from "dayjs";
-import {
-  Overlay,
-  Global,
-  Header,
-  CloseBtn,
-  ImgWrapper,
-  Indicator,
-  SlickWrapper,
-} from "./styles";
-import { deletePost, likePost, unlikePost } from "../../reducers/post";
+import { Overlay, Header, CloseBtn } from "./styles";
+import { likePost, unlikePost } from "../../reducers/post";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 import CommentForm from "../CommentForm";

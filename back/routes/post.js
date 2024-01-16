@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
+const { isLoggedIn } = require("../middlewares");
 const {
   uploadPost,
   likePost,

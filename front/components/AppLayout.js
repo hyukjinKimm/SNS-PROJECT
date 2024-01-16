@@ -318,7 +318,7 @@ const AppLayout = ({ children }) => {
             }}
           />
 
-          <a href="https://github.com/hyukjinKimm">
+          <a href="https://github.com/hyukjinKimm" target="_blank">
             SNS-PROJECT @2023 Made by HYUKJIN KIM
           </a>
         </Header>

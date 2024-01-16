@@ -1,10 +1,9 @@
 import Head from "next/head";
-import AppLayout from "../components/AppLayout";
 import PostForm from "../components/PostForm";
 import * as screenActions from "../reducers/screen";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getMyInfo } from "../reducers/user";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { wrapper } from "../store/configureStore";
 import axios from "axios";
 import { useRouter } from "next/router";

@@ -1,36 +1,12 @@
-import React, { useEffect, useState, useCallback } from "react";
-import PropTypes from "prop-types";
-import {
-  Row,
-  Col,
-  List,
-  Avatar,
-  Space,
-  Button,
-  Skeleton,
-  Popover,
-  Divider,
-  Input,
-} from "antd";
-import ImageSlider from "../ImageSlider";
-import dayjs from "dayjs";
-import {
-  Overlay,
-  Global,
-  Header,
-  CloseBtn,
-  ImgWrapper,
-  Indicator,
-  SlickWrapper,
-} from "./styles";
+import React, { useEffect, useCallback } from "react";
+import { Row, Col, List, Avatar, Button, Skeleton, Divider } from "antd";
+import { Overlay, Header, CloseBtn } from "./styles";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, getUserInfo, unFollow } from "../../reducers/user";
-import CommentForm from "../CommentForm";
-import Comment from "../Comment";
 
 const FollowerList = ({ followers, onClose }) => {
-  const { isLoggedIn, me, user, followDone, followLoading } = useSelector(
+  const { isLoggedIn, me, user, followDone } = useSelector(
     (state) => state.user
   );
   const dispatch = useDispatch();

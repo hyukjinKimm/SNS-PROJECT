@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Avatar, Divider, List, Skeleton, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { searchUser } from "../../reducers/user";
-import { Follow, getUserInfo, unFollow } from "../../reducers/user";
+import { Follow, unFollow } from "../../reducers/user";
 const Search = () => {
   const dispatch = useDispatch();
   const { searchingUser, searchUserError, isLoggedIn, me } = useSelector(

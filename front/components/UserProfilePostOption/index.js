@@ -1,34 +1,8 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
-import PropTypes from "prop-types";
-import {
-  Row,
-  Col,
-  List,
-  Avatar,
-  Space,
-  Button,
-  Skeleton,
-  Popover,
-  Divider,
-} from "antd";
-import { EllipsisOutlined } from "@ant-design/icons";
-import ImageSlider from "../ImageSlider";
-import dayjs from "dayjs";
-import {
-  Overlay,
-  Global,
-  Header,
-  CloseBtn,
-  ImgWrapper,
-  Indicator,
-  SlickWrapper,
-} from "./styles";
-import InfiniteScroll from "react-infinite-scroll-component";
+import React, { useEffect, useState, useCallback } from "react";
+import { Space, Button } from "antd";
+import { Overlay } from "./styles";
 import { useDispatch, useSelector } from "react-redux";
-import CommentForm from "../CommentForm";
-import Comment from "../Comment";
-import { deletePost, likePost, unlikePost } from "../../reducers/post";
-import { getUserInfo } from "../../reducers/user";
+import { deletePost } from "../../reducers/post";
 const UserProfilePostOption = ({
   id,
   onClosePostOption,
@@ -36,7 +10,7 @@ const UserProfilePostOption = ({
   onClickReportPost,
   userId,
 }) => {
-  const { me, user, isLoggedIn } = useSelector((state) => state.user);
+  const { me, isLoggedIn } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
   const { deletePostDone } = useSelector((state) => state.post);
   const dispatch = useDispatch();

@@ -1,5 +1,3 @@
-const http = require("http"); // or 'https' for https:// URLs
-const fs = require("fs");
 const passport = require("passport");
 const KakaoStrategy = require("passport-kakao").Strategy;
 

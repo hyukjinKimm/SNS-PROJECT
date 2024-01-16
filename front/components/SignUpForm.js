@@ -69,7 +69,6 @@ const SignUp = () => {
   const [nicknameExistChecked, setNicknameExistChecked] = useState(false);
   const onFinish = useCallback(
     (e) => {
-      console.log(emailExistChecked);
       if (!emailExistChecked) {
         alert("이메일 중복확인을 해주세요");
         return;
@@ -123,11 +122,10 @@ const SignUp = () => {
           { withCredentials: true }
         )
         .then((response) => {
-          console.log("ye");
           setEmailExistMessage(response.data.message);
           setMessageColor("blue");
           setEmailExistChecked(true);
-          console.log(emailExistChecked);
+
           setEmailExistCheckedLoading(false);
         })
         .catch((err) => {
@@ -402,7 +400,11 @@ const SignUp = () => {
               {...tailFormItemLayout}
             >
               <Checkbox>
-                나는 <a href="">약관</a> 에 동의합니다.
+                나는
+                <a href="https://github.com/hyukjinKimm" target="_blank">
+                  약관
+                </a>
+                에 동의합니다.
               </Checkbox>
             </Form.Item>
             <Form.Item {...tailFormItemLayout}>
