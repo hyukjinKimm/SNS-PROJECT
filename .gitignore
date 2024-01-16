@@ -131,3 +131,4 @@ dist
 
 .prettierignore
 uploads/
+.pem
