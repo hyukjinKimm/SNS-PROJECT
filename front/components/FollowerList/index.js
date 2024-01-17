@@ -4,7 +4,9 @@ import { Overlay, Header, CloseBtn } from "./styles";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, getUserInfo, unFollow } from "../../reducers/user";
+import dotenv from "dotenv";
 
+dotenv.config();
 const FollowerList = ({ followers, onClose }) => {
   const { isLoggedIn, me, user, followDone } = useSelector(
     (state) => state.user
@@ -131,13 +133,13 @@ const FollowerList = ({ followers, onClose }) => {
                           avatar={
                             <>
                               <Avatar
-                                src={`http://localhost:3065/img/${follower.src}`}
+                                src={`${process.env.REACT_APP_BACK_URL}/img/${follower.src}`}
                               />
                             </>
                           }
                           title={
                             <a
-                              href={`http://localhost:3060/profile/${follower.nickname}`}
+                              href={`${process.env.REACT_APP_FRONT_URL}/profile/${follower.nickname}`}
                             >
                               {follower.nickname}
                             </a>

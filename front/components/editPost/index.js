@@ -6,6 +6,10 @@ import { Overlay, Header, CloseBtn } from "./styles";
 import { editPost } from "../../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 import * as postActions from "../../reducers/post";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const EditPost = ({ post, onClosePostEdit }) => {
   const dispatch = useDispatch();
   const { editPostLoading, editPostDone, editPostError } = useSelector(
@@ -70,7 +74,9 @@ const EditPost = ({ post, onClosePostEdit }) => {
                 <List.Item.Meta
                   avatar={
                     <Avatar
-                      src={"http://localhost:3065/img/" + post.User.src}
+                      src={
+                        process.env.REACT_APP_BACK_URL + "/img/" + post.User.src
+                      }
                     />
                   }
                   title={

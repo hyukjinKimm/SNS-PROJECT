@@ -4,7 +4,9 @@ import { Button, Form, Input, Image, Row, Col } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { addProfileImage, profileEdit } from "../reducers/user";
 import { useRouter } from "next/router";
+import dotenv from "dotenv";
 
+dotenv.config();
 const tailFormItemLayout = {
   wrapperCol: {
     xs: {
@@ -104,7 +106,7 @@ const ProfileEdit = () => {
                 }}
                 width={"9vw"}
                 height={"9vw"}
-                src={"http://localhost:3065/img/" + me.src}
+                src={process.env.REACT_APP_BACK_URL + "/img/" + me.src}
               />
             </div>
           </Col>

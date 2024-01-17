@@ -15,6 +15,9 @@ import { loadPosts } from "../reducers/post";
 
 const { Meta } = Card;
 const { Content } = Layout;
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const UserProfile = () => {
   const { me, user, followError, followDone, isLoggedIn } = useSelector(
@@ -138,7 +141,7 @@ const UserProfile = () => {
                   }}
                   width={"11vw"}
                   height={"11vw"}
-                  src={"http://localhost:3065/img/" + user.src}
+                  src={process.env.REACT_APP_BACK_URL + "/img/" + user.src}
                 />
               </div>
             </Col>
@@ -153,7 +156,7 @@ const UserProfile = () => {
                   actions={[
                     me && me.id == user.id ? (
                       <div key="edit">
-                        <Link href="http://localhost:3060/edit">
+                        <Link href={process.env.REACT_APP_FRONT_URL + "/edit"}>
                           프로필 수정
                         </Link>
                         <br />

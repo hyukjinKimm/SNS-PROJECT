@@ -1,5 +1,8 @@
 import React from "react";
 import Slider from "react-slick";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const settings = {
   cssEase: "linear",
@@ -28,7 +31,7 @@ const ImageSlider = ({ images, size, profile }) => {
           {images.map((image) => (
             <div key={image.src}>
               <img
-                src={`http://localhost:3065/img/${image.src}`}
+                src={`${process.env.REACT_APP_BACK_URL}/img/${image.src}`}
                 alt=""
                 style={{ width: "100%", height: profile ? "75vh" : null }}
               />

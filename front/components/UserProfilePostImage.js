@@ -2,6 +2,10 @@ import React, { useCallback, useState } from "react";
 import { HeartFilled, MessageFilled } from "@ant-design/icons";
 import { Col } from "antd";
 import UserProfilePostCard from "./UserProfilePostCard";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const UserProfilePostImage = ({ post }) => {
   const [isSwitched, setIsSwitched] = useState(false);
   const handleMouseOver = useCallback(
@@ -41,7 +45,7 @@ const UserProfilePostImage = ({ post }) => {
       >
         <img
           style={{ width: "90%", height: "90%" }}
-          src={"http://localhost:3065/img/" + post.Images[0].src}
+          src={process.env.REACT_APP_BACK_URL + "/img/" + post.Images[0].src}
         ></img>
         <div
           style={{

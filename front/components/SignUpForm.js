@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Checkbox, Form, Input, Select, DatePicker } from "antd";
 import { signUp, emailCheck, emailVarification } from "../reducers/user";
 import axios from "axios";
+import dotenv from "dotenv";
 
+dotenv.config();
 const { Option } = Select;
 
 const formItemLayout = {
@@ -117,7 +119,7 @@ const SignUp = () => {
       setEmailExistCheckedLoading(true);
       const data = await axios
         .post(
-          "http://localhost:3065/user/emailExistCheck",
+          process.env.REACT_APP_BACK_URL + "/user/emailExistCheck",
           { email },
           { withCredentials: true }
         )
@@ -147,7 +149,7 @@ const SignUp = () => {
     if (error.length > 0 || nickname.length == 0) return;
     const data = await axios
       .post(
-        "http://localhost:3065/user/nicknameExistCheck",
+        process.env.REACT_APP_BACK_URL + "/user/nicknameExistCheck",
         { nickname },
         { withCredentials: true }
       )

@@ -11,6 +11,9 @@ import { deleteComment, likeComment, unlikeComment } from "../reducers/post";
 import { Avatar, Space, Tooltip } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "../reducers/user";
+import dotenv from "dotenv";
+
+dotenv.config();
 const Com = ({ comment, postId }) => {
   const dispatch = useDispatch();
   const { me, isLoggedIn, user } = useSelector((state) => state.user);
@@ -151,7 +154,9 @@ const Com = ({ comment, postId }) => {
           </a>
         }
         avatar={
-          <Avatar src={`http://localhost:3065/img/${comment.User.src}`} />
+          <Avatar
+            src={`${process.env.REACT_APP_BACK_URL}/img/${comment.User.src}`}
+          />
         }
         content={comment.content}
         datetime={
