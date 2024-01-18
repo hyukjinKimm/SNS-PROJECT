@@ -10,7 +10,7 @@ module.exports = withBundleAnalyzer({
       displayName: true,
     },
   },
-  webpack(config, { webpack }) {
+  webpack(config, { webpack, isServer }) {
     const prod = process.env.NODE_ENV === "production";
     return {
       ...config,

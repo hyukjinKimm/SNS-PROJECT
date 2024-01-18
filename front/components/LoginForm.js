@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { logIn } from "../reducers/user";
 import { Button, Form, Input } from "antd";
 import { useRouter } from "next/router";
-import styled from "styled-components";
+import { BACK_URL, FRONT_URL } from "../url";
+
 const onFinishFailed = (errorInfo) => {};
 
 // 리렌더링 시 return 부분에서 바뀐 부분만 다시그린다.
@@ -31,6 +32,7 @@ const LoginForm = () => {
   }, []);
   const onFinish = useCallback(async (e) => {
     // e.preventDefault 적용 되어있음
+
     dispatch(logIn({ email: e.email, password: e.password }));
   }, []);
 
@@ -110,11 +112,11 @@ const LoginForm = () => {
           >
             회원가입
           </Button>
-          <a href="http://localhost:3060/findPassword">비밀번호 찾기</a>
+          <a href={FRONT_URL + "/findPassword"}>비밀번호 찾기</a>
         </Form.Item>
 
         <div>
-          <a id="custom-login-btn" href="http://localhost:3065/auth/kakao">
+          <a id="custom-login-btn" href={BACK_URL + "/auth/kakao"}>
             <img src="/kakao-login-btn.png" width="200px" />
           </a>
         </div>
@@ -130,7 +132,10 @@ const LoginForm = () => {
           </div>
         </div>
         <div>
-          <a id="custom-login-btn" href="http://localhost:3065/auth/google">
+          <a
+            id="custom-login-btn"
+            href={process.env.REACT_APP_BACK_URL + "/auth/google"}
+          >
             <img src="/google-login-btn.png" width="200px" />
           </a>
         </div>

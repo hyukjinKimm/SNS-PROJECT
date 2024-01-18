@@ -6,9 +6,7 @@ import { Overlay, Header, CloseBtn } from "./styles";
 import { editPost } from "../../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 import * as postActions from "../../reducers/post";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { BACK_URL, FRONT_URL } from "../../url";
 
 const EditPost = ({ post, onClosePostEdit }) => {
   const dispatch = useDispatch();
@@ -72,13 +70,7 @@ const EditPost = ({ post, onClosePostEdit }) => {
             >
               <List.Item key={post.id}>
                 <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      src={
-                        process.env.REACT_APP_BACK_URL + "/img/" + post.User.src
-                      }
-                    />
-                  }
+                  avatar={<Avatar src={BACK_URL + "/img/" + post.User.src} />}
                   title={
                     <>
                       <a href={"/profile/" + post.User.nickname}>

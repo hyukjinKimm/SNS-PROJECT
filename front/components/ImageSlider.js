@@ -1,8 +1,5 @@
 import React from "react";
 import Slider from "react-slick";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const settings = {
   cssEase: "linear",
@@ -12,6 +9,8 @@ const settings = {
   slidesToShow: 1,
   slidesToScroll: 1,
 };
+import { BACK_URL, FRONT_URL } from "../url";
+
 const ImageSlider = ({ images, size, profile }) => {
   return (
     <>
@@ -31,7 +30,7 @@ const ImageSlider = ({ images, size, profile }) => {
           {images.map((image) => (
             <div key={image.src}>
               <img
-                src={`${process.env.REACT_APP_BACK_URL}/img/${image.src}`}
+                src={BACK_URL + "/img/" + image.src}
                 alt=""
                 style={{ width: "100%", height: profile ? "75vh" : null }}
               />

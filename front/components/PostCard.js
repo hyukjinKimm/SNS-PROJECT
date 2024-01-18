@@ -17,9 +17,8 @@ import EditPost from "./editPost";
 import { deletePost, likePost, reportPost, unlikePost } from "../reducers/post";
 import { useDispatch, useSelector } from "react-redux";
 import ReportPostOption from "./reportPostOption";
-import dotenv from "dotenv";
+import { BACK_URL, FRONT_URL } from "../url";
 
-dotenv.config();
 const PostCard = ({ post }) => {
   const { me, isLoggedIn } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);
@@ -247,9 +246,7 @@ const PostCard = ({ post }) => {
             <List.Item.Meta
               avatar={
                 <>
-                  <Avatar
-                    src={`${process.env.REACT_APP_BACK_URL}/img/${post.User.src}`}
-                  />
+                  <Avatar src={`${BACK_URL}/img/${post.User.src}`} />
                 </>
               }
               title={

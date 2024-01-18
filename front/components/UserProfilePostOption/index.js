@@ -9,6 +9,7 @@ const UserProfilePostOption = ({
   onClickPostEdit,
   onClickReportPost,
   userId,
+  onClose,
 }) => {
   const { me, isLoggedIn } = useSelector((state) => state.user);
   const [deletePostLoading, setDeletePostLoading] = useState(false);

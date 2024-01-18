@@ -10,8 +10,9 @@ import axios from "axios";
 import postSaga from "./post";
 import userSage from "./user";
 import screenSage from "./screen";
+import { BACK_URL, FRONT_URL } from "../url";
 
-axios.defaults.baseURL = "http://localhost:3065";
+axios.defaults.baseURL = BACK_URL;
 axios.defaults.withCredentials = true;
 export default function* rootSaga() {
   yield all([fork(postSaga), fork(userSage), fork(screenSage)]); // all 은 배열 안의 함수들을 동시에 실행함.

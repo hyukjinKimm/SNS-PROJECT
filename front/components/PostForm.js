@@ -6,9 +6,8 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import * as postActions from "../reducers/post";
 import { addPost, addImage } from "../reducers/post";
-import dotenv from "dotenv";
+import { BACK_URL, FRONT_URL } from "../url";
 
-dotenv.config();
 const normFile = (e) => {
   if (Array.isArray(e)) {
     return e;
@@ -123,10 +122,7 @@ const Post = () => {
     if (addImageDone) {
       if (fileList.length > 0) {
         const file = fileList[fileList.length - 1];
-        file.url =
-          process.env.REACT_APP_BACK_URL +
-          "/img/" +
-          imagePaths[imagePaths.length - 1];
+        file.url = BACK_URL + "/img/" + imagePaths[imagePaths.length - 1];
       }
     }
   }, [addImageDone, imagePaths]);

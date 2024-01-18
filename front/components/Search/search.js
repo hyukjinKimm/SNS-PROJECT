@@ -3,9 +3,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { Avatar, Divider, List, Skeleton, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { Follow, unFollow } from "../../reducers/user";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { BACK_URL, FRONT_URL } from "../../url";
 
 const Search = () => {
   const dispatch = useDispatch();
@@ -77,15 +75,9 @@ const Search = () => {
               ]}
             >
               <List.Item.Meta
-                avatar={
-                  <Avatar
-                    src={`${process.env.REACT_APP_BACK_URL}/img/${searchingUser.src}`}
-                  />
-                }
+                avatar={<Avatar src={`${BACK_URL}/img/${searchingUser.src}`} />}
                 title={
-                  <a
-                    href={`${process.env.REACT_APP_FRONT_URL}/profile/${searchingUser.nickname}`}
-                  >
+                  <a href={`${FRONT_URL}/profile/${searchingUser.nickname}`}>
                     {searchingUser.nickname}
                   </a>
                 }

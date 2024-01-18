@@ -28,9 +28,7 @@ import * as screenActions from "../reducers/screen";
 import { logOut, searchUser } from "../reducers/user";
 import Search from "./Search/search";
 const { Header, Content, Footer, Sider } = Layout;
-import dotenv from "dotenv";
-
-dotenv.config();
+import { BACK_URL, FRONT_URL } from "../url";
 
 const AppLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -68,7 +66,7 @@ const AppLayout = ({ children }) => {
             fontSize: "20px",
           },
         }),
-        label: <a href={process.env.REACT_APP_FRONT_URL}>홈</a>,
+        label: <a href={FRONT_URL}>홈</a>,
       },
       {
         key: "SEARCH",
@@ -108,9 +106,7 @@ const AppLayout = ({ children }) => {
                 fontSize: "20px",
               },
             }),
-            label: (
-              <a href={process.env.REACT_APP_FRONT_URL + "/login"}>로그인</a>
-            ),
+            label: <a href={FRONT_URL + "/login"}>로그인</a>,
           },
 
       isLoggedIn
@@ -213,13 +209,7 @@ const AppLayout = ({ children }) => {
                 fontSize: "20px",
               },
             }),
-            label: (
-              <a
-                href={`${process.env.REACT_APP_FRONT_URL}/profile/${me.nickname}`}
-              >
-                프로필
-              </a>
-            ),
+            label: <a href={`${FRONT_URL}/profile/${me.nickname}`}>프로필</a>,
           }
         : {
             key: "PROFILE",
@@ -242,7 +232,7 @@ const AppLayout = ({ children }) => {
                 },
               }
             ),
-            label: <a href={process.env.REACT_APP_FRONT_URL}>로그아웃</a>,
+            label: <a href={FRONT_URL}>로그아웃</a>,
             onClick: LogOutRequest,
           }
         : null,

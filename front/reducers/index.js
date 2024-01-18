@@ -4,9 +4,10 @@ import axios from "axios";
 import post from "./post";
 import user from "./user";
 import screen from "./screen";
-axios.defaults.baseURL = "http://localhost:3065";
-axios.defaults.withCredentials = true;
+import { BACK_URL, FRONT_URL } from "../url";
 
+axios.defaults.baseURL = BACK_URL;
+axios.defaults.withCredentials = true;
 const rootReducer = (state, action) => {
   switch (action.type) {
     case HYDRATE:

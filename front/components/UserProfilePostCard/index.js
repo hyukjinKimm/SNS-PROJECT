@@ -18,6 +18,7 @@ import Comment from "../Comment";
 import UserProfilePostOption from "../UserProfilePostOption";
 import ReportPostOption from "../reportPostOption";
 import EditPost from "../editPost";
+import { BACK_URL, FRONT_URL } from "../../url";
 
 const UserProfilePostCard = ({ post, onClose }) => {
   const { user, me, isLoggedIn } = useSelector((state) => state.user);
@@ -202,9 +203,7 @@ const UserProfilePostCard = ({ post, onClose }) => {
                 }
               >
                 <List.Item.Meta
-                  avatar={
-                    <Avatar src={"http://localhost:3065/img/" + user.src} />
-                  }
+                  avatar={<Avatar src={BACK_URL + "/img/" + user.src} />}
                   title={
                     <>
                       <a href={"/profile/" + user.nickname}>{user.nickname}</a>
@@ -221,9 +220,7 @@ const UserProfilePostCard = ({ post, onClose }) => {
             >
               <List.Item key={post.id}>
                 <List.Item.Meta
-                  avatar={
-                    <Avatar src={"http://localhost:3065/img/" + user.src} />
-                  }
+                  avatar={<Avatar src={BACK_URL + "/img/" + user.src} />}
                   title={
                     <>
                       <a href={"/profile/" + user.nickname}>{user.nickname}</a>
@@ -318,6 +315,7 @@ const UserProfilePostCard = ({ post, onClose }) => {
           onClosePostOption={onClosePostOption}
           onClickPostEdit={onClickPostEdit}
           onClickReportPost={onClickReportPost}
+          onClose={onClose}
         />
       )}
       {showPostEdit && (

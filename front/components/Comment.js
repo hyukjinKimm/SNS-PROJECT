@@ -11,9 +11,8 @@ import { deleteComment, likeComment, unlikeComment } from "../reducers/post";
 import { Avatar, Space, Tooltip } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserInfo } from "../reducers/user";
-import dotenv from "dotenv";
+import { BACK_URL, FRONT_URL } from "../url";
 
-dotenv.config();
 const Com = ({ comment, postId }) => {
   const dispatch = useDispatch();
   const { me, isLoggedIn, user } = useSelector((state) => state.user);
@@ -153,11 +152,7 @@ const Com = ({ comment, postId }) => {
             {comment.User.nickname}
           </a>
         }
-        avatar={
-          <Avatar
-            src={`${process.env.REACT_APP_BACK_URL}/img/${comment.User.src}`}
-          />
-        }
+        avatar={<Avatar src={`${BACK_URL}/img/${comment.User.src}`} />}
         content={comment.content}
         datetime={
           <Tooltip title={date.format("YY-MM-DD")}>
