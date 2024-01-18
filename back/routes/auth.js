@@ -16,10 +16,10 @@ router.get("/kakao", passport.authenticate("kakao"));
 router.get(
   "/kakao/callback",
   passport.authenticate("kakao", {
-    failureRedirect: "http://localhost:3060/login?error=kakao",
+    failureRedirect: "http://wexplore.shop/login?error=kakao",
   }),
   (req, res) => {
-    res.redirect("http://localhost:3060/"); // 성공 시에는 /로 이동
+    res.redirect("http://wexplore.shop/"); // 성공 시에는 /로 이동
   }
 );
 router.get("/naver", passport.authenticate("naver", { authType: "reprompt" }));
@@ -28,10 +28,10 @@ router.get("/naver", passport.authenticate("naver", { authType: "reprompt" }));
 router.get(
   "/naver/callback",
   passport.authenticate("naver", {
-    failureRedirect: "http://localhost:3060/login?error=naver",
+    failureRedirect: "http://wexplore.shop/login?error=naver",
   }),
   (req, res) => {
-    res.redirect("http://localhost:3060/"); // 성공 시에는 /로 이동
+    res.redirect("http://wexplore.shop/"); // 성공 시에는 /로 이동
   }
 );
 
@@ -42,10 +42,10 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3060/login?error=google",
+    failureRedirect: "http://wexplore.shop/login?error=google",
   }), //? 그리고 passport 로그인 전략에 의해 googleStrategy로 가서 구글계정 정보와 DB를 비교해서 회원가입시키거나 로그인 처리하게 한다.
   (req, res) => {
-    res.redirect("http://localhost:3060/");
+    res.redirect("http://wexplore.shop/");
   }
 );
 router.post("/emailCheck", emailAuth);

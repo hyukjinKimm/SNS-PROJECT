@@ -132,10 +132,7 @@ const LoginForm = () => {
           </div>
         </div>
         <div>
-          <a
-            id="custom-login-btn"
-            href={process.env.REACT_APP_BACK_URL + "/auth/google"}
-          >
+          <a id="custom-login-btn" href={BACK_URL + "/auth/google"}>
             <img src="/google-login-btn.png" width="200px" />
           </a>
         </div>
